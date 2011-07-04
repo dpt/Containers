@@ -1,2 +1,7 @@
-
+*.a
+*.d
+*.o
+*.odbg
 .DS_Store
+container-test
+container-testdbg
