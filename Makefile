@@ -99,5 +99,5 @@ clean:
 
 # Dependencies
 
--include	$(deps)
+-include	$(deps) $(appdeps)
 
