@@ -22,9 +22,6 @@ typedef struct trie T;
 
 /* ----------------------------------------------------------------------- */
 
-/* Return the n'th binary bit of the specified key. */
-typedef int (trie_bit)(const void *key, size_t keylen, int n);
-
 /* Compare two keys (as for qsort). */
 typedef int (trie_compare)(const void *a, const void *b);
 

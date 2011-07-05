@@ -108,16 +108,40 @@ void trie_destroy(trie_t *t)
 
 /* ----------------------------------------------------------------------- */
 
+/* Extract the next binary direction from the key.
+ * Within a byte the MSB is extacted first.
+ */
+#define GET_NEXT_DIR(DIR)                \
+do                                       \
+{                                        \
+  if ((depth++ & 7) == 0)                \
+    c = (ukey == ukeyend) ? 0 : *ukey++; \
+                                         \
+  DIR = (c & 0x80) != 0;                 \
+  c <<= 1;                               \
+}                                        \
+while (0)
+
+/* ----------------------------------------------------------------------- */
+
 const void *trie_lookup(trie_t *t, const void *key, size_t keylen)
 {
-  int                 depth;
-  const trie__node_t *n;
+  const unsigned char  *ukey    = key;
+  const unsigned char  *ukeyend = ukey + keylen;
+  int                   depth;
+  const trie__node_t   *n;
+  int                   dir;
+  unsigned char         c;
 
   depth = 0;
 
-  for (n = t->root; n; n = n->child[t->bit(key, keylen, depth++)])
+  for (n = t->root; n; n = n->child[dir])
+  {
     if (IS_LEAF(n))
       break;
+    
+    GET_NEXT_DIR(dir);
+  }
 
   if (n && t->compare(key, n->item.key) == 0)
     return n->item.value; /* found */
@@ -132,22 +156,33 @@ static trie__node_t *trie__insert_split(trie_t       *t,
                                         trie__node_t *n,
                                         int           depth)
 {
-  trie__node_t *x;
-  const void   *keym;
-  const void   *keyn;
-  size_t        keylenm;
-  size_t        keylenn;
+  trie__node_t        *x;
+  const unsigned char *ukeym;
+  const unsigned char *ukeymend;
+  const unsigned char *ukeyn;
+  const unsigned char *ukeynend;
+  int                  mdir;
+  int                  ndir;
 
-  x = trie__node_create(t, NULL, 0, NULL);
+  x = trie__node_create(t, NULL, 0L, NULL);
   if (x == NULL)
     return NULL; /* OOM */
 
-  keym    = m->item.key;
-  keyn    = n->item.key;
-  keylenm = m->keylen;
-  keylenn = n->keylen;
+  ukeym    = m->item.key;
+  ukeymend = ukeym + m->keylen;
 
-  switch (t->bit(keym, keylenm, depth) * 2 + t->bit(keyn, keylenn, depth))
+  mdir = 0;
+  if (ukeym + (depth >> 3) < ukeymend)
+    mdir = (ukeym[depth >> 3] >> (7 - (depth & 7))) & 1;
+  
+  ukeyn    = n->item.key;
+  ukeynend = ukeyn + n->keylen;
+  
+  ndir = 0;
+  if (ukeyn + (depth >> 3) < ukeynend)
+    ndir = (ukeyn[depth >> 3] >> (7 - (depth & 7))) & 1;    
+
+  switch (mdir * 2 + ndir)
   {
   case 0:
     x->child[0] = trie__insert_split(t, m, n, depth + 1);
@@ -175,18 +210,26 @@ error trie_insert(trie_t     *t,
                   size_t      keylen,
                   const void *value)
 {
-  int            depth;
-  trie__node_t **pn;
-  trie__node_t  *n;
-  trie__node_t  *m;
+  const unsigned char *ukey    = key;
+  const unsigned char *ukeyend = ukey + keylen;
+  int                  depth;
+  trie__node_t       **pn;
+  trie__node_t        *n;
+  int                  dir;
+  unsigned char        c;
+  trie__node_t        *m;
 
   /* search, but save the parent pointer too */
 
   depth = 0;
 
-  for (pn = &t->root; (n = *pn); pn = &n->child[t->bit(key, keylen, depth++)])
+  for (pn = &t->root; (n = *pn); pn = &n->child[dir])
+  {
     if (IS_LEAF(n))
       break;
+    
+    GET_NEXT_DIR(dir);
+  }
 
   if (n && t->compare(key, n->item.key) == 0)
     return error_EXISTS;
@@ -236,8 +279,10 @@ static int trie__remove_node(trie_t        *t,
                              size_t         keylen,
                              int            depth)
 {
-  trie__node_t *n = *pn;
-  trie__node_t *m;
+  const unsigned char *ukey    = key;
+  const unsigned char *ukeyend = ukey + keylen;
+  trie__node_t        *n = *pn;
+  trie__node_t        *m;
 
   assert(n != NULL);
 
@@ -255,7 +300,10 @@ static int trie__remove_node(trie_t        *t,
     trie__node_t *left, *right;
     int           leafleft, leafright;
 
-    dir = t->bit(key, keylen, depth);
+    dir = 0;
+    if (ukey + (depth >> 3) < ukeyend)
+      dir = (ukey[depth >> 3] >> (7 - (depth & 7))) & 1;
+    
     if ((rc = trie__remove_node(t, &n->child[dir], key, keylen, depth + 1)) <= 0)
       return rc;
 

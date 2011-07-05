@@ -29,7 +29,6 @@ struct trie
 
   const void         *default_value;
 
-  trie_bit         *bit;
   trie_compare       *compare;
   trie_destroy_key   *destroy_key;
   trie_destroy_value *destroy_value;
