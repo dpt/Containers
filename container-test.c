@@ -23,7 +23,7 @@
 #include "container-bstree.h"
 #include "container-dstree.h"
 #include "container-trie.h"
-//#include "container-critbit.h"
+#include "container-critbit.h"
 //#include "container-patricia.h"
 
 #include "testdata.h"
@@ -56,7 +56,8 @@ static const icontainer_key_t static_char_key =
 /* A statically allocated string value. */
 static const icontainer_value_t static_string_value =
 {
-  NULL /* default value */, { stringkv_nodestroy, stringkv_fmt, stringkv_fmt_nodestroy }
+  NULL /* default value */,
+  { stringkv_nodestroy, stringkv_fmt, stringkv_fmt_nodestroy }
 };
 
 /* ----------------------------------------------------------------------- */
@@ -70,7 +71,7 @@ static const icontainer_value_t static_string_value =
 
 #define NAME "stringtest"
 
-static error stringtest(icontainer_maker *maker, int viz)
+static error stringtest(icontainer_maker *maker, FILE *vizout)
 {
   const int     max = NELEMS(testdata);
   error         err;
@@ -165,11 +166,11 @@ static error stringtest(icontainer_maker *maker, int viz)
 
   cont->show(cont, stdout);
 
-  if (viz)
+  if (vizout)
   {
     BLURT("Dump viz");
 
-    cont->show_viz(cont, stdout);
+    cont->show_viz(cont, vizout);
   }
 
   BLURT("Remove every other test value");
@@ -204,6 +205,75 @@ failure:
 
 /* ----------------------------------------------------------------------- */
 
+/* Insert a set of strings with common prefixes. We can use this to check
+ * that crit-bit and PATRICIA correctly build trees which factor out the
+ * common part. */
+
+static const struct
+{
+  const char *key;
+  const char *value;
+}
+commonprefixstrings[] =
+{
+  { "A man, a plan, a canal - Panama!", "one" },
+  { "A man, a plan, a cat, a canal – Panama!", "two" },
+  { "A man, a plan, a cat, a ham, a yak, a yam, a hat, a canal – Panama!", "three" }
+};
+
+#define NAME "commonprefixtest"
+
+static error commonprefixtest(icontainer_maker *maker, FILE *vizout)
+{
+  const int     max = NELEMS(commonprefixstrings);
+  error         err;
+  icontainer_t *cont;
+  int           i;
+
+  BLURT("Create cont");
+
+  err = maker(&cont, &static_string_key, &static_string_value);
+  if (err)
+    goto failure;
+
+  BLURT("Insert test values");
+
+  for (i = 0; i < max; i++)
+  {
+    err = cont->insert(cont, commonprefixstrings[i].key, commonprefixstrings[i].value);
+    if (err)
+      return err;
+  }
+
+  BLURT("Dump");
+
+  cont->show(cont, stdout);
+
+  if (vizout)
+  {
+    BLURT("Dump viz");
+
+    cont->show_viz(cont, vizout);
+  }
+
+  BLURT("Destroy");
+
+  cont->destroy(cont);
+
+  return error_OK;
+
+
+failure:
+
+  BLURT1("error %lu\n", err);
+
+  return err;
+}
+
+#undef NAME
+
+/* ----------------------------------------------------------------------- */
+
 static const struct
 {
   int         key;
@@ -219,7 +289,7 @@ inttestdata[] =
 
 #define NAME "inttest"
 
-static error inttest(icontainer_maker *maker, int viz)
+static error inttest(icontainer_maker *maker, FILE *vizout)
 {
   const int     max = NELEMS(inttestdata);
   error         err;
@@ -288,11 +358,11 @@ static error inttest(icontainer_maker *maker, int viz)
 
   cont->show(cont, stdout);
 
-  if (viz)
+  if (vizout)
   {
     BLURT("Dump viz");
 
-    cont->show_viz(cont, stdout);
+    cont->show_viz(cont, vizout);
   }
 
   BLURT("Remove every other test value");
@@ -354,7 +424,7 @@ chartestdata[] =
 
 #define NAME "chartest"
 
-static error chartest(icontainer_maker *maker, int viz)
+static error chartest(icontainer_maker *maker, FILE *vizout)
 {
   const int     max = NELEMS(chartestdata);
   error         err;
@@ -423,11 +493,11 @@ static error chartest(icontainer_maker *maker, int viz)
 
   cont->show(cont, stdout);
 
-  if (viz)
+  if (vizout)
   {
     BLURT("Dump viz");
 
-    cont->show_viz(cont, stdout);
+    cont->show_viz(cont, vizout);
   }
 
   BLURT("Remove every other test value");
@@ -462,18 +532,22 @@ failure:
 
 /* ----------------------------------------------------------------------- */
 
-static error test_icontainer_type(icontainer_maker *maker, int viz)
+static error test_icontainer_type(icontainer_maker *maker,
+                                  const char       *filesafemakername,
+                                  int               viz)
 {
   static const struct
   {
-    error     (*test)(icontainer_maker *maker, int viz);
+    error     (*test)(icontainer_maker *maker, FILE *vizout);
     const char *name;
+    const char *filesafename;
   }
   tests[] =
   {
-    { chartest,   "char test"   },
-    { inttest,    "int test"    },
-    { stringtest, "string test" },
+    { chartest,         "char test",                 "char"         },
+    { inttest,          "int test",                  "int"          },
+    { stringtest,       "string test",               "string"       },
+    { commonprefixtest, "common prefix string test", "commonprefix" },
   };
 
   error err;
@@ -483,10 +557,25 @@ static error test_icontainer_type(icontainer_maker *maker, int viz)
 
   for (i = 0; i < NELEMS(tests); i++)
   {
+    FILE *f = NULL;
+
     printf("> %s\n", tests[i].name);
-    err = tests[i].test(maker, viz);
+
+    if (viz)
+    {
+      char vizfilename[100];
+
+      sprintf(vizfilename, "%s-%s.gv", filesafemakername,
+              tests[i].filesafename);
+
+      f = fopen(vizfilename, "w");
+    }
+
+    err = tests[i].test(maker, f);
     if (err)
       goto failure;
+
+    fclose(f);
   }
 
   printf("--------\n");
@@ -507,16 +596,19 @@ int test_container(int viz)
   {
     icontainer_maker *maker;
     const char       *name;
+    const char       *filesafename;
   }
   makers[] =
   {
-    { container_create_orderedarray, "ordered array" },
-    { container_create_linkedlist,   "linked list"   },
-    { container_create_bstree,       "bstree"        },
-    { container_create_dstree,       "dstree"        },
-    { container_create_trie,         "trie"          },
-    //{ container_create_critbit,      "critbit"       },
-    //{ container_create_patricia,     "patricia"      },
+    { container_create_orderedarray, "ordered array", "orderedarray" },
+    { container_create_linkedlist,   "linked list",   "linkedlist"   },
+    { container_create_bstree,       "bstree",        "bstree"       },
+    { container_create_dstree,       "dstree",        "dstree"       },
+    { container_create_trie,         "trie",          "trie"         },
+    { container_create_critbit,      "critbit",       "critbit"      },
+#if 0
+    { container_create_patricia,     "patricia",      "patricia"     },
+#endif
   };
 
   error err;
@@ -526,7 +618,7 @@ int test_container(int viz)
   {
     printf(">> test_container with '%s'\n", makers[i].name);
 
-    err = test_icontainer_type(makers[i].maker, viz);
+    err = test_icontainer_type(makers[i].maker, makers[i].filesafename, viz);
     if (err)
       goto failure;
   }
