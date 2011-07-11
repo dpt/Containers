@@ -102,7 +102,7 @@ static error bstree__destroy_node(bstree__node_t *n, int level, void *opaque)
 
 void bstree_destroy(bstree_t *t)
 {
-  (void) bstree__walk_internal(t, bstree__destroy_node, t);
+  (void) bstree__walk_internal_post(t, bstree__destroy_node, t);
 
   free(t);
 }
