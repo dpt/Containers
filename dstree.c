@@ -128,17 +128,17 @@ const void *dstree_lookup(dstree_t *t, const void *key, size_t keylen)
   const dstree__node_t *n;
   int                   dir;
   unsigned char         c;
-  
+
   depth = 0;
-  
+
   for (n = t->root; n; n = n->child[dir])
   {
     if (t->compare(key, n->item.key) == 0)
       return n->item.value; /* found */
-    
+
     GET_NEXT_DIR(dir);
   }
-  
+
   return t->default_value; /* not found */
 }
 
@@ -158,12 +158,12 @@ error dstree_insert(dstree_t   *t,
   unsigned char        c;
 
   depth = 0;
-  
+
   for (pn = &t->root; (n = *pn); pn = &n->child[dir])
   {
     if (t->compare(key, n->item.key) == 0)
       return error_EXISTS;
-    
+
     GET_NEXT_DIR(dir);
   }
 
@@ -237,15 +237,15 @@ void dstree_remove(dstree_t *t, const void *key, size_t keylen)
   dstree__node_t      *m;
 
   depth = 0;
-  
+
   for (pn = &t->root; (n = *pn); pn = &n->child[dir])
   {
     if (t->compare(n->item.key, key) == 0)
       break; /* found */
-    
+
     GET_NEXT_DIR(dir);
   }
-  
+
   if (n == NULL)
     return; /* doesn't exist */
 
@@ -282,7 +282,7 @@ void dstree_remove(dstree_t *t, const void *key, size_t keylen)
 
     // why does this look wrong to me now - if right is absent that doesn't guarantee that left is present on the first iteration does it?
     // i suppose it does since we're guaranteed a non-leaf node here - could add an assert to that effect
-    
+
     if (m->child[1] == NULL)
       pm = &m->child[0];
     else if (m->child[0] == NULL)
@@ -328,7 +328,7 @@ void dstree_remove2(dstree_t *t, const void *key, size_t keylen)
   {
     if (t->compare(n->item.key, key) == 0)
       break; /* found */
-    
+
     GET_NEXT_DIR(dir);
   }
 

@@ -98,7 +98,7 @@ static const int orderedarray__lookup(orderedarray_t        *t,
   {
     orderedarray__node_t *s;
     orderedarray__node_t *e;
-    
+
     /* binary search */
 
     s = t->array;
@@ -195,7 +195,7 @@ error orderedarray_insert(orderedarray_t *t,
     return error_EXISTS;
 
   assert(n); /* n is always non-NULL after a call to ensure */
-  
+
   /* shunt up subsequent entries */
 
   m = t->nelems - (n - t->array);

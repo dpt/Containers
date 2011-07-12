@@ -139,7 +139,7 @@ const void *trie_lookup(trie_t *t, const void *key, size_t keylen)
   {
     if (IS_LEAF(n))
       break;
-    
+
     GET_NEXT_DIR(dir);
   }
 
@@ -174,13 +174,13 @@ static trie__node_t *trie__insert_split(trie_t       *t,
   mdir = 0;
   if (ukeym + (depth >> 3) < ukeymend)
     mdir = (ukeym[depth >> 3] >> (7 - (depth & 7))) & 1;
-  
+
   ukeyn    = n->item.key;
   ukeynend = ukeyn + n->keylen;
-  
+
   ndir = 0;
   if (ukeyn + (depth >> 3) < ukeynend)
-    ndir = (ukeyn[depth >> 3] >> (7 - (depth & 7))) & 1;    
+    ndir = (ukeyn[depth >> 3] >> (7 - (depth & 7))) & 1;
 
   switch (mdir * 2 + ndir)
   {
@@ -227,7 +227,7 @@ error trie_insert(trie_t     *t,
   {
     if (IS_LEAF(n))
       break;
-    
+
     GET_NEXT_DIR(dir);
   }
 
@@ -303,7 +303,7 @@ static int trie__remove_node(trie_t        *t,
     dir = 0;
     if (ukey + (depth >> 3) < ukeyend)
       dir = (ukey[depth >> 3] >> (7 - (depth & 7))) & 1;
-    
+
     if ((rc = trie__remove_node(t, &n->child[dir], key, keylen, depth + 1)) <= 0)
       return rc;
 

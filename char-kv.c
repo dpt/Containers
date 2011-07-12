@@ -28,9 +28,9 @@ const char *charkv_fmt(const void *kv)
 {
   static char str[9]; /* to fit '<-128>' + NUL */
   char        c;
-  
+
   c = *((const char *) kv);
-  
+
   if (isprint(c))
     sprintf(str, "'%c'", c);
   else
