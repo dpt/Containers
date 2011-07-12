@@ -251,21 +251,12 @@ error critbit_insert(critbit_t  *t,
     return error_EXISTS;
 
   /* find differing bit */
-#if 1
-  // x & -x would turn off the LSB, here we need to turn off the MSB
-  while (newotherbits & (newotherbits - 1))
-    newotherbits &= newotherbits - 1; /* turn off rightmost bit */
-#else
-  {
-    // spread msb right (three times is enough for a byte)
-    newotherbits |= newotherbits >> 1;
-    newotherbits |= newotherbits >> 2;
-    newotherbits |= newotherbits >> 4;
-    // wipe out all bits save for msb
-    newotherbits = newotherbits & ~(newotherbits >> 1);
-  }
-#endif
-
+  /* spread the MSB right (three times is enough for a byte) */
+  newotherbits |= newotherbits >> 1;
+  newotherbits |= newotherbits >> 2;
+  newotherbits |= newotherbits >> 4;
+  /* wipe out all bits save for the MSB */
+  newotherbits = newotherbits & ~(newotherbits >> 1);
   /* form a mask */
   newotherbits ^= 255;
 
