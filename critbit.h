@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-#include "types.h"
+#include "errors.h"
 #include "item.h"
 
 /* ----------------------------------------------------------------------- */

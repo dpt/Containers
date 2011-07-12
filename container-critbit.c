@@ -110,7 +110,7 @@ error container_create_critbit(icontainer_t            **container,
     container_critbit__destroy,
   };
 
-  error                 err;
+  error                err;
   container_critbit_t *c;
 
   assert(container);

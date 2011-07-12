@@ -1,8 +1,8 @@
 /* int-kv.c -- functions for items which use ints */
 
-#include "types.h"
-
 #include <stdio.h>
+
+#include "utils.h"
 
 #include "int-kv.h"
 

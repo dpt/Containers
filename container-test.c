@@ -7,7 +7,8 @@
 
 #include "memento.h"
 
-#include "types.h"
+#include "errors.h"
+#include "utils.h"
 
 #include "char-kv.h"
 #include "int-kv.h"

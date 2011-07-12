@@ -4,7 +4,7 @@
 
 #include "memento.h"
 
-#include "types.h"
+#include "utils.h"
 
 #include "kv-common.h"
 

@@ -1,9 +1,9 @@
 /* char-kv.c -- functions for items which use chars */
 
-#include "types.h"
-
 #include <ctype.h>
 #include <stdio.h>
+
+#include "utils.h"
 
 #include "char-kv.h"
 

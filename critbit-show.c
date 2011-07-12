@@ -7,6 +7,7 @@
 
 #include "memento.h"
 
+#include "errors.h"
 #include "types.h"
 #include "string.h"
 #include "string-kv.h"

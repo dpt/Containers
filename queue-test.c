@@ -6,7 +6,8 @@
 
 #include "memento.h"
 
-#include "types.h"
+#include "errors.h"
+#include "utils.h"
 
 #include "queue.h"
 

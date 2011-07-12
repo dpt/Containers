@@ -16,12 +16,12 @@
 
 #include "queue.h"
 
-#include "types.h"
+#include "errors.h"
+#include "utils.h"
 #include "string.h"
 #include "string-kv.h"
 
 #include "critbit.h"
-
 #include "critbit-impl.h"
 
 /* ----------------------------------------------------------------------- */
@@ -156,7 +156,6 @@ void critbit_destroy(critbit_t *t)
 /* Extract the next binary direction from the key. */
 #define GET_NEXT_DIR(KEY, KEYEND, INDEX, OTHERBITS) \
   ((1 + ((OTHERBITS) | GET_BYTE(KEY, KEYEND, INDEX))) >> 8)
-
 
 /* ----------------------------------------------------------------------- */
 

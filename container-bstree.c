@@ -7,6 +7,7 @@
 #include "memento.h"
 
 #include "errors.h"
+#include "utils.h"
 #include "icontainer.h"
 #include "bstree.h"
 

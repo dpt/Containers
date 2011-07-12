@@ -7,14 +7,13 @@
 
 #include "memento.h"
 
+#include "errors.h"
+#include "utils.h"
 #include "queue.h"
-
-#include "types.h"
 #include "string.h"
 #include "string-kv.h"
 
 #include "trie.h"
-
 #include "trie-impl.h"
 
 /* ----------------------------------------------------------------------- */
