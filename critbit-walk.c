@@ -18,7 +18,6 @@
 /* ----------------------------------------------------------------------- */
 
 static error critbit__walk_in_order(const critbit__node_t *n,
-                                    critbit_walk_flags     flags,
                                     int                    level,
                                     critbit_walk_callback *cb,
                                     void                  *opaque)
@@ -39,11 +38,11 @@ static error critbit__walk_in_order(const critbit__node_t *n,
   }
   else
   {
-    err = critbit__walk_in_order(n->child[0], flags, level + 1, cb, opaque);
+    err = critbit__walk_in_order(n->child[0], level + 1, cb, opaque);
     if (err)
       return err;
 
-    err = critbit__walk_in_order(n->child[1], flags, level + 1, cb, opaque);
+    err = critbit__walk_in_order(n->child[1], level + 1, cb, opaque);
     if (err)
       return err;
   }
@@ -52,20 +51,13 @@ static error critbit__walk_in_order(const critbit__node_t *n,
 }
 
 error critbit_walk(const critbit_t       *t,
-                   critbit_walk_flags     flags,
                    critbit_walk_callback *cb,
                    void                  *opaque)
 {
-  error (*walker)(const critbit__node_t *n,
-                  critbit_walk_flags     flags,
-                  int                    level,
-                  critbit_walk_callback *cb,
-                  void                  *opaque);
-
   if (t == NULL)
     return error_OK;
 
-  return critbit__walk_in_order(t->root, flags, 0, cb, opaque);
+  return critbit__walk_in_order(t->root, 0, cb, opaque);
 }
 
 /* ----------------------------------------------------------------------- */

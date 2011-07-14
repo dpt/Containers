@@ -61,24 +61,12 @@ int critbit_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef unsigned int critbit_walk_flags;
-
-#define critbit_WALK_ORDER_MASK (3u << 0)
-#define critbit_WALK_IN_ORDER   (0u << 0)
-#define critbit_WALK_PRE_ORDER  (1u << 0)
-#define critbit_WALK_POST_ORDER (2u << 0)
-
-#define critbit_WALK_LEAVES     (1u << 2)
-#define critbit_WALK_BRANCHES   (1u << 3)
-#define critbit_WALK_ALL        (critbit_WALK_LEAVES | critbit_WALK_BRANCHES)
-
 typedef error (critbit_walk_callback)(const void *key,
                                       const void *value,
                                       int         level,
                                       void       *opaque);
 
 error critbit_walk(const T               *t,
-                   critbit_walk_flags     flags,
                    critbit_walk_callback *cb,
                    void                  *opaque);
 
