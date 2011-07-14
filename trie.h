@@ -61,24 +61,12 @@ int trie_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef unsigned int trie_walk_flags;
-
-#define trie_WALK_ORDER_MASK (3u << 0)
-#define trie_WALK_IN_ORDER   (0u << 0)
-#define trie_WALK_PRE_ORDER  (1u << 0)
-#define trie_WALK_POST_ORDER (2u << 0)
-
-#define trie_WALK_LEAVES     (1u << 2)
-#define trie_WALK_BRANCHES   (1u << 3)
-#define trie_WALK_ALL        (trie_WALK_LEAVES | trie_WALK_BRANCHES)
-
 typedef error (trie_walk_callback)(const void *key,
                                    const void *value,
                                    int         level,
                                    void       *opaque);
 
 error trie_walk(const T            *t,
-                trie_walk_flags     flags,
                 trie_walk_callback *cb,
                 void               *opaque);
 
