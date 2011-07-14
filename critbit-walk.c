@@ -15,10 +15,57 @@
 
 #include "critbit-impl.h"
 
+/* ----------------------------------------------------------------------- */
+
+static error critbit__walk_in_order(const critbit__node_t *n,
+                                    critbit_walk_flags     flags,
+                                    int                    level,
+                                    critbit_walk_callback *cb,
+                                    void                  *opaque)
+{
+  error               err;
+  critbit__extnode_t *e;
+
+  if (n == NULL)
+    return error_OK;
+
+  if (IS_EXTERNAL(n))
+  {
+    e = FROM_STORE(n);
+
+    err = cb(e->item.key, e->item.value, level, opaque);
+    if (err)
+        return err;
+  }
+  else
+  {
+    err = critbit__walk_in_order(n->child[0], flags, level + 1, cb, opaque);
+    if (err)
+      return err;
+
+    err = critbit__walk_in_order(n->child[1], flags, level + 1, cb, opaque);
+    if (err)
+      return err;
+  }
+
+  return error_OK;
+}
+
 error critbit_walk(const critbit_t       *t,
                    critbit_walk_flags     flags,
                    critbit_walk_callback *cb,
                    void                  *opaque)
 {
-  return error_OK; // NYI
+  error (*walker)(const critbit__node_t *n,
+                  critbit_walk_flags     flags,
+                  int                    level,
+                  critbit_walk_callback *cb,
+                  void                  *opaque);
+
+  if (t == NULL)
+    return error_OK;
+
+  return critbit__walk_in_order(t->root, flags, 0, cb, opaque);
 }
+
+/* ----------------------------------------------------------------------- */
