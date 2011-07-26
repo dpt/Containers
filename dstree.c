@@ -177,54 +177,6 @@ error dstree_insert(dstree_t   *t,
 
 /* ----------------------------------------------------------------------- */
 
-// A = 0000
-// B = 0001
-// C = 0011
-// D = 0111
-// E = 1111
-//
-// Inserting as ABCDE we get:
-//
-//     A      A = xxxx
-//    / \     B = 0xxx
-//   B   E    C = 00xx
-//  / \       D = 01xx
-// C   D      E = 1xxx
-//
-// Inserting as EDCBA we get:
-//
-//         E    E = xxxx
-//        /     D = 0xxx
-//       D      C = 00xx
-//      /       B = 000x
-//     C        A = 0000
-//    /
-//   B
-//  /
-// A
-//
-// Inserting as CAEDB we get:
-//
-//     C      C = xxxx
-//    / \     A = 0xxx
-//   A   E    E = 1xxx
-//  / \       D = 01xx
-// B   D      B = 00xx
-//
-//
-//     C      C = xxxx    this level holds any value
-//    / \     A = 0xxx
-//   A   E    E = 1xxx    this level holds prefixes 0 or 1
-//  / \       D = 01xx
-// B   D      B = 00xx    this level holds prefixes 00 or 01 or 10 or 11
-//
-// So if there is a single subtree it can always take the place of its parent,
-// since the initial portion of the key up to that level is the same. << WRONG
-//
-// If I remove a node with two children, how do I reorganise the tree?
-// Any descendant can take the place of its ancestor so we can find any leaf
-// node in its subtree and stash it in place of its parent.
-
 void dstree_remove(dstree_t *t, const void *key, size_t keylen)
 {
   const unsigned char *ukey    = key;
@@ -238,6 +190,7 @@ void dstree_remove(dstree_t *t, const void *key, size_t keylen)
   dstree__node_t      *m;
 
   depth = 0;
+  c     = 0;
 
   for (pn = &t->root; (n = *pn); pn = &n->child[dir])
   {
@@ -252,7 +205,7 @@ void dstree_remove(dstree_t *t, const void *key, size_t keylen)
 
   /* pn now points to pointer to the doomed node */
 
-  /* if we find a leaf node, just zap the parent pointer */
+  /* if the doomed node is a leaf node we just delete the parent pointer */
   if (IS_LEAF(n))
   {
     *pn = NULL;
@@ -260,29 +213,23 @@ void dstree_remove(dstree_t *t, const void *key, size_t keylen)
     return;
   }
 
-  /* otherwise we look for a leaf node that we can swap into the place of
-   * the parent node */
+  /* otherwise we look for a leaf node that we can swap into the place of the
+   * parent node */
 
   m = n;
 
-  // this comment is out of date now
-  /* dstree__remove above doesn't yield us the depth of the tree where the node
-   * was located. this perhaps doesn't matter as all we need is /any/ leaf node
-   * downward of the to-be-removed node. so we just set depth to zero here and
-   * hope that the binary values GET_NEXT_DIR() returns cut us a random path through
-   the tree. */
-  ukey = key; // reset
+  /* we need any leaf node downward of the to-be-removed node. so we just set
+   * depth to zero here and hope that the binary values GET_NEXT_DIR()
+   * returns cut us a random path through the tree. */
+  ukey  = key;
   depth = 0;
 
   do
   {
-    /* if there's no right child, go left.
-     * if there's no left child, go right.
-     * if both are present, fetch a value from GET_NEXT_DIR() and choose.
-     * this means that we only call it when necessary. */
-
-    // why does this look wrong to me now - if right is absent that doesn't guarantee that left is present on the first iteration does it?
-    // i suppose it does since we're guaranteed a non-leaf node here - could add an assert to that effect
+    /* if there is no right child, then go left.
+     * if there is no left child, then go right.
+     * if both are present, fetch a 'random' value from GET_NEXT_DIR() and
+     * choose. this means that we only call it when necessary. */
 
     if (m->child[1] == NULL)
       pm = &m->child[0];
@@ -290,8 +237,9 @@ void dstree_remove(dstree_t *t, const void *key, size_t keylen)
       pm = &m->child[1];
     else
     {
-      GET_NEXT_DIR(dir);     // this does its own depth++ which conflicts with the local technique of doing it later...
+      GET_NEXT_DIR(dir);
       pm = &m->child[dir];
+      depth--; /* GET_NEXT_DIR does depth++, which we must compensate for */
     }
 
     m = *pm;
