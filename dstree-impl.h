@@ -52,6 +52,10 @@ error dstree__walk_internal(dstree_t                       *t,
                             dstree__walk_internal_callback *cb,
                             void                           *opaque);
 
+error dstree__breadthwalk_internal(dstree_t                       *t,
+                                   dstree__walk_internal_callback *cb,
+                                   void                           *opaque);
+
 /* ----------------------------------------------------------------------- */
 
 #endif /* DSTREE_IMPL_H */

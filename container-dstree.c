@@ -79,10 +79,12 @@ static error container_dstree__show(const icontainer_t *c_, FILE *f)
 
 static error container_dstree__show_viz(const icontainer_t *c_, FILE *f)
 {
-  NOT_USED(c_);
-  NOT_USED(f);
+  container_dstree_t *c = (container_dstree_t *) c_;
 
-  return error_OK; /* not implemented */
+  return dstree_show_viz(c->t,
+                         c->show_key, c->show_key_destroy,
+                         c->show_value, c->show_value_destroy,
+                         f);
 }
 
 static void container_dstree__destroy(icontainer_t *doomed_)

@@ -87,6 +87,15 @@ error dstree_show(const T             *t,
                   dstree_show_value   *value,
                   dstree_show_destroy *value_destroy,
                   FILE                *f);
+/* ----------------------------------------------------------------------- */
+
+/* Dump in format which can be fed into Graphviz. */
+error dstree_show_viz(const T             *t,
+                      dstree_show_key     *key,
+                      dstree_show_destroy *key_destroy,
+                      dstree_show_value   *value,
+                      dstree_show_destroy *value_destroy,
+                      FILE                *f);
 
 /* ----------------------------------------------------------------------- */
 

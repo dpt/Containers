@@ -26,15 +26,15 @@ int charkv_compare(const void *a_, const void *b_)
 
 const char *charkv_fmt(const void *kv)
 {
-  static char str[9]; /* to fit '<-128>' + NUL */
+  static char str[12];
   char        c;
 
   c = *((const char *) kv);
 
   if (isprint(c))
-    sprintf(str, "'%c'", c);
+    sprintf(str, "%c", c);
   else
-    sprintf(str, "'<%d>'", c);
+    sprintf(str, "[%d]", c);
 
   return str;
 }
