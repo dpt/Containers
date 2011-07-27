@@ -216,7 +216,7 @@ error critbit_show_viz(const critbit_t      *t,
 
   args.lastlevel = -1;
 
-  (void) fprintf(f, "digraph \"trie\"\n");
+  (void) fprintf(f, "digraph \"critbit\"\n");
   (void) fprintf(f, "{\n");
   (void) fprintf(f, "\tnode [shape = circle];\n");
 
