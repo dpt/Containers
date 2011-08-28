@@ -46,7 +46,10 @@ void orderedarray_destroy(T *t);
 
 const void *orderedarray_lookup(T *t, const void *key);
 
-error orderedarray_insert(T *t, const void *key, const void *value);
+error orderedarray_insert(T          *t,
+                          const void *key,
+                          size_t      keylen,
+                          const void *value);
 
 void orderedarray_remove(T *t, const void *key);
 
@@ -56,9 +59,19 @@ int orderedarray_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (orderedarray_walk_callback)(const void *key,
-                                           const void *value,
-                                           void       *opaque);
+typedef error (orderedarray_found_callback)(const item_t *item,
+                                            void         *opaque);
+
+error orderedarray_lookup_prefix(const T                     *t,
+                                 const void                  *prefix,
+                                 size_t                       prefixlen,
+                                 orderedarray_found_callback *cb,
+                                 void                        *opaque);
+
+/* ----------------------------------------------------------------------- */
+
+typedef error (orderedarray_walk_callback)(const item_t *item,
+                                           void         *opaque);
 
 error orderedarray_walk(const T                    *t,
                         orderedarray_walk_callback *cb,

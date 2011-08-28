@@ -18,7 +18,9 @@ typedef struct container_linkedlist
 {
   icontainer_t               c;
   linkedlist_t              *t;
-
+  
+  icontainer_key_len         len;
+  
   icontainer_kv_show         show_key;
   icontainer_kv_show_destroy show_key_destroy;
   icontainer_kv_show         show_value;
@@ -31,7 +33,7 @@ static const void *container_linkedlist__lookup(const icontainer_t *c_,
 {
   const container_linkedlist_t *c = (container_linkedlist_t *) c_;
 
-  return linkedlist_lookup(c->t, key);
+  return linkedlist_lookup(c->t, key, c->len(key));
 }
 
 static error container_linkedlist__insert(icontainer_t *c_,
@@ -40,14 +42,14 @@ static error container_linkedlist__insert(icontainer_t *c_,
 {
   container_linkedlist_t *c = (container_linkedlist_t *) c_;
 
-  return linkedlist_insert(c->t, key, value);
+  return linkedlist_insert(c->t, key, c->len(key), value);
 }
 
 static void container_linkedlist__remove(icontainer_t *c_, const void *key)
 {
   container_linkedlist_t *c = (container_linkedlist_t *) c_;
 
-  linkedlist_remove(c->t, key);
+  linkedlist_remove(c->t, key, c->len(key));
 }
 
 static const item_t *container_linkedlist__select(const icontainer_t *c_,
@@ -56,6 +58,23 @@ static const item_t *container_linkedlist__select(const icontainer_t *c_,
   container_linkedlist_t *c = (container_linkedlist_t *) c_;
 
   return linkedlist_select(c->t, k);
+}
+
+static error container_linkedlist__lookup_prefix(const icontainer_t        *c_,
+                                                 const void                *prefix,
+                                                 icontainer_found_callback  cb,
+                                                 void                      *opaque)
+{
+  const container_linkedlist_t *c = (container_linkedlist_t *) c_;
+  
+  /* linkedlist_lookup_prefix_callback and icontainer_found_callback have
+   * the same signature so we can just cast one to the other here. If this
+   * were not the case we would need an adaptor function to turn one callback
+   * into another. */
+  
+  return linkedlist_lookup_prefix(c->t,
+                                  prefix, c->len(prefix),
+                                  (icontainer_found_callback) cb, opaque);
 }
 
 static int container_linkedlist__count(const icontainer_t *c_)
@@ -101,6 +120,7 @@ error container_create_linkedlist(icontainer_t            **container,
     container_linkedlist__insert,
     container_linkedlist__remove,
     container_linkedlist__select,
+    container_linkedlist__lookup_prefix,
     container_linkedlist__count,
     container_linkedlist__show,
     container_linkedlist__show_viz,
@@ -118,6 +138,8 @@ error container_create_linkedlist(icontainer_t            **container,
 
   /* ensure required callbacks are specified */
 
+  if (key->len == NULL)
+    return error_KEYLEN_REQUIRED;
   if (key->compare == NULL)
     return error_KEYCOMPARE_REQUIRED;
 
@@ -126,7 +148,9 @@ error container_create_linkedlist(icontainer_t            **container,
     return error_OOM;
 
   c->c                  = methods;
-
+  
+  c->len                = key->len;
+  
   c->show_key           = key->kv.show;
   c->show_key_destroy   = key->kv.show_destroy;
   c->show_value         = value->kv.show;

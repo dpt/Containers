@@ -19,26 +19,22 @@ typedef struct critbit T;
 
 /* ----------------------------------------------------------------------- */
 
-/* Compare two keys (as for qsort). */
-typedef int (critbit_compare)(const void *a, const void *b);
-
 /* Destroy the specified key. */
 typedef void (critbit_destroy_key)(void *key);
 
 /* Destroy the specified value. */
 typedef void (critbit_destroy_value)(void *value);
 
-/* As in the hash library, if NULL is passed in for the compare or destroy
- * functions when a malloc'd string is assumed.
+/* As in the hash library, if NULL is passed in for the destroy functions
+ * when a malloc'd string is assumed.
  *
  * Keys and values passed in (e.g. 'default_value' here, 'key' and 'value' to
  * critbit_insert below) are then owned by this data structure.
  *
- * NULL can be passed in for bit, compare, destroy_key and destroy_value to
- * use default routines suitable for strings.
+ * NULL can be passed in for destroy_key and destroy_value to use default
+ * routines suitable for strings.
  */
 error critbit_create(const void            *default_value,
-                     critbit_compare       *compare,
                      critbit_destroy_key   *destroy_key,
                      critbit_destroy_value *destroy_value,
                      T                     **t);
@@ -58,6 +54,17 @@ void critbit_remove(T *t, const void *key, size_t keylen);
 const item_t *critbit_select(T *t, int k);
 
 int critbit_count(T *t);
+
+/* ----------------------------------------------------------------------- */
+
+typedef error (critbit_found_callback)(const item_t *item,
+                                       void         *opaque);
+
+error critbit_lookup_prefix(const T                *t,
+                            const void             *prefix,
+                            size_t                  prefixlen,
+                            critbit_found_callback *cb,
+                            void                   *opaque);
 
 /* ----------------------------------------------------------------------- */
 

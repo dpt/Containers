@@ -31,7 +31,7 @@ static error trie__walk_in_order(const trie__node_t *n,
   if (!err)
   {
     if (IS_LEAF(n))
-      err = cb(n->item.key, n->item.value, level, opaque);
+      err = cb(&n->item, level, opaque);
   }
   if (!err)
     err = trie__walk_in_order(n->child[1], level + 1, cb, opaque);

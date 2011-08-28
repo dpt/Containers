@@ -25,7 +25,7 @@ int intkv_compare(const void *a_, const void *b_)
 
 const char *intkv_fmt(const void *kv)
 {
-  static char str[11]; /* big enough for a 32-bit int only */
+  static char str[32];
 
   sprintf(str, "%d", *((const int *) kv));
 

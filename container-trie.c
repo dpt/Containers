@@ -58,6 +58,23 @@ static const item_t *container_trie__select(const icontainer_t *c_, int k)
   return trie_select(c->t, k);
 }
 
+static error container_trie__lookup_prefix(const icontainer_t        *c_,
+                                           const void                *prefix,
+                                           icontainer_found_callback  cb,
+                                           void                      *opaque)
+{
+  const container_trie_t *c = (container_trie_t *) c_;
+  
+  /* trie_lookup_prefix_callback and icontainer_found_callback have the
+   * same signature so we can just cast one to the other here. If this were
+   * not the case we would need an adaptor function to turn one callback into
+   * another. */
+  
+  return trie_lookup_prefix(c->t,
+                            prefix, c->len(prefix),
+                            (icontainer_found_callback) cb, opaque);
+}
+
 static int container_trie__count(const icontainer_t *c_)
 {
   const container_trie_t *c = (container_trie_t *) c_;
@@ -103,6 +120,7 @@ error container_create_trie(icontainer_t            **container,
     container_trie__insert,
     container_trie__remove,
     container_trie__select,
+    container_trie__lookup_prefix,
     container_trie__count,
     container_trie__show,
     container_trie__show_viz,
@@ -122,8 +140,6 @@ error container_create_trie(icontainer_t            **container,
 
   if (key->len == NULL)
     return error_KEYLEN_REQUIRED;
-  if (key->compare == NULL)
-    return error_KEYCOMPARE_REQUIRED;
 
   c = malloc(sizeof(*c));
   if (c == NULL)
@@ -139,7 +155,6 @@ error container_create_trie(icontainer_t            **container,
   c->show_value_destroy = value->kv.show_destroy;
 
   err = trie_create(value->default_value,
-                    key->compare,
                     key->kv.destroy,
                     value->kv.destroy,
                     &c->t);

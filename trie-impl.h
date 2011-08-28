@@ -17,7 +17,6 @@ typedef struct trie__node
    * operations more convenient */
   struct trie__node  *child[2]; /* left, right children */
   item_t              item;
-  size_t              keylen;
 }
 trie__node_t;
 
@@ -29,7 +28,6 @@ struct trie
 
   const void         *default_value;
 
-  trie_compare       *compare;
   trie_destroy_key   *destroy_key;
   trie_destroy_value *destroy_value;
 };

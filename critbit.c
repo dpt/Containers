@@ -37,9 +37,9 @@ static critbit__extnode_t *critbit__extnode_create(critbit_t  *t,
   if (n == NULL)
     return NULL;
 
-  n->item.key   = key;
-  n->item.value = value;
-  n->keylen     = keylen;
+  n->item.key    = key;
+  n->item.keylen = keylen;
+  n->item.value  = value;
 
   t->extcount++;
 
@@ -90,7 +90,6 @@ static void critbit__node_destroy(critbit_t *t, critbit__node_t *n)
 /* ----------------------------------------------------------------------- */
 
 error critbit_create(const void             *default_value,
-                     critbit_compare        *compare,
                      critbit_destroy_key    *destroy_key,
                      critbit_destroy_value  *destroy_value,
                      critbit_t             **pt)
@@ -109,7 +108,6 @@ error critbit_create(const void             *default_value,
   /* if NULL is specified for callbacks then default to handlers suitable for
    * a malloc'd string */
 
-  t->compare       = compare       ? compare       : stringkv_compare;
   t->destroy_key   = destroy_key   ? destroy_key   : stringkv_destroy;
   t->destroy_value = destroy_value ? destroy_value : stringkv_destroy;
 
@@ -185,8 +183,10 @@ const void *critbit_lookup(const critbit_t *t,
 
   n = critbit__lookup(t->root, key, keylen);
 
-  /* check for successful membership */
-  return t->compare(key, n->item.key) ? t->default_value : n->item.value;
+  if (n && n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
+    return n->item.value; /* found */
+  else
+    return t->default_value; /* not found */
 }
 
 /* ----------------------------------------------------------------------- */
@@ -229,7 +229,7 @@ error critbit_insert(critbit_t  *t,
   /* find the critical bit */
 
   qkey    = q->item.key;
-  qkeyend = qkey + q->keylen;
+  qkeyend = qkey + q->item.keylen;
 
   /* find differing byte */
   for (newbyte = 0; newbyte < (int) keylen; newbyte++)
@@ -335,7 +335,7 @@ void critbit_remove(critbit_t *t, const void *key, size_t keylen)
 
   e = FROM_STORE(n);
 
-  if (t->compare(key, e->item.key) != 0)
+  if (!(e->item.keylen == keylen && memcmp(e->item.key, key, keylen) == 0))
     return; /* not found */
 
   critbit__extnode_destroy(t, e);
@@ -367,6 +367,89 @@ const item_t *critbit_select(critbit_t *t, int k)
 int critbit_count(critbit_t *t)
 {
   return t->intcount + t->extcount;
+}
+
+/* ----------------------------------------------------------------------- */
+
+/* This is similar to critbit__walk_in_order, but returns items as an item_t
+ * pointer. */
+static error critbit__lookup_prefix_walk(const critbit__node_t  *n,
+                                         critbit_found_callback *cb,
+                                         void                   *opaque)
+{
+  error               err;
+  critbit__extnode_t *e;
+
+  if (IS_EXTERNAL(n))
+  {
+    e = FROM_STORE(n);
+    
+    err = cb(&e->item, opaque);
+    if (err)
+      return err;
+  }
+  else
+  {
+    err = critbit__lookup_prefix_walk(n->child[0], cb, opaque);
+    if (err)
+      return err;
+    
+    err = critbit__lookup_prefix_walk(n->child[1], cb, opaque);
+    if (err)
+      return err;
+  }
+  
+  return error_OK;
+}
+
+error critbit_lookup_prefix(const critbit_t        *t,
+                            const void             *prefix,
+                            size_t                  prefixlen,
+                            critbit_found_callback *cb,
+                            void                   *opaque)
+{
+  const unsigned char   *uprefix    = prefix;
+  const unsigned char   *uprefixend = uprefix + prefixlen;
+  critbit__node_t       *n;
+  int                    dir;
+  const critbit__node_t *top;
+  critbit__extnode_t    *e;
+  int                    i;
+  const unsigned char   *ukey;
+
+  n   = t->root;
+  top = n;
+
+  if (t->root == NULL)
+    return error_OK; /* empty tree */
+
+  while (IS_INTERNAL(n))
+  {
+    critbit__node_t *m;
+    
+    dir = GET_NEXT_DIR(uprefix, uprefixend, n->byte, n->otherbits);
+
+    m = n->child[dir];
+
+    if ((size_t) n->byte < prefixlen)
+      top = m;
+    
+    n = m;
+  }
+  
+  e = FROM_STORE(n);
+  
+  /* check the prefix exists */
+  if (e->item.keylen < prefixlen)
+    return error_NOT_FOUND;
+  
+  ukey = e->item.key;
+
+  for (i = 0; i < (int) prefixlen; i++)
+    if (uprefix[i] != ukey[i])
+      return error_NOT_FOUND;
+  
+  return critbit__lookup_prefix_walk(top, cb, opaque);
 }
 
 /* ----------------------------------------------------------------------- */

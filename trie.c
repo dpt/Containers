@@ -29,11 +29,11 @@ static trie__node_t *trie__node_create(trie_t     *t,
   if (n == NULL)
     return NULL;
 
-  n->child[0]   = NULL;
-  n->child[1]   = NULL;
-  n->item.key   = key;
-  n->item.value = value;
-  n->keylen     = keylen;
+  n->child[0]    = NULL;
+  n->child[1]    = NULL;
+  n->item.key    = key;
+  n->item.keylen = keylen;
+  n->item.value  = value;
 
   t->count++;
 
@@ -54,12 +54,11 @@ static void trie__node_destroy(trie_t *t, trie__node_t *n)
 
 /* ----------------------------------------------------------------------- */
 
-/* NULL passed into the bit/compare/destroy callbacks signifies that these
- * internal routines should be used. They are setup to handle malloc'd strings.
+/* NULL passed into the destroy callbacks signifies that these internal
+ * routines should be used. They are setup to handle malloc'd strings.
  */
 
 error trie_create(const void          *default_value,
-                  trie_compare        *compare,
                   trie_destroy_key    *destroy_key,
                   trie_destroy_value  *destroy_value,
                   trie_t             **pt)
@@ -78,7 +77,6 @@ error trie_create(const void          *default_value,
   /* if NULL is specified for callbacks then default to handlers suitable for
    * a malloc'd string */
 
-  t->compare       = compare       ? compare       : stringkv_compare;
   t->destroy_key   = destroy_key   ? destroy_key   : stringkv_destroy;
   t->destroy_value = destroy_value ? destroy_value : stringkv_destroy;
 
@@ -110,27 +108,27 @@ void trie_destroy(trie_t *t)
 /* Extract the next binary direction from the key.
  * Within a byte the MSB is extacted first.
  */
-#define GET_NEXT_DIR(DIR)                \
-do                                       \
-{                                        \
-  if ((depth++ & 7) == 0)                \
-    c = (ukey == ukeyend) ? 0 : *ukey++; \
-                                         \
-  DIR = (c & 0x80) != 0;                 \
-  c <<= 1;                               \
-}                                        \
+#define GET_NEXT_DIR(DIR, KEY, KEYEND) \
+do                                     \
+{                                      \
+  if ((depth++ & 7) == 0)              \
+    c = (KEY == KEYEND) ? 0 : *KEY++;  \
+                                       \
+  DIR = (c & 0x80) != 0;               \
+  c <<= 1;                             \
+}                                      \
 while (0)
 
 /* ----------------------------------------------------------------------- */
 
 const void *trie_lookup(trie_t *t, const void *key, size_t keylen)
 {
-  const unsigned char  *ukey    = key;
-  const unsigned char  *ukeyend = ukey + keylen;
-  int                   depth;
-  const trie__node_t   *n;
-  int                   dir;
-  unsigned char         c;
+  const unsigned char *ukey    = key;
+  const unsigned char *ukeyend = ukey + keylen;
+  int                  depth;
+  const trie__node_t  *n;
+  int                  dir;
+  unsigned char        c;
 
   depth = 0;
 
@@ -139,10 +137,10 @@ const void *trie_lookup(trie_t *t, const void *key, size_t keylen)
     if (IS_LEAF(n))
       break;
 
-    GET_NEXT_DIR(dir);
+    GET_NEXT_DIR(dir, ukey, ukeyend);
   }
 
-  if (n && t->compare(key, n->item.key) == 0)
+  if (n && n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
     return n->item.value; /* found */
   else
     return t->default_value; /* not found */
@@ -168,14 +166,14 @@ static trie__node_t *trie__insert_split(trie_t       *t,
     return NULL; /* OOM */
 
   ukeym    = m->item.key;
-  ukeymend = ukeym + m->keylen;
+  ukeymend = ukeym + m->item.keylen;
 
   mdir = 0;
   if (ukeym + (depth >> 3) < ukeymend)
     mdir = (ukeym[depth >> 3] >> (7 - (depth & 7))) & 1;
 
   ukeyn    = n->item.key;
-  ukeynend = ukeyn + n->keylen;
+  ukeynend = ukeyn + n->item.keylen;
 
   ndir = 0;
   if (ukeyn + (depth >> 3) < ukeynend)
@@ -227,10 +225,10 @@ error trie_insert(trie_t     *t,
     if (IS_LEAF(n))
       break;
 
-    GET_NEXT_DIR(dir);
+    GET_NEXT_DIR(dir, ukey, ukeyend);
   }
 
-  if (n && t->compare(key, n->item.key) == 0)
+  if (n && n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
     return error_EXISTS;
 
   m = trie__node_create(t, key, keylen, value);
@@ -287,7 +285,7 @@ static int trie__remove_node(trie_t        *t,
 
   if (IS_LEAF(n))
   {
-    if (t->compare(key, n->item.key) != 0)
+    if (!(n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0))
       return -1; /* not found */
 
     m = NULL; /* delete link from parent */
@@ -379,6 +377,79 @@ const item_t *trie_select(trie_t *t, int k)
 int trie_count(trie_t *t)
 {
   return t->count;
+}
+
+/* ----------------------------------------------------------------------- */
+
+/* This is similar to trie__walk_in_order, but returns items as an item_t
+ * pointer. */
+static error trie__lookup_prefix_walk(const trie__node_t  *n,
+                                      trie_found_callback *cb,
+                                      void                *opaque)
+{
+  error err;
+  
+  if (n == NULL)
+    return error_OK;
+  
+  if (IS_LEAF(n))
+  {
+    return cb(&n->item, opaque);
+  }
+  else
+  {
+    err = trie__lookup_prefix_walk(n->child[0], cb, opaque);
+    if (!err)
+      err = trie__lookup_prefix_walk(n->child[1], cb, opaque);
+    return err;
+  }
+}
+
+error trie_lookup_prefix(const trie_t        *t,
+                         const void          *prefix,
+                         size_t               prefixlen, // bytes
+                         trie_found_callback *cb,
+                         void                *opaque)
+{
+  const unsigned char *uprefix    = prefix;
+  const unsigned char *uprefixend = uprefix + prefixlen;
+  int                  depth;
+  trie__node_t        *n;
+  unsigned char        c;
+  int                  dir;
+
+  if (t->root == NULL)
+    return error_OK; /* empty tree */
+  
+  depth = 0;
+  
+  for (n = t->root; n; n = n->child[dir])
+  {
+    if (IS_LEAF(n) || (size_t) depth == prefixlen * 8)
+      break;
+    
+    GET_NEXT_DIR(dir, uprefix, uprefixend);
+  }
+  
+  /* If we tried to walk in a direction not present in the trie then the
+   * prefix can't exist in it. */
+  if (n == NULL)
+    return error_NOT_FOUND;
+  
+  if (IS_LEAF(n))
+  {
+    /* We've found a leaf which may or may not match. If it matches then we
+     * can call the callback for it. */
+    if (n->item.keylen >= prefixlen &&
+        memcmp(prefix, n->item.key, prefixlen) == 0)
+      return cb(&n->item, opaque);
+    else
+      return error_NOT_FOUND;
+  }
+  else
+  {
+    return trie__lookup_prefix_walk(n, cb, opaque);
+  }
 }
 
 /* ----------------------------------------------------------------------- */

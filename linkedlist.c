@@ -19,6 +19,7 @@
 
 static linkedlist__node_t *linkedlist__node_create(linkedlist_t *t,
                                                    const void   *key,
+                                                   size_t        keylen,
                                                    const void   *value)
 {
   linkedlist__node_t *n;
@@ -27,9 +28,10 @@ static linkedlist__node_t *linkedlist__node_create(linkedlist_t *t,
   if (n == NULL)
     return NULL;
 
-  n->next       = NULL;
-  n->item.key   = key;
-  n->item.value = value;
+  n->next        = NULL;
+  n->item.key    = key;
+  n->item.keylen = keylen;
+  n->item.value  = value;
 
   t->count++;
 
@@ -101,12 +103,14 @@ void linkedlist_destroy(linkedlist_t *t)
 
 /* ----------------------------------------------------------------------- */
 
-const void *linkedlist_lookup(linkedlist_t *t, const void *key)
+const void *linkedlist_lookup(linkedlist_t *t,
+                              const void   *key,
+                              size_t        keylen)
 {
   linkedlist__node_t *n;
 
   for (n = t->anchor; n; n = n->next)
-    if (t->compare(key, n->item.key) == 0)
+    if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
       break;
 
   return n ? n->item.value : t->default_value;
@@ -116,6 +120,7 @@ const void *linkedlist_lookup(linkedlist_t *t, const void *key)
 
 error linkedlist_insert(linkedlist_t *t,
                         const void   *key,
+                        size_t        keylen,
                         const void   *value)
 {
   linkedlist__node_t **pn;
@@ -130,7 +135,7 @@ error linkedlist_insert(linkedlist_t *t,
   if (*pn && c == 0)
     return error_EXISTS;
 
-  n = linkedlist__node_create(t, key, value);
+  n = linkedlist__node_create(t, key, keylen, value);
   if (n == NULL)
     return error_OOM;
 
@@ -142,22 +147,21 @@ error linkedlist_insert(linkedlist_t *t,
 
 /* ----------------------------------------------------------------------- */
 
-void linkedlist_remove(linkedlist_t *t, const void *key)
+void linkedlist_remove(linkedlist_t *t, const void *key, size_t keylen)
 {
   linkedlist__node_t **pn;
-  linkedlist__node_t  *doomed;
+  linkedlist__node_t  *n;
 
-  for (pn = &t->anchor; *pn; pn = &(*pn)->next)
-    if (t->compare(key, (*pn)->item.key) == 0)
+  for (pn = &t->anchor; (n = *pn); pn = &(*pn)->next)
+    if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
       break;
 
-  doomed = *pn;
-  if (doomed == NULL)
+  if (n == NULL)
     return; /* not found */
 
-  *pn = doomed->next;
+  *pn = n->next;
 
-  linkedlist__node_destroy(t, doomed);
+  linkedlist__node_destroy(t, n);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -178,6 +182,54 @@ const item_t *linkedlist_select(linkedlist_t *t, int k)
 int linkedlist_count(linkedlist_t *t)
 {
   return t->count;
+}
+
+/* ----------------------------------------------------------------------- */
+
+typedef struct linkedlist_lookup_prefix_args
+{
+  const unsigned char       *uprefix;
+  size_t                     prefixlen;
+  linkedlist_found_callback *cb;
+  void                      *opaque;
+}
+linkedlist_lookup_prefix_args_t;
+
+static error linkedlist__lookup_prefix(linkedlist__node_t *n,
+                                       void               *opaque)
+{
+  const linkedlist_lookup_prefix_args_t *args = opaque;
+  size_t                                 prefixlen;
+  
+  prefixlen = args->prefixlen;
+  
+  if (n->item.keylen >= prefixlen &&
+      memcmp(n->item.key, args->uprefix, prefixlen) == 0)
+  {
+    return args->cb(&n->item, args->opaque);
+  }
+  else
+  {
+    return error_OK;
+  }
+}
+
+error linkedlist_lookup_prefix(const linkedlist_t        *t,
+                               const void                *prefix,
+                               size_t                     prefixlen,
+                               linkedlist_found_callback *cb,
+                               void                      *opaque)
+{
+  linkedlist_lookup_prefix_args_t args;
+  
+  args.uprefix   = prefix;
+  args.prefixlen = prefixlen;
+  args.cb        = cb;
+  args.opaque    = opaque;
+  
+  return linkedlist__walk_internal((linkedlist_t *) t, // must cast away constness
+                                   linkedlist__lookup_prefix,
+                                   &args);
 }
 
 /* ----------------------------------------------------------------------- */

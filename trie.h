@@ -22,26 +22,22 @@ typedef struct trie T;
 
 /* ----------------------------------------------------------------------- */
 
-/* Compare two keys (as for qsort). */
-typedef int (trie_compare)(const void *a, const void *b);
-
 /* Destroy the specified key. */
 typedef void (trie_destroy_key)(void *key);
 
 /* Destroy the specified value. */
 typedef void (trie_destroy_value)(void *value);
 
-/* As in the hash library, if NULL is passed in for the compare or destroy
- * functions when a malloc'd string is assumed.
+/* As in the hash library, if NULL is passed in for the destroy function when
+ * a malloc'd string is assumed.
  *
  * Keys and values passed in (e.g. 'default_value' here, 'key' and 'value' to
  * trie_insert below) are then owned by this data structure.
  *
- * NULL can be passed in for bit, compare, destroy_key and destroy_value to
- * use default routines suitable for strings.
+ * NULL can be passed in for destroy_key and destroy_value to use default
+ * routines suitable for strings.
  */
 error trie_create(const void          *default_value,
-                  trie_compare        *compare,
                   trie_destroy_key    *destroy_key,
                   trie_destroy_value  *destroy_value,
                   T                  **t);
@@ -61,10 +57,20 @@ int trie_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (trie_walk_callback)(const void *key,
-                                   const void *value,
-                                   int         level,
-                                   void       *opaque);
+typedef error (trie_found_callback)(const item_t *item,
+                                    void         *opaque);
+
+error trie_lookup_prefix(const T             *t,
+                         const void          *prefix,
+                         size_t               prefixlen,
+                         trie_found_callback *cb,
+                         void                *opaque);
+
+/* ----------------------------------------------------------------------- */
+
+typedef error (trie_walk_callback)(const item_t *item,
+                                   int           level,
+                                   void         *opaque);
 
 error trie_walk(const T            *t,
                 trie_walk_callback *cb,

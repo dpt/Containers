@@ -30,7 +30,7 @@ static error dstree__node_walk(const dstree__node_t *n,
 
   err = dstree__node_walk(n->child[0], level + 1, cb, opaque);
   if (!err)
-    err = cb(n->item.key, n->item.value, level, opaque);
+    err = cb(&n->item, level, opaque);
   if (!err)
     err = dstree__node_walk(n->child[1], level + 1, cb, opaque);
 

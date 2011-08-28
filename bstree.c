@@ -20,6 +20,7 @@
 
 static bstree__node_t *bstree__node_create(bstree_t   *t,
                                            const void *key,
+                                           size_t      keylen,
                                            const void *value)
 {
   bstree__node_t *n;
@@ -28,10 +29,11 @@ static bstree__node_t *bstree__node_create(bstree_t   *t,
   if (n == NULL)
     return NULL;
 
-  n->child[0]   = NULL;
-  n->child[1]   = NULL;
-  n->item.key   = key;
-  n->item.value = value;
+  n->child[0]    = NULL;
+  n->child[1]    = NULL;
+  n->item.key    = key;
+  n->item.keylen = keylen;
+  n->item.value  = value;
 
   t->count++;
 
@@ -156,7 +158,7 @@ static bstree__node_t **bstree__insert_node(bstree__node_t **pn,
   return pn; /* found insertion point */
 }
 
-error bstree_insert(bstree_t *t, const void *key, const void *value)
+error bstree_insert(bstree_t *t, const void *key, size_t keylen, const void *value)
 {
   bstree__node_t **pn;
 
@@ -164,7 +166,7 @@ error bstree_insert(bstree_t *t, const void *key, const void *value)
   if (pn == NULL)
     return error_EXISTS;
 
-  *pn = bstree__node_create(t, key, value);
+  *pn = bstree__node_create(t, key, keylen, value);
   if (*pn == NULL)
     return error_OOM;
 
@@ -285,6 +287,58 @@ const item_t *bstree_select(bstree_t *t, int k)
 int bstree_count(bstree_t *t)
 {
   return t->count;
+}
+
+/* ----------------------------------------------------------------------- */
+
+typedef struct bstree_lookup_prefix_args
+{
+  const unsigned char   *uprefix;
+  size_t                 prefixlen;
+  bstree_found_callback *cb;
+  void                  *opaque;
+}
+bstree_lookup_prefix_args_t;
+
+static error bstree__lookup_prefix(bstree__node_t *n,
+                                   int             level,
+                                   void           *opaque)
+{
+  const bstree_lookup_prefix_args_t *args = opaque;
+  size_t                             len;
+  
+  NOT_USED(level);
+  
+  len = args->prefixlen;
+  
+  if (n->item.keylen >= len && memcmp(n->item.key, args->uprefix, len) == 0)
+  {
+    return args->cb(&n->item, args->opaque);
+  }
+  else
+  {
+    return error_OK;
+  }
+}
+
+/* Walk the entire tree looking for matches.
+ * Is there a more cunning way than this? */
+error bstree_lookup_prefix(const bstree_t        *t,
+                           const void            *prefix,
+                           size_t                 prefixlen,
+                           bstree_found_callback *cb,
+                           void                  *opaque)
+{
+  bstree_lookup_prefix_args_t args;
+  
+  args.uprefix   = prefix;
+  args.prefixlen = prefixlen;
+  args.cb        = cb;
+  args.opaque    = opaque;
+  
+  return bstree__walk_internal((bstree_t *) t, // must cast away constness
+                               bstree__lookup_prefix,
+                               &args);
 }
 
 /* ----------------------------------------------------------------------- */

@@ -72,6 +72,19 @@ static const icontainer_value_t static_string_value =
 
 #define NAME "stringtest"
 
+static int prefixes_seen = 0;
+
+static error stringtest_lookup_prefix_callback(const item_t *item, void *opaque)
+{
+  NOT_USED(opaque);
+
+  (void) printf(NAME ": -- '%s' : '%s'\n", item->key, item->value);
+  
+  prefixes_seen++;
+
+  return error_OK;
+}
+
 static error stringtest(icontainer_maker *maker, FILE *vizout)
 {
   const int     max = NELEMS(testdata);
@@ -91,7 +104,7 @@ static error stringtest(icontainer_maker *maker, FILE *vizout)
 
   BLURT("Insert-Delete");
 
-  for (j = 0; j < max; j++)
+  for (j = 0; j < 1; j++)
   {
     //BLURT1("inserting %d elems", j + 1);
 
@@ -162,6 +175,41 @@ static error stringtest(icontainer_maker *maker, FILE *vizout)
     printf(NAME ": -- (null)\n");
   else
     printf(NAME ": -- '%s' : '%s'\n", item->key, item->value);
+
+  BLURT("Look up keys by their prefix");
+  
+  prefixes_seen = 0;
+
+  for (i = 'A'; i <= 'Z'; i++)
+  {
+    char prefix[2];
+
+    BLURT1("Enumerate keys beginning with '%c':", i);
+
+    prefix[0] = (char) i;
+    prefix[1] = '\0';
+
+    err = cont->lookup_prefix(cont, prefix, stringtest_lookup_prefix_callback, NULL);
+    if (err == error_NOT_FOUND)
+      BLURT("Prefix not found");
+    else if (err)
+      goto failure;
+  }
+  
+  BLURT1("prefixes_seen = %d", prefixes_seen);
+  if (prefixes_seen != NELEMS(testdata))
+    BLURT1("*** incorrect number of prefixes seen! (expected %d)", NELEMS(testdata));
+  else
+    BLURT("ok!");
+
+  BLURT("Look up a key which doesn't exist");
+
+  err = cont->lookup_prefix(cont, "Gooseberries", stringtest_lookup_prefix_callback, NULL);
+  if (err != error_NOT_FOUND)
+  {
+    BLURT("lookup_prefix did _not_ return 'not found'!");
+    goto failure;
+  }
 
   BLURT("Dump");
 
@@ -283,12 +331,22 @@ static const struct
 inttestdata[] =
 {
   { 0x00000000, "John"   },
-  { 0x55555555, "Paul"   },
-  { 0x0F0F0F0F, "George" },
-  { 0x77777777, "Ringo"  },
+  { 0x00000001, "Paul"   },
+  { 0x00000002, "George" },
+  { 0x00000003, "Ringo"  },
+  { 0x7fffff04, "Dave"   },
 };
 
 #define NAME "inttest"
+
+static error inttest_lookup_prefix_callback(const item_t *item, void *opaque)
+{
+  NOT_USED(opaque);
+
+  printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key, item->value);
+
+  return error_OK;
+}
 
 static error inttest(icontainer_maker *maker, FILE *vizout)
 {
@@ -354,6 +412,37 @@ static error inttest(icontainer_maker *maker, FILE *vizout)
     printf(NAME ": -- (null)\n");
   else
     printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key, item->value);
+
+  BLURT("Look up keys by their prefix");
+
+  /* Prefix lookup tests aren't exactly relevant here. The key for 'dave'
+   * won't get found. Since int key objects are always four bytes long we hit
+   * the 'not found' case. A 'prefix' in this case is always as long as a
+   * full key. */
+
+  for (i = 0; i < 5; i++)
+  {
+    int prefix;
+
+    BLURT1("Enumerate keys beginning with '%d':", i);
+
+    prefix = i;
+
+    err = cont->lookup_prefix(cont, &prefix, inttest_lookup_prefix_callback, NULL);
+    if (err == error_NOT_FOUND)
+      ;
+    else if (err)
+      goto failure;
+  }
+
+  BLURT("Look up a key which doesn't exist");
+
+  err = cont->lookup_prefix(cont, "Gooseberries", inttest_lookup_prefix_callback, NULL);
+  if (err != error_NOT_FOUND)
+  {
+    BLURT("lookup_prefix did _not_ return 'not found'!");
+    goto failure;
+  }
 
   BLURT("Dump");
 
@@ -607,9 +696,7 @@ int test_container(int viz)
     { container_create_dstree,       "dstree",        "dstree"       },
     { container_create_trie,         "trie",          "trie"         },
     { container_create_critbit,      "critbit",       "critbit"      },
-#if 0
-    { container_create_patricia,     "patricia",      "patricia"     },
-#endif
+//    { container_create_patricia,     "patricia",      "patricia"     },
   };
 
   error err;

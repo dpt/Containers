@@ -17,6 +17,8 @@ typedef struct container_orderedarray
 {
   icontainer_t               c;
   orderedarray_t            *t;
+  
+  icontainer_key_len         len;
 
   icontainer_kv_show         show_key;
   icontainer_kv_show_destroy show_key_destroy;
@@ -39,7 +41,7 @@ static error container_orderedarray__insert(icontainer_t *c_,
 {
   container_orderedarray_t *c = (container_orderedarray_t *) c_;
 
-  return orderedarray_insert(c->t, key, value);
+  return orderedarray_insert(c->t, key, c->len(key), value);
 }
 
 static void container_orderedarray__remove(icontainer_t *c_, const void *key)
@@ -55,6 +57,23 @@ static const item_t *container_orderedarray__select(const icontainer_t *c_,
   container_orderedarray_t *c = (container_orderedarray_t *) c_;
 
   return orderedarray_select(c->t, k);
+}
+
+static error container_orderedarray__lookup_prefix(const icontainer_t        *c_,
+                                                   const void                *prefix,
+                                                   icontainer_found_callback  cb,
+                                                   void                      *opaque)
+{
+  const container_orderedarray_t *c = (container_orderedarray_t *) c_;
+  
+  /* orderedarray_lookup_prefix_callback and icontainer_found_callback have
+   * the same signature so we can just cast one to the other here. If this
+   * were not the case we would need an adaptor function to turn one callback
+   * into another. */
+  
+  return orderedarray_lookup_prefix(c->t,
+                                    prefix, c->len(prefix),
+                                    (icontainer_found_callback) cb, opaque);
 }
 
 static int container_orderedarray__count(const icontainer_t *c_)
@@ -100,6 +119,7 @@ error container_create_orderedarray(icontainer_t            **container,
     container_orderedarray__insert,
     container_orderedarray__remove,
     container_orderedarray__select,
+    container_orderedarray__lookup_prefix,
     container_orderedarray__count,
     container_orderedarray__show,
     container_orderedarray__show_viz,
@@ -117,6 +137,8 @@ error container_create_orderedarray(icontainer_t            **container,
 
   /* ensure required callbacks are specified */
 
+  if (key->len == NULL)
+    return error_KEYLEN_REQUIRED;
   if (key->compare == NULL)
     return error_KEYCOMPARE_REQUIRED;
 
@@ -125,7 +147,9 @@ error container_create_orderedarray(icontainer_t            **container,
     return error_OOM;
 
   c->c                  = methods;
-
+  
+  c->len                = key->len;
+  
   c->show_key           = key->kv.show;
   c->show_key_destroy   = key->kv.show_destroy;
   c->show_value         = value->kv.show;

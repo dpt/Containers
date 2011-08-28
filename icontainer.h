@@ -47,6 +47,16 @@ typedef void (*icontainer_remove)(T          *c,
 typedef const item_t *(*icontainer_select)(const T *c,
                                            int      k);
 
+/* A function which is called back with a found item. */
+typedef error (*icontainer_found_callback)(const item_t *item,
+                                           void          *opaque);
+
+/* Search for elements with the specified key prefix. */
+typedef error (*icontainer_lookup_prefix)(const T                   *c,
+                                          const void                *prefix,
+                                          icontainer_found_callback  cb,
+                                          void                      *opaque);
+
 /* Return number of elements in container. */
 typedef int (*icontainer_count)(const T *c);
 
@@ -63,14 +73,15 @@ typedef void (*icontainer_destroy)(T *doomed);
 
 struct icontainer
 {
-  icontainer_lookup   lookup;
-  icontainer_insert   insert;
-  icontainer_remove   remove;
-  icontainer_select   select;
-  icontainer_count    count;
-  icontainer_show     show;
-  icontainer_show_viz show_viz;
-  icontainer_destroy  destroy;
+  icontainer_lookup        lookup;
+  icontainer_insert        insert;
+  icontainer_remove        remove;
+  icontainer_select        select;
+  icontainer_lookup_prefix lookup_prefix;
+  icontainer_count         count;
+  icontainer_show          show;
+  icontainer_show_viz      show_viz;
+  icontainer_destroy       destroy;
 };
 
 /* ----------------------------------------------------------------------- */

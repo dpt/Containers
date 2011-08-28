@@ -45,13 +45,24 @@ void bstree_destroy(T *t);
 
 const void *bstree_lookup(T *t, const void *key);
 
-error bstree_insert(T *t, const void *key, const void *value);
+error bstree_insert(T *t, const void *key, size_t keylen, const void *value);
 
 void bstree_remove(T *t, const void *key);
 
 const item_t *bstree_select(T *t, int k);
 
 int bstree_count(T *t);
+
+/* ----------------------------------------------------------------------- */
+
+typedef error (bstree_found_callback)(const item_t *item,
+                                      void         *opaque);
+
+error bstree_lookup_prefix(const T               *t,
+                           const void            *prefix,
+                           size_t                 prefixlen,
+                           bstree_found_callback *cb,
+                           void                  *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -66,10 +77,9 @@ typedef unsigned int bstree_walk_flags;
 #define bstree_WALK_BRANCHES   (1u << 3)
 #define bstree_WALK_ALL        (bstree_WALK_LEAVES | bstree_WALK_BRANCHES)
 
-typedef error (bstree_walk_callback)(const void *key,
-                                     const void *value,
-                                     int         level,
-                                     void       *opaque);
+typedef error (bstree_walk_callback)(const item_t *item,
+                                     int           level,
+                                     void         *opaque);
 
 error bstree_walk(const T              *t,
                   bstree_walk_flags     flags,

@@ -23,9 +23,6 @@ typedef struct dstree T;
 
 /* ----------------------------------------------------------------------- */
 
-/* Compare two keys (as for qsort). */
-typedef int (dstree_compare)(const void *a, const void *b);
-
 /* Destroy the specified key. */
 typedef void (dstree_destroy_key)(void *key);
 
@@ -42,7 +39,6 @@ typedef void (dstree_destroy_value)(void *value);
  * use default routines suitable for strings.
  */
 error dstree_create(const void            *default_value,
-                    dstree_compare        *compare,
                     dstree_destroy_key    *destroy_key,
                     dstree_destroy_value  *destroy_value,
                     T                    **t);
@@ -61,10 +57,20 @@ int dstree_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (dstree_walk_callback)(const void *key,
-                                     const void *value,
-                                     int         level,
-                                     void       *opaque);
+typedef error (dstree_found_callback)(const item_t *item,
+                                      void         *opaque);
+
+error dstree_lookup_prefix(const T               *t,
+                           const void            *prefix,
+                           size_t                 prefixlen,
+                           dstree_found_callback *cb,
+                           void                  *opaque);
+
+/* ----------------------------------------------------------------------- */
+
+typedef error (dstree_walk_callback)(const item_t *item,
+                                     int           level,
+                                     void         *opaque);
 
 error dstree_walk(const T              *t,
                   dstree_walk_callback *cb,

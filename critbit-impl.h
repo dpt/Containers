@@ -15,7 +15,6 @@
 typedef struct critbit__extnode
 {
   item_t                   item;
-  size_t                   keylen; // may not need this - check later
 }
 critbit__extnode_t;
 
@@ -39,7 +38,6 @@ struct critbit
 
   const void              *default_value;
 
-  critbit_compare         *compare;
   critbit_destroy_key     *destroy_key;
   critbit_destroy_value   *destroy_value;
 };

@@ -22,7 +22,8 @@
 
 static dstree__node_t *dstree__node_create(dstree_t   *t,
                                            const void *key,
-                                           const void *value)
+                                           const void *value,
+                                           size_t      keylen)
 {
   dstree__node_t *n;
 
@@ -30,10 +31,11 @@ static dstree__node_t *dstree__node_create(dstree_t   *t,
   if (n == NULL)
     return NULL;
 
-  n->child[0]   = NULL;
-  n->child[1]   = NULL;
-  n->item.key   = key;
-  n->item.value = value;
+  n->child[0]    = NULL;
+  n->child[1]    = NULL;
+  n->item.key    = key;
+  n->item.keylen = keylen;
+  n->item.value  = value;
 
   t->count++;
 
@@ -54,12 +56,11 @@ static void dstree__node_destroy(dstree_t *t, dstree__node_t *n)
 
 /* ----------------------------------------------------------------------- */
 
-/* NULL passed into the bit/compare/destroy callbacks signifies that these
- * internal routines should be used. They are setup to handle malloc'd strings.
+/* NULL passed into the destroy callbacks signifies that these internal
+ * routines should be used. They are setup to handle malloc'd strings.
  */
 
 error dstree_create(const void            *default_value,
-                    dstree_compare        *compare,
                     dstree_destroy_key    *destroy_key,
                     dstree_destroy_value  *destroy_value,
                     dstree_t             **pt)
@@ -78,7 +79,6 @@ error dstree_create(const void            *default_value,
   /* if NULL is specified for callbacks then default to handlers suitable for
    * a malloc'd string */
 
-  t->compare       = compare       ? compare       : stringkv_compare;
   t->destroy_key   = destroy_key   ? destroy_key   : stringkv_destroy;
   t->destroy_value = destroy_value ? destroy_value : stringkv_destroy;
 
@@ -110,15 +110,15 @@ void dstree_destroy(dstree_t *t)
 /* Extract the next binary direction from the key.
  * Within a byte the MSB is extacted first.
  */
-#define GET_NEXT_DIR(DIR)                \
-do                                       \
-{                                        \
-  if ((depth++ & 7) == 0)                \
-    c = (ukey == ukeyend) ? 0 : *ukey++; \
-                                         \
-  DIR = (c & 0x80) != 0;                 \
-  c <<= 1;                               \
-}                                        \
+#define GET_NEXT_DIR(DIR, KEY, KEYEND) \
+do                                     \
+{                                      \
+  if ((depth++ & 7) == 0)              \
+    c = (KEY == KEYEND) ? 0 : *KEY++;  \
+                                       \
+  DIR = (c & 0x80) != 0;               \
+  c <<= 1;                             \
+}                                      \
 while (0)
 
 /* ----------------------------------------------------------------------- */
@@ -136,10 +136,10 @@ const void *dstree_lookup(dstree_t *t, const void *key, size_t keylen)
 
   for (n = t->root; n; n = n->child[dir])
   {
-    if (t->compare(key, n->item.key) == 0)
+    if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
       return n->item.value; /* found */
 
-    GET_NEXT_DIR(dir);
+    GET_NEXT_DIR(dir, ukey, ukeyend);
   }
 
   return t->default_value; /* not found */
@@ -164,13 +164,13 @@ error dstree_insert(dstree_t   *t,
 
   for (pn = &t->root; (n = *pn); pn = &n->child[dir])
   {
-    if (t->compare(key, n->item.key) == 0)
+    if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
       return error_EXISTS;
 
-    GET_NEXT_DIR(dir);
+    GET_NEXT_DIR(dir, ukey, ukeyend);
   }
 
-  *pn = dstree__node_create(t, key, value);
+  *pn = dstree__node_create(t, key, value, keylen);
   if (*pn == NULL)
     return error_OOM;
 
@@ -196,10 +196,10 @@ void dstree_remove(dstree_t *t, const void *key, size_t keylen)
 
   for (pn = &t->root; (n = *pn); pn = &n->child[dir])
   {
-    if (t->compare(n->item.key, key) == 0)
+    if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
       break; /* found */
 
-    GET_NEXT_DIR(dir);
+    GET_NEXT_DIR(dir, ukey, ukeyend);
   }
 
   if (n == NULL)
@@ -239,9 +239,9 @@ void dstree_remove(dstree_t *t, const void *key, size_t keylen)
       pm = &m->child[1];
     else
     {
-      GET_NEXT_DIR(dir);
+      GET_NEXT_DIR(dir, ukey, ukeyend);
       pm = &m->child[dir];
-      depth--; /* GET_NEXT_DIR does depth++, which we must compensate for */
+      depth--; /* GET_NEXT_DIR increments depth, which we must compensate for */
     }
 
     m = *pm;
@@ -277,17 +277,17 @@ void dstree_remove2(dstree_t *t, const void *key, size_t keylen)
 
   for (pn = &t->root; (n = *pn); pn = &n->child[dir])
   {
-    if (t->compare(n->item.key, key) == 0)
+    if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
       break; /* found */
 
-    GET_NEXT_DIR(dir);
+    GET_NEXT_DIR(dir, ukey, ukeyend);
   }
 
   if (n == NULL)
     return; /* not found */
 
   /* pick a random child. if that child's absent then pick the other */
-  GET_NEXT_DIR(dir);
+  GET_NEXT_DIR(dir, ukey, ukeyend);
   if (n->child[dir] == NULL)
     dir = !dir;
 
@@ -302,7 +302,7 @@ void dstree_remove2(dstree_t *t, const void *key, size_t keylen)
     int             newdir;
     dstree__node_t *nextroot, *nextside;
 
-    GET_NEXT_DIR(newdir);
+    GET_NEXT_DIR(newdir, ukey, ukeyend);
     if (n->child[newdir] == NULL)
       newdir = !newdir;
 
@@ -325,6 +325,112 @@ void dstree_remove2(dstree_t *t, const void *key, size_t keylen)
 int dstree_count(dstree_t *t)
 {
   return t->count;
+}
+
+/* ----------------------------------------------------------------------- */
+
+typedef struct dstree_lookup_prefix_args
+{
+  const unsigned char   *uprefix;
+  size_t                 prefixlen;
+  dstree_found_callback *cb;
+  void                  *opaque;
+}
+dstree_lookup_prefix_args_t;
+
+static error dstree__lookup_prefix_node(dstree__node_t *n,
+                                        int             level,
+                                        void           *opaque)
+{
+  dstree_lookup_prefix_args_t *args = opaque;
+  size_t                       prefixlen;
+  
+  NOT_USED(level);
+  
+  prefixlen = args->prefixlen;
+  
+  if (n->item.keylen >= prefixlen &&
+      memcmp(n->item.key, args->uprefix, prefixlen) == 0)
+  {
+    return args->cb(&n->item, args->opaque);
+  }
+  else
+  {
+    return error_OK;
+  }
+}
+
+error dstree_lookup_prefix(const dstree_t        *t,
+                           const void            *prefix,
+                           size_t                 prefixlen,
+                           dstree_found_callback *cb,
+                           void                  *opaque)
+{
+  error                       err;
+  const unsigned char        *uprefix    = prefix;
+  const unsigned char        *uprefixend = uprefix + prefixlen;
+  int                         depth;
+  const dstree__node_t       *n;
+  unsigned char               c;
+  int                         dir;
+  dstree_lookup_prefix_args_t args;
+  int                         i;
+  
+  /* For a prefix P, keys which share that prefix are stored at a depth
+   * proportional to the length of P. However, the nodes leading up to that
+   * node may also contain valid prefixed nodes so we must approach this in
+   * two stages:
+   *
+   * 1) Walk the tree until we hit a depth matching the length of the prefix,
+   *    testing nodes individually to see if they match. Issue callbacks if
+   *    they do.
+   *
+   * 2) Once the depths is met (if it exists) we can then enumerate the
+   *    entire subtree, issuing callbacks for all nodes in the subtree.
+   */
+  
+  err = error_NOT_FOUND; /* assume not found until we call the callback */
+  
+  depth = 0;
+  
+  for (n = t->root; n; n = n->child[dir])
+  {
+    if (n->item.keylen >= prefixlen &&
+        memcmp(n->item.key, prefix, prefixlen) == 0)
+    {
+      err = cb(&n->item, opaque); /* match */
+      if (err)
+        return err;
+    }
+    
+    GET_NEXT_DIR(dir, uprefix, uprefixend);
+    
+    if ((size_t) depth == prefixlen * 8)
+      break; /* deep enough that all children must match the prefix */
+  }
+  
+  if (!n)
+    return err;
+  
+  args.uprefix   = prefix;
+  args.prefixlen = prefixlen;
+  args.cb        = cb;
+  args.opaque    = opaque;
+  
+  /* We've processed the node sitting at the position where the prefix is.
+   * Now process both of its sub-trees. */
+  
+  for (i = 0; i < 2; i++)
+  {
+    err = dstree__walk_internal_node((dstree__node_t *) n->child[i],
+                                     depth,
+                                     dstree__lookup_prefix_node,
+                                     &args);
+    if (err)
+      return err;
+  }
+  
+  return error_OK;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -355,8 +461,19 @@ error dstree__walk_internal(dstree_t                       *t,
 {
   if (t == NULL)
     return error_OK;
-
+  
   return dstree__node_walk_internal(t->root, 0, cb, opaque);
+}
+
+error dstree__walk_internal_node(dstree__node_t                 *root,
+                                 int                             level,
+                                 dstree__walk_internal_callback *cb,
+                                 void                           *opaque)
+{
+  if (root == NULL)
+    return error_OK;
+  
+  return dstree__node_walk_internal(root, level, cb, opaque);
 }
 
 /* ----------------------------------------------------------------------- */

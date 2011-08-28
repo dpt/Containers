@@ -17,6 +17,8 @@ typedef struct container_bstree
 {
   icontainer_t               c;
   bstree_t                  *t;
+  
+  icontainer_key_len         len;
 
   icontainer_kv_show         show_key;
   icontainer_kv_show_destroy show_key_destroy;
@@ -39,7 +41,7 @@ static error container_bstree__insert(icontainer_t *c_,
 {
   container_bstree_t *c = (container_bstree_t *) c_;
 
-  return bstree_insert(c->t, key, value);
+  return bstree_insert(c->t, key, c->len(key), value);
 }
 
 static void container_bstree__remove(icontainer_t *c_, const void *key)
@@ -54,6 +56,23 @@ static const item_t *container_bstree__select(const icontainer_t *c_, int k)
   container_bstree_t *c = (container_bstree_t *) c_;
 
   return bstree_select(c->t, k);
+}
+
+static error container_bstree__lookup_prefix(const icontainer_t        *c_,
+                                             const void                *prefix,
+                                             icontainer_found_callback  cb,
+                                             void                      *opaque)
+{
+  const container_bstree_t *c = (container_bstree_t *) c_;
+  
+  /* linkedlist_lookup_prefix_callback and icontainer_found_callback have
+   * the same signature so we can just cast one to the other here. If this
+   * were not the case we would need an adaptor function to turn one callback
+   * into another. */
+  
+  return bstree_lookup_prefix(c->t,
+                              prefix, c->len(prefix),
+                              (icontainer_found_callback) cb, opaque);
 }
 
 static int container_bstree__count(const icontainer_t *c_)
@@ -99,6 +118,7 @@ error container_create_bstree(icontainer_t            **container,
     container_bstree__insert,
     container_bstree__remove,
     container_bstree__select,
+    container_bstree__lookup_prefix,
     container_bstree__count,
     container_bstree__show,
     container_bstree__show_viz,
@@ -116,6 +136,8 @@ error container_create_bstree(icontainer_t            **container,
 
   /* ensure required callbacks are specified */
 
+  if (key->len == NULL)
+    return error_KEYLEN_REQUIRED;
   if (key->compare == NULL)
     return error_KEYCOMPARE_REQUIRED;
 
@@ -124,6 +146,8 @@ error container_create_bstree(icontainer_t            **container,
     return error_OOM;
 
   c->c                  = methods;
+  
+  c->len                = key->len;
 
   c->show_key           = key->kv.show;
   c->show_key_destroy   = key->kv.show_destroy;

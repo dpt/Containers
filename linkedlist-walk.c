@@ -32,7 +32,7 @@ error linkedlist_walk(const linkedlist_t       *t,
   {
     next = n->next;
 
-    err = cb(n->item.key, n->item.value, opaque);
+    err = cb(&n->item, opaque);
     if (err)
       return err;
   }

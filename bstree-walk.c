@@ -30,7 +30,7 @@ static error walk_in_order(const bstree__node_t *n,
 
   err = walk_in_order(n->child[0], flags, level + 1, cb, opaque);
   if (!err)
-    err = cb(n->item.key, n->item.value, level, opaque);
+    err = cb(&n->item, level, opaque);
   if (!err)
     err = walk_in_order(n->child[1], flags, level + 1, cb, opaque);
 
@@ -48,7 +48,7 @@ static error walk_pre_order(const bstree__node_t *n,
   if (n == NULL)
     return error_OK;
 
-  err = cb(n->item.key, n->item.value, level, opaque);
+  err = cb(&n->item, level, opaque);
   if (!err)
     err = walk_in_order(n->child[0], flags, level + 1, cb, opaque);
   if (!err)
@@ -72,7 +72,7 @@ static error walk_post_order(const bstree__node_t *n,
   if (!err)
     err = walk_in_order(n->child[1], flags, level + 1, cb, opaque);
   if (!err)
-    err = cb(n->item.key, n->item.value, level, opaque);
+    err = cb(&n->item, level, opaque);
 
   return err;
 }

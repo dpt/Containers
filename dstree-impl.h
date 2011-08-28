@@ -28,7 +28,6 @@ struct dstree
 
   const void           *default_value;
 
-  dstree_compare       *compare;
   dstree_destroy_key   *destroy_key;
   dstree_destroy_value *destroy_value;
 };
@@ -51,6 +50,10 @@ error dstree__walk_internal_post(dstree_t                       *t,
 error dstree__walk_internal(dstree_t                       *t,
                             dstree__walk_internal_callback *cb,
                             void                           *opaque);
+error dstree__walk_internal_node(dstree__node_t                 *root,
+                                 int                             level,
+                                 dstree__walk_internal_callback *cb,
+                                 void                           *opaque);
 
 error dstree__breadthwalk_internal(dstree_t                       *t,
                                    dstree__walk_internal_callback *cb,

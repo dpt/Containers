@@ -43,11 +43,11 @@ void linkedlist_destroy(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-const void *linkedlist_lookup(T *t, const void *key);
+const void *linkedlist_lookup(T *t, const void *key, size_t keylen);
 
-error linkedlist_insert(T *t, const void *key, const void *value);
+error linkedlist_insert(T *t, const void *key, size_t keylen, const void *value);
 
-void linkedlist_remove(T *t, const void *key);
+void linkedlist_remove(T *t, const void *key, size_t keylen);
 
 const item_t *linkedlist_select(T *t, int k);
 
@@ -55,9 +55,19 @@ int linkedlist_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (linkedlist_walk_callback)(const void *key,
-                                         const void *value,
-                                         void       *opaque);
+typedef error (linkedlist_found_callback)(const item_t *item,
+                                          void         *opaque);
+
+error linkedlist_lookup_prefix(const T                   *t,
+                               const void                *prefix,
+                               size_t                     prefixlen,
+                               linkedlist_found_callback *cb,
+                               void                      *opaque);
+
+/* ----------------------------------------------------------------------- */
+
+typedef error (linkedlist_walk_callback)(const item_t *item,
+                                         void         *opaque);
 
 error linkedlist_walk(const T                  *t,
                       linkedlist_walk_callback *cb,
