@@ -17,7 +17,7 @@ typedef struct container_bstree
 {
   icontainer_t               c;
   bstree_t                  *t;
-  
+
   icontainer_key_len         len;
 
   icontainer_kv_show         show_key;
@@ -64,12 +64,12 @@ static error container_bstree__lookup_prefix(const icontainer_t        *c_,
                                              void                      *opaque)
 {
   const container_bstree_t *c = (container_bstree_t *) c_;
-  
-  /* linkedlist_lookup_prefix_callback and icontainer_found_callback have
-   * the same signature so we can just cast one to the other here. If this
-   * were not the case we would need an adaptor function to turn one callback
-   * into another. */
-  
+
+  /* bstree_lookup_prefix and icontainer_found_callback have the same
+   * signature so we can just cast one to the other here. If this were not
+   * the case we would need an adaptor function to turn one callback into
+   * another. */
+
   return bstree_lookup_prefix(c->t,
                               prefix, c->len(prefix),
                               (icontainer_found_callback) cb, opaque);
@@ -146,7 +146,7 @@ error container_create_bstree(icontainer_t            **container,
     return error_OOM;
 
   c->c                  = methods;
-  
+
   c->len                = key->len;
 
   c->show_key           = key->kv.show;

@@ -17,7 +17,7 @@ typedef struct container_orderedarray
 {
   icontainer_t               c;
   orderedarray_t            *t;
-  
+
   icontainer_key_len         len;
 
   icontainer_kv_show         show_key;
@@ -65,12 +65,12 @@ static error container_orderedarray__lookup_prefix(const icontainer_t        *c_
                                                    void                      *opaque)
 {
   const container_orderedarray_t *c = (container_orderedarray_t *) c_;
-  
+
   /* orderedarray_lookup_prefix_callback and icontainer_found_callback have
    * the same signature so we can just cast one to the other here. If this
    * were not the case we would need an adaptor function to turn one callback
    * into another. */
-  
+
   return orderedarray_lookup_prefix(c->t,
                                     prefix, c->len(prefix),
                                     (icontainer_found_callback) cb, opaque);
@@ -147,9 +147,9 @@ error container_create_orderedarray(icontainer_t            **container,
     return error_OOM;
 
   c->c                  = methods;
-  
+
   c->len                = key->len;
-  
+
   c->show_key           = key->kv.show;
   c->show_key_destroy   = key->kv.show_destroy;
   c->show_value         = value->kv.show;
