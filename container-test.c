@@ -106,7 +106,7 @@ static error stringtest(icontainer_maker *maker, FILE *vizout)
 
   for (j = 0; j < max; j++)
   {
-    //BLURT1("inserting %d elems", j + 1);
+    BLURT1("inserting %d elems", j + 1);
 
     for (i = 0; i <= j; i++)
     {
