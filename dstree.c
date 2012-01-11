@@ -130,7 +130,7 @@ const void *dstree_lookup(dstree_t *t, const void *key, size_t keylen)
   int                   depth;
   const dstree__node_t *n;
   int                   dir;
-  unsigned char         c;
+  unsigned char         c = 0;
 
   depth = 0;
 
@@ -158,7 +158,7 @@ error dstree_insert(dstree_t   *t,
   dstree__node_t     **pn;
   dstree__node_t      *n;
   int                  dir;
-  unsigned char        c;
+  unsigned char        c = 0;
 
   depth = 0;
 
@@ -268,7 +268,7 @@ void dstree_remove2(dstree_t *t, const void *key, size_t keylen)
   int                  depth;
   dstree__node_t     **pn;
   dstree__node_t      *n;
-  unsigned char        c;
+  unsigned char        c = 0;
   int                  dir;
   dstree__node_t      *root;
   dstree__node_t      *side;
@@ -371,7 +371,7 @@ error dstree_lookup_prefix(const dstree_t        *t,
   const unsigned char        *uprefixend = uprefix + prefixlen;
   int                         depth;
   const dstree__node_t       *n;
-  unsigned char               c;
+  unsigned char               c = 0;
   int                         dir;
   dstree_lookup_prefix_args_t args;
   int                         i;

@@ -167,14 +167,14 @@ static error critbit__node_show_viz_link(critbit__node_t *n, int level, void *op
 
     p = binary;
     v = n->otherbits;
-    *p++ = '0' + ((v & 128) != 0);
-    *p++ = '0' + ((v &  64) != 0);
-    *p++ = '0' + ((v &  32) != 0);
-    *p++ = '0' + ((v &  16) != 0);
-    *p++ = '0' + ((v &   8) != 0);
-    *p++ = '0' + ((v &   4) != 0);
-    *p++ = '0' + ((v &   2) != 0);
-    *p++ = '0' + ((v &   1) != 0);
+    *p++ = (char)('0' + ((v & 128) != 0));
+    *p++ = (char)('0' + ((v &  64) != 0));
+    *p++ = (char)('0' + ((v &  32) != 0));
+    *p++ = (char)('0' + ((v &  16) != 0));
+    *p++ = (char)('0' + ((v &   8) != 0));
+    *p++ = (char)('0' + ((v &   4) != 0));
+    *p++ = (char)('0' + ((v &   2) != 0));
+    *p++ = (char)('0' + ((v &   1) != 0));
     *p = '\0';
 
     (void) fprintf(args->f, "\t\"%p\" [shape=record, label=\"byte %d|bit %s\"];\n", n, n->byte, binary);

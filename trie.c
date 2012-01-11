@@ -128,7 +128,7 @@ const void *trie_lookup(trie_t *t, const void *key, size_t keylen)
   int                  depth;
   const trie__node_t  *n;
   int                  dir;
-  unsigned char        c;
+  unsigned char        c = 0;
 
   depth = 0;
 
@@ -213,7 +213,7 @@ error trie_insert(trie_t     *t,
   trie__node_t       **pn;
   trie__node_t        *n;
   int                  dir;
-  unsigned char        c;
+  unsigned char        c = 0;
   trie__node_t        *m;
 
   /* search, but save the parent pointer too */
@@ -415,7 +415,7 @@ error trie_lookup_prefix(const trie_t        *t,
   const unsigned char *uprefixend = uprefix + prefixlen;
   int                  depth;
   trie__node_t        *n;
-  unsigned char        c;
+  unsigned char        c = 0;
   int                  dir;
 
   if (t->root == NULL)
