@@ -39,6 +39,8 @@ Or you can use the higher-level "Containers" interface defined in:
 
 - icontainer.h
 
+The benefit of the Containers interface is a regular interface which makes it possible to swap between data structures with little or no changes to the calling code.
+
 To create a container use one of:
 
 - container-bstree.h::`container_create_bstree`
@@ -67,6 +69,73 @@ Pre-prepared key and value implementations are available in:
 - string-kv.h
 
 (Implementations common to these live in kv-common.h).
+
+Testing
+-------
+
+The containers layer was developed largely to simplify testing of the lower-level data structures. container-test.c uses the containers interface to perform the same tests across all available data structures:
+
+- string test:
+	1. create container
+	1. insert test data (given in testdata.h)
+	1. delete test data
+	1. insert test data again
+		1. at each step: look up every inserted key, ensure that all can be found and that the values match
+	1. print whatever the fifth element contains
+	1. enumerate keys by prefix
+	1. look up a nonexistent key
+	1. dump data
+	1. dump data to Graphviz format
+	1. remove every other key
+	1. remove remaining keys
+	1. dump data (which ought to be empty)
+	1. destroy container
+
+- common prefix test:
+	1. create container
+	1. insert test data (strings with common prefixes)
+	1. dump data
+	1. dump data to Graphviz format
+	1. destroy container
+
+- integer test:
+	1. create container
+	1. insert test data (mapping numbers to names)
+		1. at each step: look up every inserted key, ensure that all can be found and that the values match
+	1. print whatever the fifth element contains
+	1. enumerate keys by prefix
+	1. look up a nonexistent key
+	1. dump data
+	1. dump data to Graphviz format
+	1. remove every other key
+	1. remove remaining keys
+	1. dump data (which ought to be empty)
+	1. destroy container
+
+- character test:
+	1. create container
+	1. insert test data (mapping characters to their ordinals)
+		1. at each step: look up every inserted key, ensure that all can be found and that the values match
+	1. print whatever the fifth element contains
+	1. enumerate keys by prefix
+	1. look up a nonexistent key
+	1. dump data
+	1. dump data to Graphviz format
+	1. remove every other key
+	1. remove remaining keys
+	1. dump data (which ought to be empty)
+	1. destroy container
+
+Graphs
+------
+
+The critbit, dstree, and trie tests dump representations of their data structures to [Graphviz](http://www.graphviz.org/) format. The produced .gv files can be run through Graphviz's 'dot' tool, rendering the directed graph into boxes, lines and arrows.
+
+To turn these into, for example, a PDF file:
+
+    dot -Tpdf -O dstree-string.gv
+
+The above command will write out dstree-string.gv.pdf.
 
 License
 -------
