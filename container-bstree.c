@@ -55,7 +55,7 @@ static const item_t *container_bstree__select(const icontainer_t *c_, int k)
 {
   container_bstree_t *c = (container_bstree_t *) c_;
 
-  return bstree_select(c->t, k);
+return bstree_select(c->t, k);
 }
 
 static error container_bstree__lookup_prefix(const icontainer_t        *c_,
@@ -94,10 +94,12 @@ static error container_bstree__show(const icontainer_t *c_, FILE *f)
 
 static error container_bstree__show_viz(const icontainer_t *c_, FILE *f)
 {
-  NOT_USED(c_);
-  NOT_USED(f);
+  container_bstree_t *c = (container_bstree_t *) c_;
 
-  return error_OK; // NYI
+  return bstree_show_viz(c->t,
+                         c->show_key, c->show_key_destroy,
+                         c->show_value, c->show_value_destroy,
+                         f);
 }
 
 static void container_bstree__destroy(icontainer_t *doomed_)

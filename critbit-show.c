@@ -154,7 +154,10 @@ static error critbit__node_show_viz_link(critbit__node_t *n, int level, void *op
     key   = args->key   && m->item.key   ? args->key(m->item.key)     : NULL;
     value = args->value && m->item.value ? args->value(m->item.value) : NULL;
 
-    (void) fprintf(args->f, "\t\"%p\" [shape=record, label=\"%s|%s\"];\n", n, key, value);
+    (void) fprintf(args->f, "\t\"%p\" [shape=record, label=\"%s|%s\"];\n",
+                   n,
+                   key   ? key   : "(null)",
+                   value ? value : "(null)");
 
     if (args->key_destroy   && key)   args->key_destroy((char *) key);
     if (args->value_destroy && value) args->value_destroy((char *) value);
@@ -178,9 +181,9 @@ static error critbit__node_show_viz_link(critbit__node_t *n, int level, void *op
     *p = '\0';
 
     (void) fprintf(args->f, "\t\"%p\" [shape=record, label=\"byte %d|bit %s\"];\n", n, n->byte, binary);
-    if (n->child[0] != NULL) // are these tests redundant?
+    if (n->child[0]) // are these tests redundant?
       (void) fprintf(args->f, "\t\"%p\":sw -> \"%p\":n;\n", n, n->child[0]);
-    if (n->child[1] != NULL)
+    if (n->child[1])
       (void) fprintf(args->f, "\t\"%p\":se -> \"%p\":n;\n", n, n->child[1]);
   }
 
@@ -233,7 +236,6 @@ error critbit_show_viz(const critbit_t      *t,
                                critbit__node_show_viz_link, &args);
   if (err)
     return err;
-
 
   (void) fprintf(f, "}\n");
 

@@ -106,6 +106,16 @@ error bstree_show(const T             *t,
 
 /* ----------------------------------------------------------------------- */
 
+/* Dump in format which can be fed into Graphviz. */
+error bstree_show_viz(const T             *t,
+                      bstree_show_key     *key,
+                      bstree_show_destroy *key_destroy,
+                      bstree_show_value   *value,
+                      bstree_show_destroy *value_destroy,
+                      FILE                *f);
+
+/* ----------------------------------------------------------------------- */
+
 #undef T
 
 #endif /* BSTREE_H */

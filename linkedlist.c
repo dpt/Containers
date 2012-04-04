@@ -192,26 +192,26 @@ typedef struct linkedlist_lookup_prefix_args
   size_t                     prefixlen;
   linkedlist_found_callback *cb;
   void                      *opaque;
+  int                        found;
 }
 linkedlist_lookup_prefix_args_t;
 
 static error linkedlist__lookup_prefix(linkedlist__node_t *n,
                                        void               *opaque)
 {
-  const linkedlist_lookup_prefix_args_t *args = opaque;
-  size_t                                 prefixlen;
+  linkedlist_lookup_prefix_args_t *args = opaque;
+  size_t                           prefixlen;
   
   prefixlen = args->prefixlen;
   
   if (n->item.keylen >= prefixlen &&
       memcmp(n->item.key, args->uprefix, prefixlen) == 0)
   {
+    args->found = 1;
     return args->cb(&n->item, args->opaque);
   }
-  else
-  {
-    return error_OK;
-  }
+  
+  return error_OK;
 }
 
 error linkedlist_lookup_prefix(const linkedlist_t        *t,
@@ -220,16 +220,22 @@ error linkedlist_lookup_prefix(const linkedlist_t        *t,
                                linkedlist_found_callback *cb,
                                void                      *opaque)
 {
+  error                           err;
   linkedlist_lookup_prefix_args_t args;
   
   args.uprefix   = prefix;
   args.prefixlen = prefixlen;
   args.cb        = cb;
   args.opaque    = opaque;
+  args.found     = 0;
   
-  return linkedlist__walk_internal((linkedlist_t *) t, // must cast away constness
-                                   linkedlist__lookup_prefix,
-                                   &args);
+  err = linkedlist__walk_internal((linkedlist_t *) t, // must cast away constness
+                                  linkedlist__lookup_prefix,
+                                  &args);
+  if (err)
+    return err;
+  
+  return args.found ? error_OK : error_NOT_FOUND;
 }
 
 /* ----------------------------------------------------------------------- */
