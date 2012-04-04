@@ -354,12 +354,51 @@ void critbit_remove(critbit_t *t, const void *key, size_t keylen)
 
 /* ----------------------------------------------------------------------- */
 
+typedef struct critbit__select_args
+{
+  int     k;
+  item_t *item;
+}
+critbit__select_args_t;
+
+static error critbit__select_node(critbit__node_t *n,
+                                  int              level,
+                                  void            *opaque)
+{
+  critbit__select_args_t *args = opaque;
+
+  NOT_USED(level);
+
+  if (args->k-- == 0)
+  {
+    critbit__extnode_t *e;
+
+    e = FROM_STORE(n);
+
+    args->item = &e->item;
+    return error_STOP_WALK;
+  }
+
+  return error_OK;
+}
+
 const item_t *critbit_select(critbit_t *t, int k)
 {
-  NOT_USED(t);
-  NOT_USED(k);
+  error                  err;
+  critbit__select_args_t args;
 
-  return NULL; // NYI
+  args.k    = k;
+  args.item = NULL;
+
+  err = critbit__walk_internal(t,
+                               critbit_WALK_LEAVES,
+                               critbit__select_node,
+                              &args);
+
+  /* no errors save for the expected ones should happen here */
+  assert(err == error_OK || err == error_STOP_WALK);
+
+  return args.item;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -383,7 +422,7 @@ static error critbit__lookup_prefix_walk(const critbit__node_t  *n,
   if (IS_EXTERNAL(n))
   {
     e = FROM_STORE(n);
-    
+
     err = cb(&e->item, opaque);
     if (err)
       return err;
@@ -393,12 +432,12 @@ static error critbit__lookup_prefix_walk(const critbit__node_t  *n,
     err = critbit__lookup_prefix_walk(n->child[0], cb, opaque);
     if (err)
       return err;
-    
+
     err = critbit__lookup_prefix_walk(n->child[1], cb, opaque);
     if (err)
       return err;
   }
-  
+
   return error_OK;
 }
 
@@ -426,29 +465,29 @@ error critbit_lookup_prefix(const critbit_t        *t,
   while (IS_INTERNAL(n))
   {
     critbit__node_t *m;
-    
+
     dir = GET_NEXT_DIR(uprefix, uprefixend, n->byte, n->otherbits);
 
     m = n->child[dir];
 
     if ((size_t) n->byte < prefixlen)
       top = m;
-    
+
     n = m;
   }
-  
+
   e = FROM_STORE(n);
-  
+
   /* check the prefix exists */
   if (e->item.keylen < prefixlen)
     return error_NOT_FOUND;
-  
+
   ukey = e->item.key;
 
   for (i = 0; i < (int) prefixlen; i++)
     if (uprefix[i] != ukey[i])
       return error_NOT_FOUND;
-  
+
   return critbit__lookup_prefix_walk(top, cb, opaque);
 }
 

@@ -1,8 +1,8 @@
 /* icontainer.h -- interface to container compliant data structures */
 
-/* The individual data structure libraries I've implemented for AppEngine
- * don't expose exactly the same interface. 'icontainer' provides an
- * alternative consistent interface which glue libraries can provide.
+/* The individual data structure libraries I've implemented don't expose
+ * exactly the same interface. 'icontainer' provides an alternative
+ * consistent interface which glue libraries can provide.
  *
  * This ought to allow a single user of the icontainer interface to swap in
  * one data structure implementation for another without needing to alter

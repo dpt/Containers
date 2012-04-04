@@ -696,7 +696,7 @@ int test_container(int viz)
     { container_create_dstree,       "dstree",        "dstree"       },
     { container_create_trie,         "trie",          "trie"         },
     { container_create_critbit,      "critbit",       "critbit"      },
-    { container_create_patricia,     "patricia",      "patricia"     },
+    // { container_create_patricia,     "patricia",      "patricia"     },
   };
 
   error err;
