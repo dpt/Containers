@@ -307,17 +307,17 @@ static error bstree__lookup_prefix(bstree__node_t *n,
 {
   bstree_lookup_prefix_args_t *args = opaque;
   size_t                       len;
-  
+
   NOT_USED(level);
-  
+
   len = args->prefixlen;
-  
+
   if (n->item.keylen >= len && memcmp(n->item.key, args->uprefix, len) == 0)
   {
     args->found = 1;
     return args->cb(&n->item, args->opaque);
   }
-  
+
   return error_OK;
 }
 
@@ -331,19 +331,19 @@ error bstree_lookup_prefix(const bstree_t        *t,
 {
   error                       err;
   bstree_lookup_prefix_args_t args;
-  
+
   args.uprefix   = prefix;
   args.prefixlen = prefixlen;
   args.cb        = cb;
   args.opaque    = opaque;
   args.found     = 0;
-  
+
   err = bstree__walk_internal((bstree_t *) t, /* must cast away constness */
                               bstree__lookup_prefix,
                               &args);
   if (err)
     return err;
-  
+
   return args.found ? error_OK : error_NOT_FOUND;
 }
 

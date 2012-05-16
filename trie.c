@@ -388,10 +388,10 @@ static error trie__lookup_prefix_walk(const trie__node_t  *n,
                                       void                *opaque)
 {
   error err;
-  
+
   if (n == NULL)
     return error_OK;
-  
+
   if (IS_LEAF(n))
   {
     return cb(&n->item, opaque);
@@ -420,22 +420,22 @@ error trie_lookup_prefix(const trie_t        *t,
 
   if (t->root == NULL)
     return error_OK; /* empty tree */
-  
+
   depth = 0;
-  
+
   for (n = t->root; n; n = n->child[dir])
   {
     if (IS_LEAF(n) || (size_t) depth == prefixlen * 8)
       break;
-    
+
     GET_NEXT_DIR(dir, uprefix, uprefixend);
   }
-  
+
   /* If we tried to walk in a direction not present in the trie then the
    * prefix can't exist in it. */
   if (n == NULL)
     return error_NOT_FOUND;
-  
+
   if (IS_LEAF(n))
   {
     /* We've found a leaf which may or may not match. If it matches then we

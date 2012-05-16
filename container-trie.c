@@ -64,12 +64,12 @@ static error container_trie__lookup_prefix(const icontainer_t        *c_,
                                            void                      *opaque)
 {
   const container_trie_t *c = (container_trie_t *) c_;
-  
+
   /* trie_lookup_prefix_callback and icontainer_found_callback have the
    * same signature so we can just cast one to the other here. If this were
    * not the case we would need an adaptor function to turn one callback into
    * another. */
-  
+
   return trie_lookup_prefix(c->t,
                             prefix, c->len(prefix),
                             (icontainer_found_callback) cb, opaque);

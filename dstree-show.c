@@ -180,14 +180,14 @@ error dstree_show_viz(const dstree_t      *t,
   (void) fprintf(f, "\tnode [shape = circle];\n");
 
   err = dstree__breadthwalk_internal((dstree_t *) t,
-                                      dstree__node_show_viz_rank, &args);
+                                     dstree__node_show_viz_rank, &args);
   if (err)
     return err;
 
   (void) fprintf(f, "\t}\n");
 
   err = dstree__walk_internal((dstree_t *) t,
-                               dstree__node_show_viz_link, &args);
+                              dstree__node_show_viz_link, &args);
   if (err)
     return err;
 

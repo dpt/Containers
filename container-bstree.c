@@ -55,7 +55,7 @@ static const item_t *container_bstree__select(const icontainer_t *c_, int k)
 {
   container_bstree_t *c = (container_bstree_t *) c_;
 
-return bstree_select(c->t, k);
+  return bstree_select(c->t, k);
 }
 
 static error container_bstree__lookup_prefix(const icontainer_t        *c_,

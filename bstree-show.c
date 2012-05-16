@@ -96,7 +96,7 @@ static error bstree__node_show_viz(bstree__node_t *n, int level, void *opaque)
   bstree__show_viz_args_t *args = opaque;
   const char              *key;
   const char              *value;
-  
+
   NOT_USED(level);
 
   key   = args->key   && n->item.key   ? args->key(n->item.key)     : NULL;

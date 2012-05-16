@@ -344,11 +344,11 @@ static error dstree__lookup_prefix_node(dstree__node_t *n,
 {
   dstree_lookup_prefix_args_t *args = opaque;
   size_t                       prefixlen;
-  
+
   NOT_USED(level);
-  
+
   prefixlen = args->prefixlen;
-  
+
   if (n->item.keylen >= prefixlen &&
       memcmp(n->item.key, args->uprefix, prefixlen) == 0)
   {
@@ -375,7 +375,7 @@ error dstree_lookup_prefix(const dstree_t        *t,
   int                         dir;
   dstree_lookup_prefix_args_t args;
   int                         i;
-  
+
   /* For a prefix P, keys which share that prefix are stored at a depth
    * proportional to the length of P. However, the nodes leading up to that
    * node may also contain valid prefixed nodes so we must approach this in
@@ -388,11 +388,11 @@ error dstree_lookup_prefix(const dstree_t        *t,
    * 2) Once the depths is met (if it exists) we can then enumerate the
    *    entire subtree, issuing callbacks for all nodes in the subtree.
    */
-  
+
   err = error_NOT_FOUND; /* assume not found until we call the callback */
-  
+
   depth = 0;
-  
+
   for (n = t->root; n; n = n->child[dir])
   {
     if (n->item.keylen >= prefixlen &&
@@ -402,24 +402,24 @@ error dstree_lookup_prefix(const dstree_t        *t,
       if (err)
         return err;
     }
-    
+
     GET_NEXT_DIR(dir, uprefix, uprefixend);
-    
+
     if ((size_t) depth == prefixlen * 8)
       break; /* deep enough that all children must match the prefix */
   }
-  
+
   if (!n)
     return err;
-  
+
   args.uprefix   = prefix;
   args.prefixlen = prefixlen;
   args.cb        = cb;
   args.opaque    = opaque;
-  
+
   /* We've processed the node sitting at the position where the prefix is.
    * Now process both of its sub-trees. */
-  
+
   for (i = 0; i < 2; i++)
   {
     err = dstree__walk_internal_node((dstree__node_t *) n->child[i],
@@ -429,7 +429,7 @@ error dstree_lookup_prefix(const dstree_t        *t,
     if (err)
       return err;
   }
-  
+
   return error_OK;
 }
 
@@ -461,7 +461,7 @@ error dstree__walk_internal(dstree_t                       *t,
 {
   if (t == NULL)
     return error_OK;
-  
+
   return dstree__node_walk_internal(t->root, 0, cb, opaque);
 }
 
@@ -472,7 +472,7 @@ error dstree__walk_internal_node(dstree__node_t                 *root,
 {
   if (root == NULL)
     return error_OK;
-  
+
   return dstree__node_walk_internal(root, level, cb, opaque);
 }
 
