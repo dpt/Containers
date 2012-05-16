@@ -34,7 +34,7 @@ static error critbit__walk_in_order(const critbit__node_t *n,
 
     err = cb(e->item.key, e->item.value, level, opaque);
     if (err)
-        return err;
+      return err;
   }
   else
   {

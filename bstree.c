@@ -378,7 +378,7 @@ error bstree__walk_internal_post(bstree_t                       *t,
   return bstree__node_walk_internal_post(t->root, 0, cb, opaque);
 }
 
-// in-order
+/* in-order */
 static error bstree__node_walk_internal(bstree__node_t                 *n,
                                         int                             level,
                                         bstree__walk_internal_callback *cb,

@@ -10,9 +10,7 @@ typedef unsigned long int error;
 #define error_NOT_FOUND           2
 #define error_OOM                 3
 #define error_STOP_WALK           4
-
-#define error_DICT_NAME_EXISTS    100
-#define error_DICT_OUT_OF_RANGE   101
+#define error_CLASHES             5   /* key would clash with existing one */
 
 #define error_KEYLEN_REQUIRED     200
 #define error_KEYCOMPARE_REQUIRED 201

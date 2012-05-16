@@ -10,6 +10,7 @@
 #include "types.h"
 #include "string.h"
 #include "string-kv.h"
+#include "utils.h"
 
 #include "bstree.h"
 
@@ -95,6 +96,8 @@ static error bstree__node_show_viz(bstree__node_t *n, int level, void *opaque)
   bstree__show_viz_args_t *args = opaque;
   const char              *key;
   const char              *value;
+  
+  NOT_USED(level);
 
   key   = args->key   && n->item.key   ? args->key(n->item.key)     : NULL;
   value = args->value && n->item.value ? args->value(n->item.value) : NULL;

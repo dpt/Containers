@@ -496,7 +496,7 @@ error dstree__breadthwalk_internal(dstree_t                       *t,
   if (t == NULL)
     return error_OK;
 
-  queue = queue_create(100, sizeof(nodedepth)); // FIXME: 100 constant
+  queue = queue_create(100, sizeof(nodedepth)); /* FIXME: 100 constant */
   if (queue == NULL)
     return error_OOM;
 
