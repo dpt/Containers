@@ -80,7 +80,7 @@ $(exe):		$(appobjs) $(lib)
 		$(link) -o $@ $(appobjs) $(lib) $(extlibs)
 
 $(debugexe):	$(debugappobjs) $(debuglib)
-		$(link) -o $@ $(debugappobjs) $(debuglib) $(extlibs)
+		$(link) -g -o $@ $(debugappobjs) $(debuglib) $(extlibs)
 
 apps:		$(exe)
 		@echo 'apps' built
