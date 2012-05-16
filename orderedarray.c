@@ -90,9 +90,9 @@ void orderedarray_destroy(orderedarray_t *t)
 /* ----------------------------------------------------------------------- */
 
 /* returns: found/not found */
-static const int orderedarray__lookup(orderedarray_t        *t,
-                                      const void            *key,
-                                      orderedarray__node_t **n)
+static int orderedarray__lookup(orderedarray_t        *t,
+                                const void            *key,
+                                orderedarray__node_t **n)
 {
   if (t->array)
   {
@@ -256,9 +256,9 @@ static error orderedarray__lookup_prefix(orderedarray__node_t *n,
 {
   orderedarray_lookup_prefix_args_t *args = opaque;
   size_t                             prefixlen;
-  
+
   prefixlen = args->prefixlen;
-  
+
   if (n->item.keylen >= prefixlen &&
       memcmp(n->item.key, args->uprefix, prefixlen) == 0)
   {
@@ -279,19 +279,19 @@ error orderedarray_lookup_prefix(const orderedarray_t        *t,
 {
   error                             err;
   orderedarray_lookup_prefix_args_t args;
-  
+
   args.uprefix   = prefix;
   args.prefixlen = prefixlen;
   args.cb        = cb;
   args.opaque    = opaque;
   args.found     = 0;
-  
+
   err = orderedarray__walk_internal((orderedarray_t *) t, // must cast away constness
                                     orderedarray__lookup_prefix,
                                     &args);
   if (err)
     return err;
-  
+
   return args.found ? error_OK : error_NOT_FOUND;
 }
 
