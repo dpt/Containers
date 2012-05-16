@@ -63,10 +63,34 @@ static const icontainer_value_t static_string_value =
 
 /* ----------------------------------------------------------------------- */
 
-#define BLURT(m) printf(NAME ": -- " m "\n")
-#define BLURT1(m,a) printf(NAME ": -- " m "\n", a)
-#define BLURT2(m,a,b) printf(NAME ": -- " m "\n", a, b)
-#define BLURT3(m,a,b,c) printf(NAME ": -- " m "\n", a, b, c)
+#define LOG(m) printf(NAME ": -- " m "\n")
+#define LOG1(m,a) printf(NAME ": -- " m "\n", a)
+#define LOG2(m,a,b) printf(NAME ": -- " m "\n", a, b)
+#define LOG3(m,a,b,c) printf(NAME ": -- " m "\n", a, b, c)
+
+/* ----------------------------------------------------------------------- */
+
+static int viz_counter = 0;
+
+static error viz_show(icontainer_t *cont,
+                      const char   *groupname,
+                      const char   *testname)
+{
+  static char filename[256];
+  FILE       *f;
+
+  sprintf(filename, "%s-%s-%d.gv", groupname, testname, viz_counter++);
+
+  f = fopen(filename, "w");
+  if (f == NULL)
+    return error_NOT_FOUND;
+
+  cont->show_viz(cont, f);
+
+  fclose(f);
+
+  return error_OK;
+}
 
 /* ----------------------------------------------------------------------- */
 
@@ -76,16 +100,18 @@ static int prefixes_seen = 0;
 
 static error stringtest_lookup_prefix_callback(const item_t *item, void *opaque)
 {
-  NOT_USED(opaque);
+  int *count = opaque;
 
   (void) printf(NAME ": -- '%s' : '%s'\n", item->key, item->value);
-  
+
   prefixes_seen++;
+
+  (*count)++;
 
   return error_OK;
 }
 
-static error stringtest(icontainer_maker *maker, FILE *vizout)
+static error stringtest(icontainer_maker *maker, const char *testname)
 {
   const int     max = NELEMS(testdata);
   error         err;
@@ -95,42 +121,47 @@ static error stringtest(icontainer_maker *maker, FILE *vizout)
   int           found;
   int           matched;
   const item_t *item;
+  int           prefixcounts[26];
 
-  BLURT("Create cont");
+  LOG("Create cont");
 
   err = maker(&cont, &static_string_key, &static_string_value);
   if (err)
     goto failure;
 
-  BLURT("Insert-Delete");
+  LOG("Insert-Delete");
 
   for (j = 0; j < max; j++)
   {
-    BLURT1("inserting %d elems", j + 1);
+    LOG1("inserting %d elems", j + 1);
 
     for (i = 0; i <= j; i++)
     {
       err = cont->insert(cont, testdata[i].key, testdata[i].value);
       if (err)
         return err;
-      //BLURT2("insert: j=%d: now has %d nodes", j, cont->count(cont));
+      // LOG2("insert: j=%d: now has %d nodes", j, cont->count(cont));
     }
 
     //cont->show_viz(cont, stdout);
 
+    LOG1("deleting %d elems", j + 1);
+
     for (i = 0; i <= j; i++)
     {
       cont->remove(cont, testdata[i].key);
-      //BLURT2("remove: j=%d: now has %d nodes", j, cont->count(cont));
+      // LOG2("remove: j=%d: now has %d nodes", j, cont->count(cont));
     }
 
-    assert(cont->count(cont) == 0);
-    //BLURT1("delete: now has %d nodes", cont->count(cont));
+    if (cont->count(cont) != 0)
+    {
+      LOG1("*** %d nodes counted but expected 0", cont->count(cont));
+    }
   }
 
   // todo: pass in a vector of randomised testdata pointers
 
-  BLURT("Insert test values");
+  LOG("Insert test values");
 
   for (i = 0; i < max; i++)
   {
@@ -138,7 +169,7 @@ static error stringtest(icontainer_maker *maker, FILE *vizout)
     if (err)
       return err;
 
-    //BLURT("Look up every key");
+    //LOG("Look up every key");
 
     found   = 0;
     matched = 0;
@@ -149,14 +180,14 @@ static error stringtest(icontainer_maker *maker, FILE *vizout)
       value = cont->lookup(cont, testdata[j].key);
       if (value == NULL)
       {
-        BLURT1("lookup didn't find %s", testdata[j].key);
+        LOG1("lookup didn't find %s", testdata[j].key);
       }
       else
       {
         found++;
 
         if (value != testdata[j].value)
-          BLURT1("values didn't match for key %s", testdata[j].key);
+          LOG1("values didn't match for key %s", testdata[j].key);
         else
           matched++;
       }
@@ -164,79 +195,126 @@ static error stringtest(icontainer_maker *maker, FILE *vizout)
 
     if (found < i + 1 || matched < i + 1)
     {
-      BLURT3("%s%d of %d keys found", found < i + 1 ? "*** " : "", found, i + 1);
-      BLURT3("%s%d of %d keys matched", matched < i + 1 ? "*** " : "", matched, i + 1);
+      LOG3("%s%d of %d keys found", found < i + 1 ? "*** " : "", found, i + 1);
+      LOG3("%s%d of %d keys matched", matched < i + 1 ? "*** " : "", matched, i + 1);
     }
   }
 
-  BLURT("The fifth element contains:");
+  LOG("The fifth element contains:");
 
   if ((item = cont->select(cont, 5)) == NULL)
     printf(NAME ": -- (null)\n");
   else
-    printf(NAME ": -- '%s' : '%s'\n", item->key, item->value);
+    printf(NAME ": -- '%s' : '%s'\n", (const char *) item->key, (const char *) item->value);
 
-  BLURT("Look up keys by their prefix");
-  
+
+  LOG("Look up keys by their prefix");
+
+  /* prepare a count of testdata prefixes */
+
+  memset(prefixcounts, 0, sizeof(prefixcounts));
+
+  for (i = 0; i < max; i++)
+    prefixcounts[(int) testdata[i].key[0] - 'A']++;
+
   prefixes_seen = 0;
 
   for (i = 'A'; i <= 'Z'; i++)
   {
     char prefix[2];
-
-    BLURT1("Enumerate keys beginning with '%c':", i);
+    int  count;
 
     prefix[0] = (char) i;
     prefix[1] = '\0';
 
-    err = cont->lookup_prefix(cont, prefix, stringtest_lookup_prefix_callback, NULL);
-    if (err == error_NOT_FOUND)
-      BLURT("Prefix not found");
-    else if (err)
-      goto failure;
-  }
-  
-  BLURT1("prefixes_seen = %d", prefixes_seen);
-  if (prefixes_seen != NELEMS(testdata))
-    BLURT1("*** incorrect number of prefixes seen! (expected %d)", NELEMS(testdata));
-  else
-    BLURT("ok!");
+    LOG1("Enumerate keys beginning with '%s':", prefix);
 
-  BLURT("Look up a key which doesn't exist");
+    count = 0;
+    err = cont->lookup_prefix(cont, prefix, stringtest_lookup_prefix_callback, &count);
+    if (err == error_OK || err == error_NOT_FOUND)
+    {
+      int expected = prefixcounts[i - 'A'];
+      if (count != expected)
+        LOG2("*** Incorrect number of keys seen! (got %d but expected %d)", count, expected);
+      else
+        LOG("ok!");
+    }
+    else if (err)
+    {
+      goto failure;
+    }
+  }
+
+  if (prefixes_seen != NELEMS(testdata))
+    LOG2("*** Incorrect number of prefixes seen! (got %d but expected %d)", prefixes_seen, NELEMS(testdata));
+  else
+    LOG("ok!");
+
+
+  LOG("Enumerate keys which don't exist");
+
+  for (i = 0; i < 256; i++)
+  {
+    char prefix[2];
+    int  count;
+
+    if (i >= 'A' && i <= 'Z')
+      continue; /* these exist - skip them */
+
+    prefix[0] = (char) i;
+    prefix[1] = '\0';
+
+    LOG1("Enumerate keys beginning with '<%d>':", i);
+
+    count = 0;
+    err = cont->lookup_prefix(cont, prefix, stringtest_lookup_prefix_callback, &count);
+    if (err == error_OK || err == error_NOT_FOUND)
+    {
+      int expected = 0;
+      if (count != expected)
+        LOG2("*** Incorrect number of keys seen! (got %d but expected %d)", count, expected);
+      else
+        LOG("ok!");
+    }
+    else if (err)
+    {
+      goto failure;
+    }
+  }
+
+
+  LOG("Look up a key which doesn't exist");
 
   err = cont->lookup_prefix(cont, "Gooseberries", stringtest_lookup_prefix_callback, NULL);
   if (err != error_NOT_FOUND)
   {
-    BLURT("lookup_prefix did _not_ return 'not found'!");
+    LOG("lookup_prefix did _not_ return 'not found'!");
     goto failure;
   }
 
-  BLURT("Dump");
+  LOG("Dump");
 
   cont->show(cont, stdout);
 
-  if (vizout)
-  {
-    BLURT("Dump viz");
+  LOG("Dump viz");
 
-    cont->show_viz(cont, vizout);
-  }
+  viz_show(cont, testname, "dump");
 
-  BLURT("Remove every other test value");
+  LOG("Remove every other test value");
 
   for (i = 0; i < max; i += 2)
     cont->remove(cont, testdata[i].key);
 
-  BLURT("Remove remaining test values");
+  LOG("Remove remaining test values");
 
   for (i = 1; i < max; i += 2)
     cont->remove(cont, testdata[i].key);
 
-  BLURT("Dump");
+  LOG("Dump");
 
   cont->show(cont, stdout);
 
-  BLURT("Destroy");
+  LOG("Destroy");
 
   cont->destroy(cont);
 
@@ -245,7 +323,7 @@ static error stringtest(icontainer_maker *maker, FILE *vizout)
 
 failure:
 
-  BLURT1("error %lu\n", err);
+  LOG1("error %lu\n", err);
 
   return err;
 }
@@ -272,20 +350,20 @@ commonprefixstrings[] =
 
 #define NAME "commonprefixtest"
 
-static error commonprefixtest(icontainer_maker *maker, FILE *vizout)
+static error commonprefixtest(icontainer_maker *maker, const char *testname)
 {
   const int     max = NELEMS(commonprefixstrings);
   error         err;
   icontainer_t *cont;
   int           i;
 
-  BLURT("Create cont");
+  LOG("Create cont");
 
   err = maker(&cont, &static_string_key, &static_string_value);
   if (err)
     goto failure;
 
-  BLURT("Insert test values");
+  LOG("Insert test values");
 
   for (i = 0; i < max; i++)
   {
@@ -294,18 +372,15 @@ static error commonprefixtest(icontainer_maker *maker, FILE *vizout)
       return err;
   }
 
-  BLURT("Dump");
+  LOG("Dump");
 
   cont->show(cont, stdout);
 
-  if (vizout)
-  {
-    BLURT("Dump viz");
+  LOG("Dump viz");
 
-    cont->show_viz(cont, vizout);
-  }
+  viz_show(cont, testname, "dump");
 
-  BLURT("Destroy");
+  LOG("Destroy");
 
   cont->destroy(cont);
 
@@ -314,7 +389,7 @@ static error commonprefixtest(icontainer_maker *maker, FILE *vizout)
 
 failure:
 
-  BLURT1("error %lu\n", err);
+  LOG1("error %lu\n", err);
 
   return err;
 }
@@ -348,7 +423,7 @@ static error inttest_lookup_prefix_callback(const item_t *item, void *opaque)
   return error_OK;
 }
 
-static error inttest(icontainer_maker *maker, FILE *vizout)
+static error inttest(icontainer_maker *maker, const char *testname)
 {
   const int     max = NELEMS(inttestdata);
   error         err;
@@ -359,13 +434,13 @@ static error inttest(icontainer_maker *maker, FILE *vizout)
   int           matched;
   const item_t *item;
 
-  BLURT("Create cont");
+  LOG("Create cont");
 
   err = maker(&cont, &static_int_key, &static_string_value);
   if (err)
     goto failure;
 
-  BLURT("Insert test values");
+  LOG("Insert test values");
 
   for (i = 0; i < max; i++)
   {
@@ -373,9 +448,9 @@ static error inttest(icontainer_maker *maker, FILE *vizout)
     if (err)
       goto failure;
 
-    BLURT1("Count of elements = %d elements", cont->count(cont));
+    LOG1("Count of elements = %d elements", cont->count(cont));
 
-    //BLURT("Look up every key");
+    //LOG("Look up every key");
 
     found   = 0;
     matched = 0;
@@ -386,14 +461,14 @@ static error inttest(icontainer_maker *maker, FILE *vizout)
       value = cont->lookup(cont, &inttestdata[j].key);
       if (value == NULL)
       {
-        BLURT1("lookup didn't find %d", inttestdata[j].key);
+        LOG1("lookup didn't find %d", inttestdata[j].key);
       }
       else
       {
         found++;
 
         if (value != inttestdata[j].value)
-          BLURT1("values didn't match for key %d", inttestdata[j].key);
+          LOG1("values didn't match for key %d", inttestdata[j].key);
         else
           matched++;
       }
@@ -401,30 +476,33 @@ static error inttest(icontainer_maker *maker, FILE *vizout)
 
     if (found < i + 1 || matched < i + 1)
     {
-      BLURT3("%s%d of %d keys found", found < i + 1 ? "*** " : "", found, i + 1);
-      BLURT3("%s%d of %d keys matched", matched < i + 1 ? "*** " : "", matched, i + 1);
+      LOG3("%s%d of %d keys found", found < i + 1 ? "*** " : "", found, i + 1);
+      LOG3("%s%d of %d keys matched", matched < i + 1 ? "*** " : "", matched, i + 1);
     }
   }
 
-  BLURT("The fifth element contains:");
+  LOG("Select all keys in order");
 
-  if ((item = cont->select(cont, 5)) == NULL)
-    printf(NAME ": -- (null)\n");
-  else
-    printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key, item->value);
+  for (i = 0; i <= max; i++) /* note <= */
+  {
+    if ((item = cont->select(cont, i)) == NULL)
+      printf(NAME ": -- (null)\n");
+    else
+      printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key, (const char *) item->value);
+  }
 
-  BLURT("Look up keys by their prefix");
+  LOG("Look up keys by their prefix");
 
   /* Prefix lookup tests aren't exactly relevant here. The key for 'dave'
    * won't get found. Since int key objects are always four bytes long we hit
    * the 'not found' case. A 'prefix' in this case is always as long as a
    * full key. */
 
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < max; i++)
   {
     int prefix;
 
-    BLURT1("Enumerate keys beginning with '%d':", i);
+    LOG1("Enumerate keys beginning with '%d':", i);
 
     prefix = i;
 
@@ -435,41 +513,38 @@ static error inttest(icontainer_maker *maker, FILE *vizout)
       goto failure;
   }
 
-  BLURT("Look up a key which doesn't exist");
+  LOG("Look up a key which doesn't exist");
 
   err = cont->lookup_prefix(cont, "Gooseberries", inttest_lookup_prefix_callback, NULL);
   if (err != error_NOT_FOUND)
   {
-    BLURT("lookup_prefix did _not_ return 'not found'!");
+    LOG("lookup_prefix did _not_ return 'not found'!");
     goto failure;
   }
 
-  BLURT("Dump");
+  LOG("Dump");
 
   cont->show(cont, stdout);
 
-  if (vizout)
-  {
-    BLURT("Dump viz");
+  LOG("Dump viz");
 
-    cont->show_viz(cont, vizout);
-  }
+  viz_show(cont, testname, "dump");
 
-  BLURT("Remove every other test value");
+  LOG("Remove every other test value");
 
   for (i = 0; i < max; i += 2)
     cont->remove(cont, &inttestdata[i].key);
 
-  BLURT("Remove remaining test values");
+  LOG("Remove remaining test values");
 
   for (i = 1; i < max; i += 2)
     cont->remove(cont, &inttestdata[i].key);
 
-  BLURT("Dump");
+  LOG("Dump");
 
   cont->show(cont, stdout);
 
-  BLURT("Destroy");
+  LOG("Destroy");
 
   cont->destroy(cont);
 
@@ -478,7 +553,7 @@ static error inttest(icontainer_maker *maker, FILE *vizout)
 
 failure:
 
-  BLURT1("error %lu\n", err);
+  LOG1("error %lu\n", err);
 
   return err;
 }
@@ -492,8 +567,8 @@ failure:
 
 static const struct
 {
-  char        key;
-  const char *value;
+  unsigned char key;
+  const char   *value;
 }
 chartestdata[] =
 {
@@ -510,11 +585,13 @@ chartestdata[] =
   E('M'),
   E('P'),
   E('L'),
+  {   0,   "0" },
+  { 255, "255" },
 };
 
 #define NAME "chartest"
 
-static error chartest(icontainer_maker *maker, FILE *vizout)
+static error chartest(icontainer_maker *maker, const char *testname)
 {
   const int     max = NELEMS(chartestdata);
   error         err;
@@ -525,13 +602,13 @@ static error chartest(icontainer_maker *maker, FILE *vizout)
   int           matched;
   const item_t *item;
 
-  BLURT("Create cont");
+  LOG("Create cont");
 
   err = maker(&cont, &static_char_key, &static_string_value);
   if (err)
     goto failure;
 
-  BLURT("Insert test values");
+  LOG("Insert test values");
 
   for (i = 0; i < max; i++)
   {
@@ -539,9 +616,11 @@ static error chartest(icontainer_maker *maker, FILE *vizout)
     if (err)
       goto failure;
 
-    BLURT1("Count of elements = %d elements", cont->count(cont));
+    LOG1("Count of elements = %d elements", cont->count(cont));
 
-    //BLURT("Look up every key");
+    viz_show(cont, testname, "insert");
+
+    //LOG("Look up every key");
 
     found   = 0;
     matched = 0;
@@ -552,14 +631,14 @@ static error chartest(icontainer_maker *maker, FILE *vizout)
       value = cont->lookup(cont, &chartestdata[j].key);
       if (value == NULL)
       {
-        BLURT1("lookup didn't find %d", chartestdata[j].key);
+        LOG1("lookup didn't find %d", chartestdata[j].key);
       }
       else
       {
         found++;
 
         if (value != chartestdata[j].value)
-          BLURT1("values didn't match for key %d", chartestdata[j].key);
+          LOG1("values didn't match for key %d", chartestdata[j].key);
         else
           matched++;
       }
@@ -567,44 +646,41 @@ static error chartest(icontainer_maker *maker, FILE *vizout)
 
     if (found < i + 1 || matched < i + 1)
     {
-      BLURT3("%s%d of %d keys found", found < i + 1 ? "*** " : "", found, i + 1);
-      BLURT3("%s%d of %d keys matched", matched < i + 1 ? "*** " : "", matched, i + 1);
+      LOG3("%s%d of %d keys found", found < i + 1 ? "*** " : "", found, i + 1);
+      LOG3("%s%d of %d keys matched", matched < i + 1 ? "*** " : "", matched, i + 1);
     }
   }
 
-  BLURT("The fifth element contains:");
+  LOG("The fifth element contains:");
 
   if ((item = cont->select(cont, 5)) == NULL)
     printf(NAME ": -- (null)\n");
   else
     printf(NAME ": -- %d : '%s'\n", *((char *) item->key), item->value);
 
-  BLURT("Dump");
+  LOG("Dump");
 
   cont->show(cont, stdout);
 
-  if (vizout)
-  {
-    BLURT("Dump viz");
+  LOG("Dump viz");
 
-    cont->show_viz(cont, vizout);
-  }
+  viz_show(cont, testname, "dump");
 
-  BLURT("Remove every other test value");
+  LOG("Remove every other test value");
 
   for (i = 0; i < max; i += 2)
     cont->remove(cont, &chartestdata[i].key);
 
-  BLURT("Remove remaining test values");
+  LOG("Remove remaining test values");
 
   for (i = 1; i < max; i += 2)
     cont->remove(cont, &chartestdata[i].key);
 
-  BLURT("Dump");
+  LOG("Dump");
 
   cont->show(cont, stdout);
 
-  BLURT("Destroy");
+  LOG("Destroy");
 
   cont->destroy(cont);
 
@@ -613,7 +689,7 @@ static error chartest(icontainer_maker *maker, FILE *vizout)
 
 failure:
 
-  BLURT1("error %lu\n", err);
+  LOG1("error %lu\n", err);
 
   return err;
 }
@@ -623,14 +699,13 @@ failure:
 /* ----------------------------------------------------------------------- */
 
 static error test_icontainer_type(icontainer_maker *maker,
-                                  const char       *filesafemakername,
-                                  int               viz)
+                                  const char       *safemakername)
 {
   static const struct
   {
-    error     (*test)(icontainer_maker *maker, FILE *vizout);
+    error     (*test)(icontainer_maker *maker, const char *testname);
     const char *name;
-    const char *filesafename;
+    const char *safename;
   }
   tests[] =
   {
@@ -643,32 +718,24 @@ static error test_icontainer_type(icontainer_maker *maker,
   error err;
   int   i;
 
-  printf(">> test maker %p\n", maker);
-
   for (i = 0; i < NELEMS(tests); i++)
   {
-    FILE *f = NULL;
+    char testname[256];
 
-    printf("> %s\n", tests[i].name);
+    printf("> test '%s' (%d of %d)\n", tests[i].name,
+           i + 1,
+           NELEMS(tests));
 
-    if (viz)
-    {
-      char vizfilename[100];
+    sprintf(testname, "%s-%s", safemakername, tests[i].safename);
 
-      sprintf(vizfilename, "%s-%s.gv", filesafemakername,
-              tests[i].filesafename);
+    viz_counter = 0;
 
-      f = fopen(vizfilename, "w");
-    }
-
-    err = tests[i].test(maker, f);
+    err = tests[i].test(maker, testname);
     if (err)
       goto failure;
 
-    fclose(f);
+    printf("<\n\n");
   }
-
-  printf("--------\n");
 
   return error_OK;
 
@@ -680,13 +747,13 @@ failure:
   return err;
 }
 
-int test_container(int viz)
+int test_container(int viz) // viz ignored now
 {
   static const struct
   {
     icontainer_maker *maker;
     const char       *name;
-    const char       *filesafename;
+    const char       *safename; /* safe for filenames: no spaces etc. */
   }
   makers[] =
   {
@@ -696,7 +763,7 @@ int test_container(int viz)
     { container_create_dstree,       "dstree",        "dstree"       },
     { container_create_trie,         "trie",          "trie"         },
     { container_create_critbit,      "critbit",       "critbit"      },
-    // { container_create_patricia,     "patricia",      "patricia"     },
+    { container_create_patricia,     "patricia",      "patricia"     },
   };
 
   error err;
@@ -704,11 +771,15 @@ int test_container(int viz)
 
   for (i = 0; i < NELEMS(makers); i++)
   {
-    printf(">> test_container with '%s'\n", makers[i].name);
+    printf(">> container '%s' (%d of %d)\n", makers[i].name,
+           i + 1,
+           NELEMS(makers));
 
-    err = test_icontainer_type(makers[i].maker, makers[i].filesafename, viz);
+    err = test_icontainer_type(makers[i].maker, makers[i].safename);
     if (err)
       goto failure;
+
+    printf("<<\n\n");
   }
 
   return EXIT_SUCCESS;

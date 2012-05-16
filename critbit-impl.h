@@ -24,8 +24,8 @@ typedef struct critbit__node
   /* using an array here rather than separate left,right elements makes some
    * operations more convenient */
   struct critbit__node    *child[2];  /* left, right children */
-  int                      byte;      /* byte offset of critbit */
-  unsigned char            otherbits; /* inverted mask of critbit */
+  int                      byte;      /* byte offset of critical bit */
+  unsigned char            otherbits; /* inverted mask of critical bit */
 }
 critbit__node_t;
 
@@ -44,10 +44,9 @@ struct critbit
 
 /* ----------------------------------------------------------------------- */
 
-/* These have a eversed sense than original paper/code. */
+/* These have a reversed sense compared to the original paper. */
 #define IS_INTERNAL(p) (((intptr_t) (p) & 1) == 0)
 #define IS_EXTERNAL(p) (!IS_INTERNAL(p))
-#define IS_LEAF(p) IS_EXTERNAL(p)
 
 /* Take a node pointer and make it into an extnode. */
 #define FROM_STORE(p) (critbit__extnode_t *) ((intptr_t) (p) - 1)
@@ -78,11 +77,6 @@ error critbit__walk_internal(critbit_t                       *t,
                              critbit_walk_flags               flags,
                              critbit__walk_internal_callback *cb,
                              void                            *opaque);
-
-error critbit__breadthwalk_internal(critbit_t                       *t,
-                                    critbit_walk_flags               flags,
-                                    critbit__walk_internal_callback *cb,
-                                    void                            *opaque);
 
 /* ----------------------------------------------------------------------- */
 

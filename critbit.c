@@ -46,12 +46,17 @@ static critbit__extnode_t *critbit__extnode_create(critbit_t  *t,
   return n;
 }
 
+static void critbit__extnode_clear(critbit_t *t, critbit__extnode_t *n)
+{
+  if (t->destroy_key && n->item.key)
+    t->destroy_key((void *) n->item.key); /* must cast away const */
+  if (t->destroy_value && n->item.value)
+    t->destroy_value((void *) n->item.value);
+}
+
 static void critbit__extnode_destroy(critbit_t *t, critbit__extnode_t *n)
 {
-  if (t->destroy_key)
-    t->destroy_key((void *) n->item.key); /* must cast away const */
-  if (t->destroy_value)
-    t->destroy_value((void *) n->item.value);
+  critbit__extnode_clear(t, n);
 
   free(n);
 
@@ -151,22 +156,22 @@ void critbit_destroy(critbit_t *t)
 #define GET_BYTE(KEY, KEYEND, INDEX) \
   (((KEY) + (INDEX) < (KEYEND)) ? (KEY)[INDEX] : 0)
 
-/* Extract the next binary direction from the key. */
-#define GET_NEXT_DIR(KEY, KEYEND, INDEX, OTHERBITS) \
+/* Extract the specified indexed binary direction from the key. */
+#define GET_DIR(KEY, KEYEND, INDEX, OTHERBITS) \
   ((1 + ((OTHERBITS) | GET_BYTE(KEY, KEYEND, INDEX))) >> 8)
 
 /* ----------------------------------------------------------------------- */
 
-static const critbit__extnode_t *critbit__lookup(const critbit__node_t *n,
-                                                 const void            *key,
-                                                 size_t                 keylen)
+static INLINE const critbit__extnode_t *critbit__lookup(const critbit__node_t *n,
+                                                        const void            *key,
+                                                        size_t                 keylen)
 {
   const unsigned char *ukey    = key;
   const unsigned char *ukeyend = ukey + keylen;
   int                  dir;
 
   for (; IS_INTERNAL(n); n = n->child[dir])
-    dir = GET_NEXT_DIR(ukey, ukeyend, n->byte, n->otherbits);
+    dir = GET_DIR(ukey, ukeyend, n->byte, n->otherbits);
 
   return FROM_STORE(n);
 }
@@ -177,13 +182,18 @@ const void *critbit_lookup(const critbit_t *t,
 {
   const critbit__extnode_t *n;
 
+  assert(key != NULL);
+  assert(keylen > 0);
+
   /* test for empty tree */
-  if (t->root == NULL)
+  n = t->root;
+  if (n == NULL)
     return NULL;
 
-  n = critbit__lookup(t->root, key, keylen);
+  n = critbit__lookup(n, key, keylen);
 
-  if (n && n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
+  assert(n != NULL);
+  if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
     return n->item.value; /* found */
   else
     return t->default_value; /* not found */
@@ -191,112 +201,142 @@ const void *critbit_lookup(const critbit_t *t,
 
 /* ----------------------------------------------------------------------- */
 
+// Can we insert an all-zero-bits key into an empty critbit tree?
+// - Which is the critbit in that case?
+// - It turns out that's not a relevant question for crit-bit as the only
+// node which needs to be created is an external node.
+// ...
+// - But for patricia there are no external nodes. /Everything/ must have a
+// crit-bit, but you can't discover the crit-bit of an all-zero-bits key
+// unless you arbitrarily fix the length of the keys.
+
 error critbit_insert(critbit_t  *t,
                      const void *key,
                      size_t      keylen,
                      const void *value)
 {
-  const unsigned char *ukey    = key;
-  const unsigned char *ukeyend = ukey + keylen;
-
-  const unsigned char *qkey; // reorder these var defns
+  const unsigned char *ukey;
+  const unsigned char *ukeyend;
+  int                  newbyte;
+  unsigned int         newotherbits;
+  const unsigned char *qkey;
   const unsigned char *qkeyend;
 
-  critbit__extnode_t  *newextnode;
-  critbit__extnode_t  *q;
-  int                  newbyte;
-  uint32_t             newotherbits;
-  critbit__node_t     *newnode;
-  int                  newdir;
-  critbit__node_t    **wherep;
-  critbit__node_t     *p;
-
-  /* deal with inserting into an empty tree */
-  if (t->root == NULL)
   {
+    critbit__extnode_t *q;
+
+    /* deal with inserting into an empty tree */
+    if (t->root == NULL)
+    {
+      critbit__extnode_t *newextnode;
+
+      newextnode = critbit__extnode_create(t, key, keylen, value);
+      if (newextnode == NULL)
+        return error_OOM;
+
+      t->root = TO_STORE(newextnode);
+
+      return error_OK;
+    }
+
+    /* find closest node */
+    q = (critbit__extnode_t *) critbit__lookup(t->root, key, keylen); /* we cast away const */
+    assert(q != NULL);
+
+    if (q->item.keylen == keylen && memcmp(q->item.key, key, keylen) == 0)
+    {
+      /* update the existing key's value */
+
+      if (q->item.key == key)
+      {
+        /* existing key - just update the value */
+        q->item.value  = value;
+      }
+      else
+      {
+        critbit__extnode_clear(t, q);
+
+        q->item.key    = key;
+        q->item.keylen = keylen;
+        q->item.value  = value;
+      }
+
+      return error_OK;
+    }
+
+    /* we've found a node which differs */
+
+    qkey    = q->item.key;
+    qkeyend = qkey + q->item.keylen;
+
+    ukey    = key;
+    ukeyend = ukey + keylen;
+
+    /* locate the critical bit */
+
+    {
+      int nbit;
+
+      nbit = keydiffbit(qkey, qkeyend - qkey, ukey, ukeyend - ukey);
+      if (nbit == -1)
+        return error_CLASHES;
+
+      newotherbits = 1 << (7 - (nbit & 0x07));
+      newotherbits ^= 255;
+
+      newbyte = nbit >> 3;
+    }
+  }
+
+  /* insert new item */
+
+  {
+    critbit__extnode_t *newextnode;
+    critbit__node_t    *newnode;
+    critbit__node_t   **pn;
+    int                 newdir;
+
+    /* allocate new external node */
+
     newextnode = critbit__extnode_create(t, key, keylen, value);
     if (newextnode == NULL)
       return error_OOM;
 
-    t->root = TO_STORE(newextnode);
+    /* allocate new internal node */
 
-    return error_OK;
+    newnode = critbit__node_create(t, newbyte, (uint8_t) newotherbits);
+    if (newnode == NULL)
+    {
+      critbit__extnode_destroy(t, newextnode);
+      return error_OOM;
+    }
+
+    /* insert new node */
+
+    pn = &t->root;
+
+    for (;;)
+    {
+      critbit__node_t *n;
+
+      n = *pn;
+
+      if (IS_EXTERNAL(n)    ||
+          n->byte > newbyte ||
+          (n->byte == newbyte && n->otherbits > newotherbits))
+        break;
+
+      pn = &n->child[GET_DIR(ukey, ukeyend, n->byte, n->otherbits)];
+    }
+
+    newdir = GET_DIR(qkey, qkeyend, newbyte, newotherbits);
+    assert(newdir == 0 || newdir == 1);
+
+    newnode->child[newdir] = *pn;
+    newnode->child[!newdir] = TO_STORE(newextnode);
+
+    *pn = newnode;
   }
-
-  /* lookup */
-  q = (critbit__extnode_t *) critbit__lookup(t->root, key, keylen); // const -> nonconst badness
-
-  /* find the critical bit */
-
-  qkey    = q->item.key;
-  qkeyend = qkey + q->item.keylen;
-
-  /* find differing byte */
-  for (newbyte = 0; newbyte < (int) keylen; newbyte++)
-  {
-    uint32_t a, b;
-
-    a = GET_BYTE(qkey, qkeyend, newbyte);
-    b = GET_BYTE(ukey, ukeyend, newbyte);
-
-    if ((newotherbits = a ^ b) != 0)
-      break;
-  }
-
-  /* if we hit end of key, see if we hit end of qkey too */
-  // ought to indicate end of key another way (zero assumes a NUL terminated string),
-  // but that conflicts with the right to return zero bits trailing at end of key ... can i not just compare both lengths here?
-  if (newbyte == (int) keylen && (newotherbits = GET_BYTE(qkey, qkeyend, newbyte)) == 0)
-    //if (newbyte == keylen && (newotherbits = qkey[newbyte]) == '\0')
-    return error_EXISTS;
-
-  /* find differing bit */
-  /* spread the MSB right (three times is enough for a byte) */
-  newotherbits |= newotherbits >> 1;
-  newotherbits |= newotherbits >> 2;
-  newotherbits |= newotherbits >> 4;
-  /* wipe out all bits save for the MSB */
-  newotherbits = newotherbits & ~(newotherbits >> 1);
-  /* form a mask */
-  newotherbits ^= 255;
-
-  /* insert new item */
-
-  newextnode = critbit__extnode_create(t, key, keylen, value);
-  if (newextnode == NULL)
-    return error_OOM;
-
-  /* allocate new node structure */
-
-  newnode = critbit__node_create(t, newbyte, (uint8_t) newotherbits);
-  if (newnode == NULL)
-  {
-    critbit__extnode_destroy(t, newextnode);
-    return error_OOM;
-  }
-
-  newdir = GET_NEXT_DIR(qkey, qkeyend, newbyte, newotherbits);
-
-  newnode->child[1 - newdir] = TO_STORE(newextnode);
-
-  /* insert new node */
-
-  wherep = &t->root;
-
-  for (;;)
-  {
-    p = *wherep;
-
-    if (IS_EXTERNAL(p)    ||
-        p->byte > newbyte ||
-        (p->byte == newbyte && p->otherbits > newotherbits))
-      break;
-
-    wherep = &p->child[GET_NEXT_DIR(ukey, ukeyend, p->byte, p->otherbits)];
-  }
-
-  newnode->child[newdir] = *wherep;
-  *wherep = newnode;
 
   return error_OK;
 }
@@ -326,7 +366,7 @@ void critbit_remove(critbit_t *t, const void *key, size_t keylen)
   {
     wherem = wheren;
 
-    dir = GET_NEXT_DIR(ukey, ukeyend, n->byte, n->otherbits);
+    dir = GET_DIR(ukey, ukeyend, n->byte, n->otherbits);
     wheren = &n->child[dir];
 
     lastn = n;
@@ -382,6 +422,7 @@ static error critbit__select_node(critbit__node_t *n,
   return error_OK;
 }
 
+/* Walk the tree until the k'th leaf is encountered and return it. */
 const item_t *critbit_select(critbit_t *t, int k)
 {
   error                  err;
@@ -393,7 +434,7 @@ const item_t *critbit_select(critbit_t *t, int k)
   err = critbit__walk_internal(t,
                                critbit_WALK_LEAVES,
                                critbit__select_node,
-                              &args);
+                               &args);
 
   /* no errors save for the expected ones should happen here */
   assert(err == error_OK || err == error_STOP_WALK);
@@ -453,20 +494,18 @@ error critbit_lookup_prefix(const critbit_t        *t,
   int                    dir;
   const critbit__node_t *top;
   critbit__extnode_t    *e;
-  int                    i;
-  const unsigned char   *ukey;
 
   n   = t->root;
   top = n;
 
-  if (t->root == NULL)
+  if (n == NULL)
     return error_OK; /* empty tree */
 
   while (IS_INTERNAL(n))
   {
     critbit__node_t *m;
 
-    dir = GET_NEXT_DIR(uprefix, uprefixend, n->byte, n->otherbits);
+    dir = GET_DIR(uprefix, uprefixend, n->byte, n->otherbits);
 
     m = n->child[dir];
 
@@ -478,15 +517,12 @@ error critbit_lookup_prefix(const critbit_t        *t,
 
   e = FROM_STORE(n);
 
-  /* check the prefix exists */
-  if (e->item.keylen < prefixlen)
+  /* ensure the prefix exists */
+  if (e->item.keylen < prefixlen ||
+      memcmp(e->item.key, prefix, prefixlen) != 0)
     return error_NOT_FOUND;
 
-  ukey = e->item.key;
-
-  for (i = 0; i < (int) prefixlen; i++)
-    if (uprefix[i] != ukey[i])
-      return error_NOT_FOUND;
+  assert(top != NULL);
 
   return critbit__lookup_prefix_walk(top, cb, opaque);
 }
@@ -503,6 +539,7 @@ static error critbit__walk_internal_in_order(critbit__node_t                 *n,
                                              void                            *opaque)
 {
   error err;
+  int   i;
 
   if (n == NULL)
     return error_OK;
@@ -518,20 +555,19 @@ static error critbit__walk_internal_in_order(critbit__node_t                 *n,
   }
   else
   {
-    err = critbit__walk_internal_in_order(n->child[0], flags, level + 1, cb, opaque);
-    if (err)
-      return err;
-
-    if ((flags & critbit_WALK_BRANCHES) != 0)
+    for (i = 0; i < 2; i++)
     {
-      err = cb(n, level, opaque); // it seems like we need two callback types...
+      err = critbit__walk_internal_in_order(n->child[i], flags, level + 1, cb, opaque);
       if (err)
         return err;
-    }
 
-    err = critbit__walk_internal_in_order(n->child[1], flags, level + 1, cb, opaque);
-    if (err)
-      return err;
+      if (i == 0 && (flags & critbit_WALK_BRANCHES) != 0) /* inbetween */
+      {
+        err = cb(n, level, opaque);
+        if (err)
+          return err;
+      }
+    }
   }
 
   return error_OK;
@@ -544,6 +580,7 @@ static error critbit__walk_internal_pre_order(critbit__node_t                 *n
                                               void                            *opaque)
 {
   error err;
+  int   i;
 
   if (n == NULL)
     return error_OK;
@@ -559,20 +596,20 @@ static error critbit__walk_internal_pre_order(critbit__node_t                 *n
   }
   else
   {
+    /* self */
     if ((flags & critbit_WALK_BRANCHES) != 0)
     {
-      err = cb(n, level, opaque); // it seems like we need two callback types...
+      err = cb(n, level, opaque);
       if (err)
         return err;
     }
 
-    err = critbit__walk_internal_pre_order(n->child[0], flags, level + 1, cb, opaque);
-    if (err)
-      return err;
-
-    err = critbit__walk_internal_pre_order(n->child[1], flags, level + 1, cb, opaque);
-    if (err)
-      return err;
+    for (i = 0; i < 2; i++)
+    {
+      err = critbit__walk_internal_pre_order(n->child[i], flags, level + 1, cb, opaque);
+      if (err)
+        return err;
+    }
   }
 
   return error_OK;
@@ -585,6 +622,7 @@ static error critbit__walk_internal_post_order(critbit__node_t                 *
                                                void                            *opaque)
 {
   error err;
+  int   i;
 
   if (n == NULL)
     return error_OK;
@@ -600,17 +638,17 @@ static error critbit__walk_internal_post_order(critbit__node_t                 *
   }
   else
   {
-    err = critbit__walk_internal_post_order(n->child[0], flags, level + 1, cb, opaque);
-    if (err)
-      return err;
+    for (i = 0; i < 2; i++)
+    {
+      err = critbit__walk_internal_post_order(n->child[i], flags, level + 1, cb, opaque);
+      if (err)
+        return err;
+    }
 
-    err = critbit__walk_internal_post_order(n->child[1], flags, level + 1, cb, opaque);
-    if (err)
-      return err;
-
+    /* self */
     if ((flags & critbit_WALK_BRANCHES) != 0)
     {
-      err = cb(n, level, opaque); // it seems like we need two callback types...
+      err = cb(n, level, opaque);
       if (err)
         return err;
     }
@@ -652,83 +690,3 @@ error critbit__walk_internal(critbit_t                       *t,
   return walker(t->root, flags, 0, cb, opaque);
 }
 
-/* ----------------------------------------------------------------------- */
-
-error critbit__breadthwalk_internal(critbit_t                       *t,
-                                    critbit_walk_flags               flags,
-                                    critbit__walk_internal_callback *cb,
-                                    void                            *opaque)
-{
-  typedef struct nodedepth
-  {
-    critbit__node_t *node;
-    int              depth;
-  }
-  nodedepth;
-
-  error     err;
-  queue_t  *queue;
-  nodedepth nd;
-
-  if (t == NULL)
-    return error_OK;
-
-  queue = queue_create(100, sizeof(nodedepth));
-  if (queue == NULL)
-    return error_OOM;
-
-  assert(t->root);
-
-  nd.node  = t->root;
-  nd.depth = 0;
-
-  err = queue_enqueue(queue, &nd);
-  if (err)
-    return err;
-
-  while (!queue_empty(queue))
-  {
-    int       leaf;
-    nodedepth ndc;
-
-    err = queue_dequeue(queue, &nd);
-    if (err)
-      return err;
-
-    leaf = IS_LEAF(nd.node);
-
-    // this actually means /visit/ leaves or branches we still walk
-    // the entire structure and queue up child elements for visiting
-    if (((flags & critbit_WALK_LEAVES)   != 0 && leaf) ||
-        ((flags & critbit_WALK_BRANCHES) != 0 && !leaf))
-    {
-      err = cb(nd.node, nd.depth, opaque);
-      if (err)
-        return err;
-    }
-
-    if (leaf)
-      continue;
-
-    ndc.depth = nd.depth + 1;
-
-    if (nd.node->child[0])
-    {
-      ndc.node = nd.node->child[0];
-      err = queue_enqueue(queue, &ndc);
-      if (err)
-        return err;
-    }
-    if (nd.node->child[1])
-    {
-      ndc.node = nd.node->child[1];
-      err = queue_enqueue(queue, &ndc);
-      if (err)
-        return err;
-    }
-  }
-
-  queue_destroy(queue);
-
-  return error_OK;
-}

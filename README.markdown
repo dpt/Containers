@@ -1,23 +1,21 @@
 Containers
 ==========
 
-This is a library containing C implementations of binary trees.
+This is a library of associative array data structures implemented as binary trees in C.
 
-So far we have the following implementations:
+We implement the following types of binary tree:
 
-- bstree  - a binary search tree
-- dstree  - a digital search tree
-- trie    - a Fredkin tree
-- critbit - a crit-bit tree
+- 'bstree'   - a binary search tree
+- 'dstree'   - a digital search tree
+- 'trie'     - a Fredkin tree
+- 'critbit'  - a crit-bit tree
+- 'patricia' - a PATRICIA trie
 
-Not yet implemented:
-
-- patricia - a PATRICIA trie
+Each have their own strengths and (dis)advantages.
 
 See 'Algorithms' by Sedgewick for details of the algorithms.
 
-Two additional libraries are provided for comparison with the tree data
-structures:
+Two additional associative data structures are provided for comparison with the binary tree data structures:
 
 - linkedlist   - a linked list in which elements are kept sorted
 - orderedarray - an ordered array (again, sorted)
@@ -39,7 +37,7 @@ Or you can use the higher-level "Containers" interface defined in:
 
 - icontainer.h
 
-The benefit of the Containers interface is a regular interface which makes it possible to swap between data structures with little or no changes to the calling code.
+The benefit of the Containers interface is a regular interface which makes it possible to swap between data structures with little or no changes to the calling code. The cost is more code which may perform redundant work depending on your use case.
 
 To create a container use one of:
 
@@ -129,7 +127,7 @@ The containers layer was developed largely to simplify testing of the lower-leve
 Graphs
 ------
 
-The critbit, dstree, and trie tests dump representations of their data structures to [Graphviz](http://www.graphviz.org/) format. The produced .gv files can be run through Graphviz's 'dot' tool, rendering the directed graph into boxes, lines and arrows.
+The critbit, dstree, patricia and trie tests dump representations of their data structures to [Graphviz](http://www.graphviz.org/) format. The produced .gv files can be run through Graphviz's 'dot' tool, rendering the directed graph into boxes, lines and arrows.
 
 To turn these into, for example, a PDF file:
 
