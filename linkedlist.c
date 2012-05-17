@@ -140,7 +140,7 @@ error linkedlist_insert(linkedlist_t *t,
     return error_OOM;
 
   n->next = *pn;
-  *pn      = n;
+  *pn     = n;
 
   return error_OK;
 }

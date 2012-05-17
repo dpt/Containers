@@ -112,10 +112,10 @@ void bstree_destroy(bstree_t *t)
 
 /* ----------------------------------------------------------------------- */
 
-static const void *bstree__lookup_node(const bstree__node_t *n,
-                                       const void           *key,
-                                       const void           *default_value,
-                                       bstree_compare       *compare)
+static INLINE const void *bstree__lookup_node(const bstree__node_t *n,
+                                              const void           *key,
+                                              const void           *default_value,
+                                              bstree_compare       *compare)
 {
   while (n)
   {
@@ -138,13 +138,13 @@ const void *bstree_lookup(bstree_t *t, const void *key)
 
 /* ----------------------------------------------------------------------- */
 
-static bstree__node_t **bstree__insert_node(bstree__node_t **pn,
-                                            const void      *key,
-                                            bstree_compare  *compare)
+static INLINE bstree__node_t **bstree__insert_node(bstree__node_t **pn,
+                                                   const void      *key,
+                                                   bstree_compare  *compare)
 {
   bstree__node_t *n;
 
-  while ((n = *pn))
+  while ((n = *pn) != NULL)
   {
     int d;
 
