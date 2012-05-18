@@ -78,8 +78,6 @@ error critbit_show(const critbit_t      *t,
   args.value_destroy = value_destroy;
   args.f             = f;
 
-  // wah wah wah - this will fail as stringkv_fmt has a single internal buffer
-
   if (args.key == NULL)
     args.key = stringkv_fmt;
   if (args.value == NULL)
@@ -270,8 +268,6 @@ error critbit_show_viz(const critbit_t      *t,
   args.value         = value;
   args.value_destroy = value_destroy;
   args.f             = f;
-
-  // wah wah wah - this will fail as stringkv_fmt has a single internal buffer
 
   if (args.key == NULL)
     args.key = stringkv_fmt;

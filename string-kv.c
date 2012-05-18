@@ -13,7 +13,6 @@ size_t stringkv_len(const void *key_)
   return strlen(key);
 }
 
-/* duplicate-ish copy of routine in hash/create.c */
 int stringkv_compare(const void *a_, const void *b_)
 {
   const char *a = a_;
