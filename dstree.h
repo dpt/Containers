@@ -53,6 +53,8 @@ error dstree_insert(T *t, const void *key, size_t keylen, const void *value);
 void dstree_remove(T *t, const void *key, size_t keylen);
 void dstree_remove2(T *t, const void *key, size_t keylen); /* alternative */
 
+const item_t *dstree_select(T *t, int k);
+
 int dstree_count(T *t);
 
 /* ----------------------------------------------------------------------- */

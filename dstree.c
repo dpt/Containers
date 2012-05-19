@@ -100,7 +100,7 @@ static error dstree__destroy_node(dstree__node_t *n, int level, void *opaque)
 
 void dstree_destroy(dstree_t *t)
 {
-  (void) dstree__walk_internal(t, dstree__destroy_node, t);
+  (void) dstree__walk_internal_post(t, dstree__destroy_node, t);
 
   free(t);
 }
@@ -422,10 +422,10 @@ error dstree_lookup_prefix(const dstree_t        *t,
 
   for (i = 0; i < 2; i++)
   {
-    err = dstree__walk_internal_node((dstree__node_t *) n->child[i],
-                                     depth,
-                                     dstree__lookup_prefix_node,
-                                     &args);
+    err = dstree__walk_internal_post_node((dstree__node_t *) n->child[i],
+                                          depth,
+                                          dstree__lookup_prefix_node,
+                                          &args);
     if (err)
       return err;
   }
@@ -436,6 +436,47 @@ error dstree_lookup_prefix(const dstree_t        *t,
 /* ----------------------------------------------------------------------- */
 
 /* post-order (which allows for deletions) */
+static error dstree__node_walk_internal_post(dstree__node_t                 *n,
+                                             int                             level,
+                                             dstree__walk_internal_callback *cb,
+                                             void                           *opaque)
+{
+  error err;
+
+  if (n == NULL)
+    return error_OK;
+
+  err = dstree__node_walk_internal_post(n->child[0], level + 1, cb, opaque);
+  if (!err)
+    err = dstree__node_walk_internal_post(n->child[1], level + 1, cb, opaque);
+  if (!err)
+    err = cb(n, level, opaque);
+
+  return err;
+}
+
+error dstree__walk_internal_post(dstree_t                       *t,
+                                 dstree__walk_internal_callback *cb,
+                                 void                           *opaque)
+{
+  if (t == NULL)
+    return error_OK;
+
+  return dstree__node_walk_internal_post(t->root, 0, cb, opaque);
+}
+
+error dstree__walk_internal_post_node(dstree__node_t                 *root,
+                                      int                             level,
+                                      dstree__walk_internal_callback *cb,
+                                      void                           *opaque)
+{
+  if (root == NULL)
+    return error_OK;
+
+  return dstree__node_walk_internal_post(root, level, cb, opaque);
+}
+
+/* in order */
 static error dstree__node_walk_internal(dstree__node_t                 *n,
                                         int                             level,
                                         dstree__walk_internal_callback *cb,
@@ -448,9 +489,9 @@ static error dstree__node_walk_internal(dstree__node_t                 *n,
 
   err = dstree__node_walk_internal(n->child[0], level + 1, cb, opaque);
   if (!err)
-    err = dstree__node_walk_internal(n->child[1], level + 1, cb, opaque);
-  if (!err)
     err = cb(n, level, opaque);
+  if (!err)
+    err = dstree__node_walk_internal(n->child[1], level + 1, cb, opaque);
 
   return err;
 }
@@ -463,17 +504,6 @@ error dstree__walk_internal(dstree_t                       *t,
     return error_OK;
 
   return dstree__node_walk_internal(t->root, 0, cb, opaque);
-}
-
-error dstree__walk_internal_node(dstree__node_t                 *root,
-                                 int                             level,
-                                 dstree__walk_internal_callback *cb,
-                                 void                           *opaque)
-{
-  if (root == NULL)
-    return error_OK;
-
-  return dstree__node_walk_internal(root, level, cb, opaque);
 }
 
 /* ----------------------------------------------------------------------- */

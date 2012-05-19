@@ -47,13 +47,13 @@ typedef error (dstree__walk_internal_callback)(dstree__node_t *n,
 error dstree__walk_internal_post(dstree_t                       *t,
                                  dstree__walk_internal_callback *cb,
                                  void                           *opaque);
+error dstree__walk_internal_post_node(dstree__node_t                 *root,
+                                      int                             level,
+                                      dstree__walk_internal_callback *cb,
+                                      void                           *opaque);
 error dstree__walk_internal(dstree_t                       *t,
                             dstree__walk_internal_callback *cb,
                             void                           *opaque);
-error dstree__walk_internal_node(dstree__node_t                 *root,
-                                 int                             level,
-                                 dstree__walk_internal_callback *cb,
-                                 void                           *opaque);
 
 error dstree__breadthwalk_internal(dstree_t                       *t,
                                    dstree__walk_internal_callback *cb,

@@ -166,19 +166,6 @@ void linkedlist_remove(linkedlist_t *t, const void *key, size_t keylen)
 
 /* ----------------------------------------------------------------------- */
 
-const item_t *linkedlist_select(linkedlist_t *t, int k)
-{
-  linkedlist__node_t *n;
-
-  for (n = t->anchor; n; n = n->next)
-    if (k-- == 0)
-      break;
-
-  return n ? &n->item : NULL;
-}
-
-/* ----------------------------------------------------------------------- */
-
 int linkedlist_count(linkedlist_t *t)
 {
   return t->count;

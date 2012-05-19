@@ -227,13 +227,6 @@ void orderedarray_remove(orderedarray_t *t, const void *key)
 
 /* ----------------------------------------------------------------------- */
 
-const item_t *orderedarray_select(orderedarray_t *t, int k)
-{
-  return (k < t->nelems) ? &t->array[k].item : t->default_value;
-}
-
-/* ----------------------------------------------------------------------- */
-
 int orderedarray_count(orderedarray_t *t)
 {
   return t->nelems;

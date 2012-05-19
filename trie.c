@@ -329,51 +329,6 @@ void trie_remove(trie_t *t, const void *key, size_t keylen)
 
 /* ----------------------------------------------------------------------- */
 
-typedef struct trie__select_args
-{
-  int     k;
-  item_t *item;
-}
-trie__select_args_t;
-
-static error trie__select_node(trie__node_t *n,
-                               int           level,
-                               void         *opaque)
-{
-  trie__select_args_t *args = opaque;
-
-  NOT_USED(level);
-
-  if (args->k-- == 0)
-  {
-    args->item = &n->item;
-    return error_STOP_WALK;
-  }
-
-  return error_OK;
-}
-
-const item_t *trie_select(trie_t *t, int k)
-{
-  error               err;
-  trie__select_args_t args;
-
-  args.k    = k;
-  args.item = NULL;
-
-  err = trie__walk_internal(t,
-                            trie_WALK_IN_ORDER | trie_WALK_LEAVES,
-                            trie__select_node,
-                            &args);
-
-  /* no errors save for the expected ones should happen here */
-  assert(err == error_OK || err == error_STOP_WALK);
-
-  return args.item;
-}
-
-/* ----------------------------------------------------------------------- */
-
 int trie_count(trie_t *t)
 {
   return t->count;

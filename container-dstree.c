@@ -54,10 +54,9 @@ static void container_dstree__remove(icontainer_t *c_, const void *key)
 
 static const item_t *container_dstree__select(const icontainer_t *c_, int k)
 {
-  NOT_USED(c_);
-  NOT_USED(k);
+  container_dstree_t *c = (container_dstree_t *) c_;
 
-  return NULL; /* not implemented */
+  return dstree_select(c->t, k);
 }
 
 static error container_dstree__lookup_prefix(const icontainer_t        *c_,
