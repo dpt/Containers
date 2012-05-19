@@ -175,7 +175,7 @@ const void *patricia_lookup(const patricia_t *t,
                             const void       *key,
                             size_t            keylen)
 {
-  patricia__node_t *n;
+  const patricia__node_t *n;
 
   assert(key != NULL);
   assert(keylen > 0);

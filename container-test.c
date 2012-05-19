@@ -102,7 +102,8 @@ static error stringtest_lookup_prefix_callback(const item_t *item, void *opaque)
 {
   int *count = opaque;
 
-  (void) printf(NAME ": -- '%s' : '%s'\n", item->key, item->value);
+  (void) printf(NAME ": -- '%s' : '%s'\n", (char *) item->key,
+                                           (char *) item->value);
 
   prefixes_seen++;
 
@@ -418,7 +419,8 @@ static error inttest_lookup_prefix_callback(const item_t *item, void *opaque)
 {
   NOT_USED(opaque);
 
-  printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key, item->value);
+  printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key,
+                                  (char *) item->value);
 
   return error_OK;
 }
@@ -488,7 +490,8 @@ static error inttest(icontainer_maker *maker, const char *testname)
     if ((item = cont->select(cont, i)) == NULL)
       printf(NAME ": -- (null)\n");
     else
-      printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key, (const char *) item->value);
+      printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key,
+                                      (const char *) item->value);
   }
 
   LOG("Look up keys by their prefix");
@@ -656,7 +659,8 @@ static error chartest(icontainer_maker *maker, const char *testname)
   if ((item = cont->select(cont, 5)) == NULL)
     printf(NAME ": -- (null)\n");
   else
-    printf(NAME ": -- %d : '%s'\n", *((char *) item->key), item->value);
+    printf(NAME ": -- %d : '%s'\n", *((char *) item->key),
+                                    (char *) item->value);
 
   LOG("Dump");
 

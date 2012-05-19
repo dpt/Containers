@@ -25,7 +25,8 @@ warnings        = -Wall -Wundef -Wpointer-arith -Wuninitialized \
 		  -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wunused \
 		  -Wmissing-prototypes -Wmissing-declarations \
 		  -Wnested-externs -Winline -Wno-unused -Wno-long-long -W \
-		  -Wcast-qual -Wshadow
+		  -Wshadow
+# -Wcast-qual disabled due to the amount of spam
 includes	= -I.
 
 # Combined tool and flags

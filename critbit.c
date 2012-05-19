@@ -186,11 +186,10 @@ const void *critbit_lookup(const critbit_t *t,
   assert(keylen > 0);
 
   /* test for empty tree */
-  n = t->root;
-  if (n == NULL)
+  if (t->root == NULL)
     return NULL;
 
-  n = critbit__lookup(n, key, keylen);
+  n = critbit__lookup(t->root, key, keylen);
 
   assert(n != NULL);
   if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
