@@ -37,11 +37,6 @@ static void orderedarray__node_destroy(orderedarray_t       *t,
 
 /* ----------------------------------------------------------------------- */
 
-/* NULL passed into the compare/destroy callbacks signifies that these
- * internal routines should be used. They are set up to handle malloc'd
- * strings.
- */
-
 error orderedarray_create(const void                  *default_value,
                           orderedarray_compare        *compare,
                           orderedarray_destroy_key    *destroy_key,
@@ -61,9 +56,9 @@ error orderedarray_create(const void                  *default_value,
   t->maxelems      = 0;
 
   t->default_value = default_value;
-  t->compare       = compare       ? compare       : stringkv_compare;
-  t->destroy_key   = destroy_key   ? destroy_key   : stringkv_destroy;
-  t->destroy_value = destroy_value ? destroy_value : stringkv_destroy;
+  t->compare       = compare;
+  t->destroy_key   = destroy_key;
+  t->destroy_value = destroy_value;
 
   *pt = t;
 

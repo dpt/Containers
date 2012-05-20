@@ -54,10 +54,6 @@ static void trie__node_destroy(trie_t *t, trie__node_t *n)
 
 /* ----------------------------------------------------------------------- */
 
-/* NULL passed into the destroy callbacks signifies that these internal
- * routines should be used. They are setup to handle malloc'd strings.
- */
-
 error trie_create(const void          *default_value,
                   trie_destroy_key    *destroy_key,
                   trie_destroy_value  *destroy_value,
@@ -73,12 +69,8 @@ error trie_create(const void          *default_value,
 
   t->root          = NULL;
   t->default_value = default_value;
-
-  /* if NULL is specified for callbacks then default to handlers suitable for
-   * a malloc'd string */
-
-  t->destroy_key   = destroy_key   ? destroy_key   : stringkv_destroy;
-  t->destroy_value = destroy_value ? destroy_value : stringkv_destroy;
+  t->destroy_key   = destroy_key;
+  t->destroy_value = destroy_value;
 
   t->count         = 0;
 

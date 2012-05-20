@@ -109,12 +109,8 @@ error critbit_create(const void             *default_value,
 
   t->root          = NULL;
   t->default_value = default_value;
-
-  /* if NULL is specified for callbacks then default to handlers suitable for
-   * a malloc'd string */
-
-  t->destroy_key   = destroy_key   ? destroy_key   : stringkv_destroy;
-  t->destroy_value = destroy_value ? destroy_value : stringkv_destroy;
+  t->destroy_key   = destroy_key;
+  t->destroy_value = destroy_value;
 
   t->intcount      = 0;
   t->extcount      = 0;

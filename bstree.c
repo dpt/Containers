@@ -59,10 +59,6 @@ static void bstree__node_destroy(bstree_t *t, bstree__node_t *n)
 
 /* ----------------------------------------------------------------------- */
 
-/* NULL passed into the compare/destroy callbacks signifies that these
- * internal routines should be used. They are setup to handle malloc'd strings.
- */
-
 error bstree_create(const void            *default_value,
                     bstree_compare        *compare,
                     bstree_destroy_key    *destroy_key,
@@ -79,13 +75,9 @@ error bstree_create(const void            *default_value,
 
   t->root          = NULL;
   t->default_value = default_value;
-
-  /* if NULL is specified for callbacks then default to handlers suitable for
-   * a malloc'd string */
-
-  t->compare       = compare       ? compare       : stringkv_compare;
-  t->destroy_key   = destroy_key   ? destroy_key   : stringkv_destroy;
-  t->destroy_value = destroy_value ? destroy_value : stringkv_destroy;
+  t->compare       = compare;
+  t->destroy_key   = destroy_key;
+  t->destroy_value = destroy_value;
 
   t->count         = 0;
 
