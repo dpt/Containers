@@ -27,7 +27,24 @@ int stringkv_compare(const void *a_, const void *b_)
   else          return  1;
 }
 
+/* Fowler/Noll/Vo FNV-1 hash */
+unsigned int stringkv_hash(const void *s_)
+{
+  const unsigned char *s = s_;
+  unsigned int         h;
+
+  h = 0x811c9dc5;
+  while (*s)
+  {
+    h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+    h ^= *s++;
+  }
+
+  return h;
+}
+
 const char *stringkv_fmt(const void *kv)
 {
   return kv;
 }
+

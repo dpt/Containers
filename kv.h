@@ -19,6 +19,9 @@ typedef size_t (kv_len)(const void *key);
 /* Signature of a function which compares two keys (like qsort() uses). */
 typedef int (kv_compare)(const void *a, const void *b);
 
+/* Signature of a function which hashes a key. */
+typedef unsigned int (kv_hash)(const void *key);
+
 /* Signature of a function which destroys an allocated key (same signature as
  * free()). */
 typedef void (kv_destroy)(void *doomed);

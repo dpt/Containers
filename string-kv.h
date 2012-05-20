@@ -10,6 +10,7 @@ kv_len stringkv_len;
 kv_compare stringkv_compare;
 #define stringkv_destroy free;
 #define stringkv_nodestroy kv_nodestroy
+kv_hash stringkv_hash;
 kv_fmt stringkv_fmt;
 #define stringkv_fmt_destroy kv_fmtdestroy
 #define stringkv_fmt_nodestroy kv_nofmtdestroy

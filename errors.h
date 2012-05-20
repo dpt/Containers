@@ -20,4 +20,7 @@ typedef unsigned long int error;
 
 #define error_TEST_FAILED         400
 
+#define error_HASH_END            500
+#define error_HASH_BAD_CONT       501
+
 #endif /* ERRORS_H */
