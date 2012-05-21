@@ -6,24 +6,32 @@
 #ifndef HASH_IMPL_H
 #define HASH_IMPL_H
 
+#include <stdlib.h>
+
+#include "item.h"
+
 #include "hash.h"
 
-typedef struct node
+typedef struct node // rename hash__node
 {
-  struct node         *next;
-  void                *key;
-  void                *value;
+  struct node *next;
+  item_t       item;
 }
 node;
 
 struct hash_t
 {
+  node              **bins;
+  int                 nbins;
+
+  int                 count;
+
+  const void         *default_value;
+
   hash_fn            *hash_fn;
   hash_compare       *compare;
   hash_destroy_key   *destroy_key;
   hash_destroy_value *destroy_value;
-  int                 nbins;
-  node              **bins;
 };
 
 node **hash_lookup_node(hash_t *h, const void *key);

@@ -64,8 +64,8 @@ error hash_walk_continuation(hash_t      *h,
   if (n == NULL) /* invalid continuation value */
     return error_HASH_BAD_CONT;
 
-  *key   = n->key;
-  *value = n->value;
+  *key   = n->item.key;
+  *value = n->item.value;
 
   /* form the continuation value and return it */
 

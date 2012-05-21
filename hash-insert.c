@@ -13,21 +13,24 @@
 
 #include "hash-impl.h"
 
-error hash_insert(hash_t *h, void *key, void *value)
+error hash_insert(hash_t     *h,
+                  const void *key,
+                  size_t      keylen,
+                  const void *value)
 {
   node **n;
   int    hash;
 
-  n = hash_lookup_node(h, key);
+  n = hash_lookup_node(h, key); /* must cast away const */
   if (*n)
   {
     /* already exists: update the value */
 
-    h->destroy_value((*n)->value);
+    h->destroy_value((void *) (*n)->item.value); /* must cast away const */
 
-    (*n)->value = value;
+    (*n)->item.value = value;
 
-    h->destroy_key(key);
+    h->destroy_key((void *) key); /* must cast away const */
   }
   else
   {
@@ -41,9 +44,10 @@ error hash_insert(hash_t *h, void *key, void *value)
 
     hash = h->hash_fn(key) % h->nbins;
 
-    m->next  = NULL;
-    m->key   = key;
-    m->value = value;
+    m->next        = NULL;
+    m->item.key    = key;
+    m->item.keylen = keylen;
+    m->item.value  = value;
 
     *n = m;
   }

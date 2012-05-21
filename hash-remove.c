@@ -19,8 +19,8 @@ void hash_remove_node(hash_t *h, node **n)
 
   *n = doomed->next;
 
-  h->destroy_key(doomed->key);
-  h->destroy_value(doomed->value);
+  h->destroy_key((void *) doomed->item.key); /* must cast away const */
+  h->destroy_value((void *) doomed->item.value); /* must cast away const */
 
   free(doomed);
 }
@@ -30,5 +30,5 @@ void hash_remove(hash_t *h, const void *key)
   node **n;
 
   n = hash_lookup_node(h, key);
-  hash_remove_node(h, n);
+  hash_remove_node(h, (node **) n); /* must cast away const */
 }

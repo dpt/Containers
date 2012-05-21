@@ -19,7 +19,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-error hash_create(int                 nbins,
+error hash_create(const void         *default_value,
+                  int                 nbins,
                   hash_fn            *fn,
                   hash_compare       *compare,
                   hash_destroy_key   *destroy_key,
@@ -39,12 +40,17 @@ error hash_create(int                 nbins,
   if (bins == NULL)
     return error_OOM;
 
+  h->bins          = bins;
+  h->nbins         = nbins;
+
+  h->count         = 0;
+
+  h->default_value = default_value;
+
   h->hash_fn       = fn;
   h->compare       = compare;
   h->destroy_key   = destroy_key;
   h->destroy_value = destroy_value;
-  h->nbins         = nbins;
-  h->bins          = bins;
 
   *ph = h;
 

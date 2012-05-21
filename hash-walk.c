@@ -7,9 +7,7 @@
 
 #include "memento.h"
 
-//#include "appengine/types.h"
 #include "errors.h"
-//#include "appengine/base/primes.h"
 
 #include "hash.h"
 
@@ -30,7 +28,7 @@ int hash_walk(hash_t *h, hash_walk_callback *cb, void *cbarg)
 
       next = n->next;
 
-      r = cb(n->key, n->value, cbarg);
+      r = cb(n->item.key, n->item.value, cbarg);
       if (r < 0)
         return r;
     }

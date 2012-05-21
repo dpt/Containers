@@ -14,6 +14,7 @@ typedef unsigned long int error;
 
 #define error_KEYLEN_REQUIRED     200
 #define error_KEYCOMPARE_REQUIRED 201
+#define error_KEYHASH_REQIURED    202
 
 #define error_QUEUE_FULL          300
 #define error_QUEUE_EMPTY         301

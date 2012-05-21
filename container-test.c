@@ -36,21 +36,21 @@
 /* A statically allocated string key. */
 static const icontainer_key_t static_string_key =
 {
-  stringkv_len, stringkv_compare,
+  stringkv_len, stringkv_compare, stringkv_hash,
   { stringkv_nodestroy, stringkv_fmt, stringkv_fmt_nodestroy }
 };
 
 /* A statically allocated int key. */
 static const icontainer_key_t static_int_key =
 {
-  intkv_len, intkv_compare,
+  intkv_len, intkv_compare, intkv_hash,
   { intkv_nodestroy, intkv_fmt, intkv_fmt_nodestroy }
 };
 
 /* A statically allocated char key. */
 static const icontainer_key_t static_char_key =
 {
-  charkv_len, charkv_compare,
+  charkv_len, charkv_compare, charkv_hash,
   { charkv_nodestroy, charkv_fmt, charkv_fmt_nodestroy }
 };
 
@@ -103,7 +103,7 @@ static error stringtest_lookup_prefix_callback(const item_t *item, void *opaque)
   int *count = opaque;
 
   (void) printf(NAME ": -- '%s' : '%s'\n", (char *) item->key,
-                                           (char *) item->value);
+                (char *) item->value);
 
   prefixes_seen++;
 
@@ -420,7 +420,7 @@ static error inttest_lookup_prefix_callback(const item_t *item, void *opaque)
   NOT_USED(opaque);
 
   printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key,
-                                  (char *) item->value);
+         (char *) item->value);
 
   return error_OK;
 }
@@ -491,7 +491,7 @@ static error inttest(icontainer_maker *maker, const char *testname)
       printf(NAME ": -- (null)\n");
     else
       printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key,
-                                      (const char *) item->value);
+             (const char *) item->value);
   }
 
   LOG("Look up keys by their prefix");
@@ -660,7 +660,7 @@ static error chartest(icontainer_maker *maker, const char *testname)
     printf(NAME ": -- (null)\n");
   else
     printf(NAME ": -- %d : '%s'\n", *((char *) item->key),
-                                    (char *) item->value);
+           (char *) item->value);
 
   LOG("Dump");
 
