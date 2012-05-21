@@ -12,6 +12,8 @@
 
 #include "hash.h"
 
+/* ----------------------------------------------------------------------- */
+
 typedef struct hash__node
 {
   struct hash__node *next;
@@ -34,7 +36,22 @@ struct hash
   hash_destroy_value *destroy_value;
 };
 
+/* ----------------------------------------------------------------------- */
+
+/* internal hash walk functions which return a pointer to a hash__node_t */
+
+typedef error (hash__walk_internal_callback)(hash__node_t *n,
+                                             void         *opaque);
+
+error hash__walk_internal(hash_t                       *hash,
+                          hash__walk_internal_callback *cb,
+                          void                         *opaque);
+
+/* ----------------------------------------------------------------------- */
+
 hash__node_t **hash_lookup_node(hash_t *h, const void *key);
 void hash_remove_node(hash_t *h, hash__node_t **n);
+
+/* ----------------------------------------------------------------------- */
 
 #endif /* HASH_IMPL_H */
