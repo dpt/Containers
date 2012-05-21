@@ -23,6 +23,8 @@ void hash_remove_node(hash_t *h, hash__node_t **n)
   h->destroy_value((void *) doomed->item.value); /* must cast away const */
 
   free(doomed);
+
+  h->count--;
 }
 
 void hash_remove(hash_t *h, const void *key)

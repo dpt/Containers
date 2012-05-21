@@ -49,6 +49,8 @@ error hash_insert(hash_t     *h,
     m->item.keylen = keylen;
     m->item.value  = value;
 
+    h->count++;
+
     *n = m;
   }
 
