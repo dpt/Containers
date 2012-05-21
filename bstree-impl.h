@@ -3,8 +3,6 @@
 #ifndef BSTREE_IMPL_H
 #define BSTREE_IMPL_H
 
-#include "types.h"
-
 #include "item.h"
 
 #include "bstree.h"
