@@ -13,7 +13,7 @@
 
 #include "hash-impl.h"
 
-int hash_walk(hash_t *h, hash_walk_callback *cb, void *cbarg)
+int hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
 {
   int i;
 
@@ -28,7 +28,7 @@ int hash_walk(hash_t *h, hash_walk_callback *cb, void *cbarg)
 
       next = n->next;
 
-      r = cb(n->item.key, n->item.value, cbarg);
+      r = cb(&n->item, cbarg);
       if (r < 0)
         return r;
     }

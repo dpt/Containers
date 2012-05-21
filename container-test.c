@@ -21,6 +21,7 @@
 
 #include "container-orderedarray.h"
 #include "container-linkedlist.h"
+#include "container-hash.h"
 #include "container-bstree.h"
 #include "container-dstree.h"
 #include "container-trie.h"
@@ -761,13 +762,14 @@ int test_container(int viz) // viz ignored now
   }
   makers[] =
   {
-    { container_create_orderedarray, "ordered array", "orderedarray" },
-    { container_create_linkedlist,   "linked list",   "linkedlist"   },
-    { container_create_bstree,       "bstree",        "bstree"       },
-    { container_create_dstree,       "dstree",        "dstree"       },
-    { container_create_trie,         "trie",          "trie"         },
-    { container_create_critbit,      "critbit",       "critbit"      },
-    { container_create_patricia,     "patricia",      "patricia"     },
+    //{ container_create_orderedarray, "ordered array", "orderedarray" },
+    //{ container_create_linkedlist,   "linked list",   "linkedlist"   },
+    { container_create_hash,         "hash",          "hash"         },
+    //{ container_create_bstree,       "bstree",        "bstree"       },
+    //{ container_create_dstree,       "dstree",        "dstree"       },
+    //{ container_create_trie,         "trie",          "trie"         },
+    //{ container_create_critbit,      "critbit",       "critbit"      },
+    //{ container_create_patricia,     "patricia",      "patricia"     },
   };
 
   error err;
