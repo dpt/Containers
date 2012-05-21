@@ -78,15 +78,6 @@ error critbit_show(const critbit_t      *t,
   args.value_destroy = value_destroy;
   args.f             = f;
 
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
-
   return critbit__walk_internal((critbit_t *) t,
                                 critbit_WALK_IN_ORDER | critbit_WALK_ALL,
                                 critbit__node_show, &args);
@@ -268,15 +259,6 @@ error critbit_show_viz(const critbit_t      *t,
   args.value         = value;
   args.value_destroy = value_destroy;
   args.f             = f;
-
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
 
   (void) fprintf(f, "digraph \"critbit\"\n");
   (void) fprintf(f, "{\n");

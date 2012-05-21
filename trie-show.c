@@ -65,15 +65,6 @@ error trie_show(const trie_t      *t,
   args.value_destroy = value_destroy;
   args.f             = f;
 
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
-
   return trie__walk_internal((trie_t *) t,
                              trie_WALK_IN_ORDER | trie_WALK_LEAVES,
                              trie__node_show, &args);
@@ -167,15 +158,6 @@ error trie_show_viz(const trie_t      *t,
   args.value         = value;
   args.value_destroy = value_destroy;
   args.f             = f;
-
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
 
   args.lastlevel = -1;
 

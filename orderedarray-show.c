@@ -61,15 +61,6 @@ error orderedarray_show(const orderedarray_t      *t,
   args.value_destroy = value_destroy;
   args.f             = f;
 
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
-
   return orderedarray__walk_internal((orderedarray_t *) t,
                                      orderedarray__node_show,
                                      &args);

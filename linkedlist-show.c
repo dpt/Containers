@@ -61,15 +61,6 @@ error linkedlist_show(const linkedlist_t      *t,
   args.value_destroy = value_destroy;
   args.f             = f;
 
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
-
   return linkedlist__walk_internal((linkedlist_t *) t,
                                    linkedlist__node_show,
                                    &args);

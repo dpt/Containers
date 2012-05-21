@@ -65,15 +65,6 @@ error bstree_show(const bstree_t      *t,
   args.value_destroy = value_destroy;
   args.f             = f;
 
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
-
   return bstree__walk_internal((bstree_t *) t, bstree__node_show, &args);
 }
 
@@ -130,15 +121,6 @@ error bstree_show_viz(const bstree_t      *t,
   args.value         = value;
   args.value_destroy = value_destroy;
   args.f             = f;
-
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
 
   (void) fprintf(f, "digraph \"bstree\"\n");
   (void) fprintf(f, "{\n");

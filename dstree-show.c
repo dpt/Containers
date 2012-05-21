@@ -64,15 +64,6 @@ error dstree_show(const dstree_t      *t,
   args.value_destroy = value_destroy;
   args.f             = f;
 
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
-
   // this walks the tree in post order but we don't mind (as the tree is unordered)
   return dstree__walk_internal((dstree_t *) t, dstree__node_show, &args);
 }
@@ -159,15 +150,6 @@ error dstree_show_viz(const dstree_t      *t,
   args.value         = value;
   args.value_destroy = value_destroy;
   args.f             = f;
-
-  if (args.key == NULL)
-    args.key = stringkv_fmt;
-  if (args.value == NULL)
-    args.value = stringkv_fmt;
-  if (args.key_destroy == NULL)
-    args.key_destroy = stringkv_fmt_destroy;
-  if (args.value_destroy == NULL)
-    args.value_destroy = stringkv_fmt_destroy;
 
   args.lastlevel = -1;
 
