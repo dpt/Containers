@@ -43,7 +43,7 @@ struct hash
 typedef error (hash__walk_internal_callback)(hash__node_t *n,
                                              void         *opaque);
 
-error hash__walk_internal(hash_t                       *hash,
+error hash__walk_internal(const hash_t                 *hash,
                           hash__walk_internal_callback *cb,
                           void                         *opaque);
 

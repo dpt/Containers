@@ -13,9 +13,9 @@
 
 #include "hash-impl.h"
 
-error hash__walk_internal(const hash_t       *hash,
-                          hash_walk_callback *cb,
-                          void               *opaque)
+error hash__walk_internal(const hash_t                 *hash,
+                          hash__walk_internal_callback *cb,
+                          void                         *opaque)
 {
   error err;
   int   i;
@@ -32,7 +32,7 @@ error hash__walk_internal(const hash_t       *hash,
     {
       next = n->next;
 
-      err = cb(&n->item, opaque);
+      err = cb(n, opaque);
       if (err)
         return err;
     }
