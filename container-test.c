@@ -233,6 +233,11 @@ static error stringtest(icontainer_maker *maker, const char *testname)
 
     count = 0;
     err = cont->lookup_prefix(cont, prefix, stringtest_lookup_prefix_callback, &count);
+    if (err == error_NOT_IMPLEMENTED)
+    {
+      LOG("not implemented - skipping test");
+      goto skip;
+    }
     if (err == error_OK || err == error_NOT_FOUND)
     {
       int expected = prefixcounts[i - 'A'];
@@ -252,6 +257,7 @@ static error stringtest(icontainer_maker *maker, const char *testname)
   else
     LOG("ok!");
 
+skip:
 
   LOG("Enumerate keys which don't exist");
 
@@ -270,6 +276,11 @@ static error stringtest(icontainer_maker *maker, const char *testname)
 
     count = 0;
     err = cont->lookup_prefix(cont, prefix, stringtest_lookup_prefix_callback, &count);
+    if (err == error_NOT_IMPLEMENTED)
+    {
+      LOG("not implemented - skipping test");
+      break;
+    }
     if (err == error_OK || err == error_NOT_FOUND)
     {
       int expected = 0;
@@ -288,7 +299,7 @@ static error stringtest(icontainer_maker *maker, const char *testname)
   LOG("Look up a key which doesn't exist");
 
   err = cont->lookup_prefix(cont, "Gooseberries", stringtest_lookup_prefix_callback, NULL);
-  if (err != error_NOT_FOUND)
+  if (err != error_NOT_FOUND && err != error_NOT_IMPLEMENTED)
   {
     LOG("lookup_prefix did _not_ return 'not found'!");
     goto failure;
@@ -511,6 +522,11 @@ static error inttest(icontainer_maker *maker, const char *testname)
     prefix = i;
 
     err = cont->lookup_prefix(cont, &prefix, inttest_lookup_prefix_callback, NULL);
+    if (err == error_NOT_IMPLEMENTED)
+    {
+      LOG("not implemented - skipping test");
+      break;
+    }
     if (err == error_NOT_FOUND)
       ;
     else if (err)
@@ -520,7 +536,7 @@ static error inttest(icontainer_maker *maker, const char *testname)
   LOG("Look up a key which doesn't exist");
 
   err = cont->lookup_prefix(cont, "Gooseberries", inttest_lookup_prefix_callback, NULL);
-  if (err != error_NOT_FOUND)
+  if (err != error_NOT_FOUND && err != error_NOT_IMPLEMENTED)
   {
     LOG("lookup_prefix did _not_ return 'not found'!");
     goto failure;

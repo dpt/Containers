@@ -64,20 +64,7 @@ static error container_hash__lookup_prefix(const icontainer_t        *c_,
                                            icontainer_found_callback  cb,
                                            void                      *opaque)
 {
-#if 0
-  const container_hash_t *c = (container_hash_t *) c_;
-
-  /* hash_lookup_prefix and icontainer_found_callback have the same
-   * signature so we can just cast one to the other here. If this were not
-   * the case we would need an adaptor function to turn one callback into
-   * another. */
-
-  return hash_lookup_prefix(c->t,
-                            prefix, c->len(prefix),
-                            (icontainer_found_callback) cb, opaque);
-#else
-  return error_OK; /* NYI */
-#endif
+  return error_NOT_IMPLEMENTED;
 }
 
 static int container_hash__count(const icontainer_t *c_)
@@ -89,30 +76,17 @@ static int container_hash__count(const icontainer_t *c_)
 
 static error container_hash__show(const icontainer_t *c_, FILE *f)
 {
-#if 0
   container_hash_t *c = (container_hash_t *) c_;
 
   return hash_show(c->t,
                    c->show_key, c->show_key_destroy,
                    c->show_value, c->show_value_destroy,
                    f);
-#else
-  return error_OK; /* NYI */
-#endif
 }
 
 static error container_hash__show_viz(const icontainer_t *c_, FILE *f)
 {
-#if 0
-  container_hash_t *c = (container_hash_t *) c_;
-
-  return hash_show_viz(c->t,
-                       c->show_key, c->show_key_destroy,
-                       c->show_value, c->show_value_destroy,
-                       f);
-#else
-  return error_OK; /* NYI */
-#endif
+  return error_NOT_IMPLEMENTED;
 }
 
 static void container_hash__destroy(icontainer_t *doomed_)
@@ -172,12 +146,12 @@ error container_create_hash(icontainer_t            **container,
   c->show_value_destroy = value->kv.show_destroy;
 
   err = hash_create(value->default_value,
-      97,
-      key->hash,
-      key->compare,
-      key->kv.destroy,
-      value->kv.destroy,
-      &c->t);
+                    97,
+                    key->hash,
+                    key->compare,
+                    key->kv.destroy,
+                    value->kv.destroy,
+                    &c->t);
   if (err)
   {
     free(c);
