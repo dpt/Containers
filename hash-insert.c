@@ -18,8 +18,8 @@ error hash_insert(hash_t     *h,
                   size_t      keylen,
                   const void *value)
 {
-  node **n;
-  int    hash;
+  hash__node_t **n;
+  int            hash;
 
   n = hash_lookup_node(h, key); /* must cast away const */
   if (*n)
@@ -34,7 +34,7 @@ error hash_insert(hash_t     *h,
   }
   else
   {
-    node *m;
+    hash__node_t *m;
 
     /* not found: create new node */
 

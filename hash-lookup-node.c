@@ -9,10 +9,10 @@
 
 #include "hash-impl.h"
 
-node **hash_lookup_node(hash_t *h, const void *key)
+hash__node_t **hash_lookup_node(hash_t *h, const void *key)
 {
-  int          hash;
-  node **n;
+  int            hash;
+  hash__node_t **n;
 
   hash = h->hash_fn(key) % h->nbins;
   for (n = &h->bins[hash]; *n != NULL; n = &(*n)->next)

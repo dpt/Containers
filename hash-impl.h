@@ -12,16 +12,16 @@
 
 #include "hash.h"
 
-typedef struct node // rename hash__node
+typedef struct hash__node
 {
-  struct node *next;
-  item_t       item;
+  struct hash__node *next;
+  item_t             item;
 }
-node;
+hash__node_t;
 
-struct hash_t
+struct hash
 {
-  node              **bins;
+  hash__node_t      **bins;
   int                 nbins;
 
   int                 count;
@@ -34,7 +34,7 @@ struct hash_t
   hash_destroy_value *destroy_value;
 };
 
-node **hash_lookup_node(hash_t *h, const void *key);
-void hash_remove_node(hash_t *h, node **n);
+hash__node_t **hash_lookup_node(hash_t *h, const void *key);
+void hash_remove_node(hash_t *h, hash__node_t **n);
 
 #endif /* HASH_IMPL_H */

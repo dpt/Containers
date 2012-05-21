@@ -27,8 +27,8 @@ error hash_create(const void         *default_value,
                   hash_destroy_value *destroy_value,
                   hash_t            **ph)
 {
-  hash_t *h;
-  node  **bins;
+  hash_t        *h;
+  hash__node_t **bins;
 
   h = malloc(sizeof(*h));
   if (h == NULL)

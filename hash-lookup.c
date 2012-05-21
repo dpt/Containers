@@ -11,7 +11,7 @@
 
 const void *hash_lookup(hash_t *h, const void *key)
 {
-  node **n;
+  hash__node_t **n;
 
   n = hash_lookup_node(h, key);
 

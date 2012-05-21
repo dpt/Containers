@@ -20,11 +20,11 @@ error hash_walk_continuation(hash_t      *h,
                              const void **key,
                              const void **value)
 {
-  unsigned int bin;
-  unsigned int item;
-  int          i;
-  node        *n;
-  node        *next = NULL;
+  unsigned int  bin;
+  unsigned int  item;
+  int           i;
+  hash__node_t *n;
+  hash__node_t *next = NULL;
 
   if (continuation == -1) /* previous iteration was the last element */
     return error_HASH_END;

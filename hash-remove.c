@@ -11,9 +11,9 @@
 
 #include "hash-impl.h"
 
-void hash_remove_node(hash_t *h, node **n)
+void hash_remove_node(hash_t *h, hash__node_t **n)
 {
-  node *doomed;
+  hash__node_t *doomed;
 
   doomed = *n;
 
@@ -27,8 +27,8 @@ void hash_remove_node(hash_t *h, node **n)
 
 void hash_remove(hash_t *h, const void *key)
 {
-  node **n;
+  hash__node_t **n;
 
   n = hash_lookup_node(h, key);
-  hash_remove_node(h, (node **) n); /* must cast away const */
+  hash_remove_node(h, n);
 }
