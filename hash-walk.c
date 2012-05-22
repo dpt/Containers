@@ -13,7 +13,7 @@
 
 #include "hash-impl.h"
 
-int hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
+error hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
 {
   int i;
 
@@ -34,5 +34,5 @@ int hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
     }
   }
 
-  return 0;
+  return error_OK;
 }

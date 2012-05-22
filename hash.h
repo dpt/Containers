@@ -127,10 +127,10 @@ int hash_count(T *hash);
 /**
  * A function called for every key:value pair in the hash.
  *
- * Return a negative value to halt the walk operation.
+ * Return an error to halt the walk operation.
  */
-typedef int (hash_walk_callback)(const item_t *item,
-                                 void         *opaque);
+typedef error (hash_walk_callback)(const item_t *item,
+                                   void         *opaque);
 
 /**
  * Walk the hash, calling the specified routine for every element.
@@ -139,10 +139,10 @@ typedef int (hash_walk_callback)(const item_t *item,
  * \param cb     Callback routine.
  * \param opaque Opaque pointer to pass to callback routine.
  *
- * \return The negative value returned from the callback, or zero for
- * success.
+ * \return Error indication.
+ * \retval error_OK If the walk completed successfully.
  */
-int hash_walk(const T *hash, hash_walk_callback *cb, void *opaque);
+error hash_walk(const T *hash, hash_walk_callback *cb, void *opaque);
 
 /* ----------------------------------------------------------------------- */
 
