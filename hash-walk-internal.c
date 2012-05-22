@@ -25,16 +25,20 @@ error hash__walk_internal(const hash_t                 *hash,
 
   for (i = 0; i < hash->nbins; i++)
   {
+    int           j;
     hash__node_t *n;
     hash__node_t *next;
 
+    j = 0;
     for (n = hash->bins[i]; n != NULL; n = next)
     {
       next = n->next;
 
-      err = cb(n, opaque);
+      err = cb(n, i, j, opaque);
       if (err)
         return err;
+
+      j++;
     }
   }
 
