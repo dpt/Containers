@@ -1,8 +1,15 @@
 *.a
 *.d
+*.exe
+*.idb
+*.lib
 *.o
+*.obj
 *.odbg
+*.pch
+*.pdb
+*.user
 .DS_Store
+build
 container-test
 container-testdbg
-build
