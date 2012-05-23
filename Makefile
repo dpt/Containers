@@ -27,7 +27,7 @@ warnings        = -Wall -Wundef -Wpointer-arith -Wuninitialized \
 		  -Wnested-externs -Winline -Wno-unused -Wno-long-long -W \
 		  -Wshadow
 # -Wcast-qual disabled due to the amount of spam
-includes	= -I.
+includes	= -Iinclude
 
 # Combined tool and flags
 
@@ -51,12 +51,12 @@ debugexe	= container-testdbg
 
 # Objects
 
-src		= $(shell find . -name 'main.c' -prune -o -name '*.c' -print)
+src		= $(shell find libraries -name 'main.c' -prune -o -name '*.c' -print)
 objs		= $(src:.c=.o)
 debugobjs	= $(src:.c=.odbg)
 deps		= $(src:.c=.d)
 
-appsrc		= main.c
+appsrc		= libraries/test/main.c
 appobjs		= $(appsrc:.c=.o)
 debugappobjs	= $(appsrc:.c=.odbg)
 appdeps		= $(appsrc:.c=.d)
