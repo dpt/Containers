@@ -1,8 +1,8 @@
 /* string.c -- functions for items which use strings */
 
-#include "base/types.h"
-
 #include <string.h>
+
+#include "base/types.h"
 
 #include "keyval/string.h"
 

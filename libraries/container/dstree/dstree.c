@@ -3,14 +3,11 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "base/memento/memento.h"
-
 #include "base/errors.h"
-#include "utils/utils.h"
-#include "container/interface/container.h"
 #include "datastruct/dstree.h"
+#include "container/interface/container.h"
 
 #include "container/dstree.h"
 

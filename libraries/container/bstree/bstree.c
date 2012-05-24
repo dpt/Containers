@@ -5,11 +5,9 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-
 #include "base/errors.h"
-#include "utils/utils.h"
-#include "container/interface/container.h"
 #include "datastruct/bstree.h"
+#include "container/interface/container.h"
 
 #include "container/bstree.h"
 

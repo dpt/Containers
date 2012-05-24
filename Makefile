@@ -51,12 +51,17 @@ debugexe	= container-testdbg
 
 # Objects
 
-src		= $(shell find libraries -name 'main.c' -prune -o -name '*.c' -print)
+src		= $(shell find libraries -name 'apps' -prune -o -name '*.c' -print)
 objs		= $(src:.c=.o)
 debugobjs	= $(src:.c=.odbg)
 deps		= $(src:.c=.d)
 
-appsrc		= libraries/test/main.c
+testsrc		= $(shell find libraries -name ... )
+testobjs	= $(testsrc:.c=.o)
+debugtestobjs	= $(testsrc:.c=.odbg)
+testdeps	= $(testsrc:.c=.d)
+
+appsrc		= $(shell find apps -name '*.c')
 appobjs		= $(appsrc:.c=.o)
 debugappobjs	= $(appsrc:.c=.odbg)
 appdeps		= $(appsrc:.c=.d)

@@ -6,10 +6,8 @@
 #include <string.h>
 
 #include "base/memento/memento.h"
-
 #include "base/errors.h"
-#include "utils/utils.h"
-#include "string.h"
+#include "base/types.h"
 #include "keyval/string.h"
 
 #include "datastruct/bstree.h"

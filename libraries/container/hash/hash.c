@@ -5,11 +5,10 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-
 #include "base/errors.h"
-#include "utils/utils.h"
-#include "container/interface/container.h"
+#include "base/types.h"
 #include "datastruct/hash.h"
+#include "container/interface/container.h"
 
 #include "container/hash.h"
 

@@ -3,13 +3,11 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "base/memento/memento.h"
-
 #include "base/errors.h"
-#include "container/interface/container.h"
 #include "datastruct/trie.h"
+#include "container/interface/container.h"
 
 #include "container/trie.h"
 

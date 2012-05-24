@@ -7,7 +7,7 @@
 #include "base/memento/memento.h"
 
 #include "base/errors.h"
-#include "utils/utils.h"
+#include "base/types.h"
 
 #include "datastruct/queue.h"
 

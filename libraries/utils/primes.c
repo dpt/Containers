@@ -3,7 +3,7 @@
  * Purpose: Prime numbers
  * ----------------------------------------------------------------------- */
 
-#include "utils/utils.h"
+#include "base/types.h"
 
 #include "utils/primes.h"
 

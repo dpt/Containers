@@ -3,8 +3,7 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-
-#include "utils/utils.h"
+#include "base/types.h"
 
 #include "keyval/common.h"
 

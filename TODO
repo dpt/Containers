@@ -1,0 +1,1 @@
+- Hoist out test source files to their own repo. Or store them in test sub-dirs and build those in a separate pass?
