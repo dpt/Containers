@@ -46,17 +46,19 @@ link		= $(link_) $(linkflags)
 
 lib		= libcontainer.a
 debuglib	= libcontainerdbg.a
+testlib		= libcontainertest.a
+debugtestlib	= libcontainertestdbg.a
 exe		= container-test
 debugexe	= container-testdbg
 
 # Objects
 
-src		= $(shell find libraries -name 'apps' -prune -o -name '*.c' -print)
+src		= $(shell find libraries -path '*/test/*' -o -name 'apps' -prune -o -name '*.c' -print)
 objs		= $(src:.c=.o)
 debugobjs	= $(src:.c=.odbg)
 deps		= $(src:.c=.d)
 
-testsrc		= $(shell find libraries -name ... )
+testsrc		= $(shell find libraries -path '*/test/*' -name '*.c' -print)
 testobjs	= $(testsrc:.c=.o)
 debugtestobjs	= $(testsrc:.c=.odbg)
 testdeps	= $(testsrc:.c=.d)
@@ -76,17 +78,23 @@ $(lib):		$(objs)
 $(debuglib):	$(debugobjs)
 		$(ar) $@ $(debugobjs)
 
+$(testlib):	$(testobjs)
+		$(ar) $@ $(testobjs)
+
+$(debugtestlib):	$(debugtestobjs)
+		$(ar) $@ $(debugtestobjs)
+
 release:	$(lib)
 		@echo 'release' built
 
 debug:		$(debuglib)
 		@echo 'debug' built
 
-$(exe):		$(appobjs) $(lib)
-		$(link) -o $@ $(appobjs) $(lib) $(extlibs)
+$(exe):		$(appobjs) $(testlib) $(lib)
+		$(link) -o $@ $^ $(extlibs)
 
-$(debugexe):	$(debugappobjs) $(debuglib)
-		$(link) -g -o $@ $(debugappobjs) $(debuglib) $(extlibs)
+$(debugexe):	$(debugappobjs) $(debugtestlib) $(debuglib)
+		$(link) -g -o $@ $^ $(extlibs)
 
 apps:		$(exe)
 		@echo 'apps' built
@@ -98,9 +106,10 @@ all:		release debug apps debugapps
 		@echo 'all' built
 
 clean:
-		-rm $(lib) $(objs) $(appobjs) $(exe)
-		-rm $(debuglib) $(debugobjs) $(debugappobjs) $(debugexe)
-		-rm $(deps) $(appdeps)
+		-rm $(lib) $(debuglib) $(testlib) $(debugtestlib) $(exe) $(debugexe)
+		-rm $(objs) $(debugobjs) $(deps)
+		-rm $(testobjs) $(debugtestobjs) $(testdeps)
+		-rm $(appobjs) $(debugappobjs) $(appdeps)
 		@echo Cleaned
 
 # Dependencies
