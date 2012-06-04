@@ -151,19 +151,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\libraries\datastruct\critbit\critbit.c"
+				RelativePath="..\..\..\libraries\datastruct\critbit\critbit.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\datastruct\critbit\select.c"
+				RelativePath="..\..\..\libraries\datastruct\critbit\select.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\datastruct\critbit\show.c"
+				RelativePath="..\..\..\libraries\datastruct\critbit\show.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\datastruct\critbit\walk.c"
+				RelativePath="..\..\..\libraries\datastruct\critbit\walk.c"
 				>
 			</File>
 		</Filter>
@@ -173,19 +173,13 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\datastruct\critbit.h"
+				RelativePath="..\..\..\include\datastruct\critbit.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\datastruct\critbit\impl.h"
+				RelativePath="..\..\..\libraries\datastruct\critbit\impl.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 	</Files>
 	<Globals>

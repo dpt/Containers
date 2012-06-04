@@ -151,19 +151,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\libraries\datastruct\bstree\bstree.c"
+				RelativePath="..\..\..\libraries\datastruct\bstree\bstree.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\datastruct\bstree\select.c"
+				RelativePath="..\..\..\libraries\datastruct\bstree\select.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\datastruct\bstree\show.c"
+				RelativePath="..\..\..\libraries\datastruct\bstree\show.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\datastruct\bstree\walk.c"
+				RelativePath="..\..\..\libraries\datastruct\bstree\walk.c"
 				>
 			</File>
 		</Filter>
@@ -173,11 +173,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\datastruct\bstree.h"
+				RelativePath="..\..\..\include\datastruct\bstree.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\datastruct\bstree\impl.h"
+				RelativePath="..\..\..\libraries\datastruct\bstree\impl.h"
 				>
 			</File>
 		</Filter>

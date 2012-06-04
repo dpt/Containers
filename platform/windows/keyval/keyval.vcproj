@@ -151,19 +151,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\libraries\keyval\char.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\keyval\common.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\keyval\int.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\keyval\string.c"
+				RelativePath="..\..\..\libraries\keyval\char.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\keyval\common.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\keyval\int.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\keyval\string.c"
 				>
 			</File>
 		</Filter>
@@ -173,23 +173,23 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\keyval\char.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\keyval\common.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\keyval\int.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\keyval\kv.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\keyval\string.h"
+				RelativePath="..\..\..\include\keyval\char.h"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\include\keyval\common.h"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\include\keyval\int.h"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\include\keyval\kv.h"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\include\keyval\string.h"
 				>
 			</File>
 		</Filter>

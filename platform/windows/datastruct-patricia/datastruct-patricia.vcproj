@@ -151,19 +151,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\libraries\datastruct\patricia\patricia.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\patricia\select.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\patricia\show.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\patricia\walk.c"
+				RelativePath="..\..\..\libraries\datastruct\patricia\patricia.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\patricia\select.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\patricia\show.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\patricia\walk.c"
 				>
 			</File>
 		</Filter>
@@ -173,11 +173,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\libraries\datastruct\patricia\impl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\datastruct\patricia.h"
+				RelativePath="..\..\..\libraries\datastruct\patricia\impl.h"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\include\datastruct\patricia.h"
 				>
 			</File>
 		</Filter>

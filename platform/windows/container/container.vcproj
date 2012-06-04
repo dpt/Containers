@@ -151,35 +151,35 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\libraries\container\bstree\bstree.c"
+				RelativePath="..\..\..\libraries\container\bstree\bstree.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\container\critbit\critbit.c"
+				RelativePath="..\..\..\libraries\container\critbit\critbit.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\container\dstree\dstree.c"
+				RelativePath="..\..\..\libraries\container\dstree\dstree.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\container\hash\hash.c"
+				RelativePath="..\..\..\libraries\container\hash\hash.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\container\linkedlist\linkedlist.c"
+				RelativePath="..\..\..\libraries\container\linkedlist\linkedlist.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\container\orderedarray\orderedarray.c"
+				RelativePath="..\..\..\libraries\container\orderedarray\orderedarray.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\container\patricia\patricia.c"
+				RelativePath="..\..\..\libraries\container\patricia\patricia.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\libraries\container\trie\trie.c"
+				RelativePath="..\..\..\libraries\container\trie\trie.c"
 				>
 			</File>
 		</Filter>
@@ -189,55 +189,55 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\container\bstree.h"
+				RelativePath="..\..\..\include\container\bstree.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\interface\container.h"
+				RelativePath="..\..\..\include\container\interface\container.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\critbit.h"
+				RelativePath="..\..\..\include\container\critbit.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\dstree.h"
+				RelativePath="..\..\..\include\container\dstree.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\hash.h"
+				RelativePath="..\..\..\include\container\hash.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\interface\key.h"
+				RelativePath="..\..\..\include\container\interface\key.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\interface\kv.h"
+				RelativePath="..\..\..\include\container\interface\kv.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\linkedlist.h"
+				RelativePath="..\..\..\include\container\linkedlist.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\interface\maker.h"
+				RelativePath="..\..\..\include\container\interface\maker.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\orderedarray.h"
+				RelativePath="..\..\..\include\container\orderedarray.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\patricia.h"
+				RelativePath="..\..\..\include\container\patricia.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\trie.h"
+				RelativePath="..\..\..\include\container\trie.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\container\interface\value.h"
+				RelativePath="..\..\..\include\container\interface\value.h"
 				>
 			</File>
 		</Filter>

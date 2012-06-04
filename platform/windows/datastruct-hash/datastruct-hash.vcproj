@@ -151,47 +151,47 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\libraries\datastruct\hash\count.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\create.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\destroy.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\insert.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\lookup-node.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\lookup.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\remove.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\show.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\walk-cont.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\walk-internal.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\walk.c"
+				RelativePath="..\..\..\libraries\datastruct\hash\count.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\create.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\destroy.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\insert.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\lookup-node.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\lookup.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\remove.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\show.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\walk-cont.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\walk-internal.c"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\walk.c"
 				>
 			</File>
 		</Filter>
@@ -201,19 +201,13 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\datastruct\hash.h"
+				RelativePath="..\..\..\include\datastruct\hash.h"
+				>                
+			</File>                  
+			<File                    
+				RelativePath="..\..\..\libraries\datastruct\hash\impl.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\libraries\datastruct\hash\impl.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 	</Files>
 	<Globals>
