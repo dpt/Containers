@@ -209,7 +209,6 @@ error patricia_insert(patricia_t *t,
     patricia__node_t    *q;
     const unsigned char *qkey;
     const unsigned char *qkeyend;
-    int                  i;
 
     q = t->root;
     assert(q != NULL);
