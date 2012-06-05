@@ -19,8 +19,7 @@ error hash_insert(hash_t     *h,
                   const void *value)
 {
   hash__node_t **n;
-  int            hash;
-
+  
   n = hash_lookup_node(h, key); /* must cast away const */
   if (*n)
   {
@@ -41,8 +40,6 @@ error hash_insert(hash_t     *h,
     m = malloc(sizeof(*m));
     if (m == NULL)
       return error_OOM;
-
-    hash = h->hash_fn(key) % h->nbins;
 
     m->next        = NULL;
     m->item.key    = key;
