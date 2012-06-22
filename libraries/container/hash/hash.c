@@ -145,7 +145,7 @@ error container_create_hash(icontainer_t            **container,
   c->show_value_destroy = value->kv.show_destroy;
 
   err = hash_create(value->default_value,
-                    97,
+                    97, // this ought to be configurable
                     key->hash,
                     key->compare,
                     key->kv.destroy,
