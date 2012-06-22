@@ -28,7 +28,7 @@ unsigned int intkv_hash(const void *key_)
 {
   int c = *((const int *) key_);
 
-  return c + CHAR_MIN;
+  return c + INT_MIN;
 }
 
 const char *intkv_fmt(const void *kv)

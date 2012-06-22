@@ -27,9 +27,9 @@ int charkv_compare(const void *a_, const void *b_)
 
 unsigned int charkv_hash(const void *key_)
 {
-  int c = *((const char *) key_);
+  int c = *((const char *) key_); // does this need to be unsigned int?
 
-  return c + INT_MIN;
+  return c + CHAR_MIN;
 }
 
 const char *charkv_fmt(const void *kv)
