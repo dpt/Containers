@@ -1,21 +1,12 @@
 /* walk.c -- associative array implemented as ordered linked list */
 
-#include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-#include "base/memento/memento.h"
-
-#include "base/types.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/errors.h"
 
 #include "datastruct/linkedlist.h"
 
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 error linkedlist_walk(const linkedlist_t       *t,
                       linkedlist_walk_callback *cb,
@@ -40,4 +31,3 @@ error linkedlist_walk(const linkedlist_t       *t,
   return error_OK;
 }
 
-/* ----------------------------------------------------------------------- */

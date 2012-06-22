@@ -1,22 +1,23 @@
 /* --------------------------------------------------------------------------
- *    Name: select.c
+ *    Name: lookup.c
  * Purpose: Linked list
  * ----------------------------------------------------------------------- */
 
-#include "datastruct/item.h"
+#include <string.h>
 
 #include "datastruct/linkedlist.h"
 
 #include "impl.h"
 
-const item_t *linkedlist_select(linkedlist_t *t, int k)
+const void *linkedlist_lookup(linkedlist_t *t,
+                              const void   *key,
+                              size_t        keylen)
 {
   linkedlist__node_t *n;
 
   for (n = t->anchor; n; n = n->next)
-    if (k-- == 0)
+    if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
       break;
 
-  return n ? &n->item : NULL;
+  return n ? n->item.value : t->default_value;
 }
-

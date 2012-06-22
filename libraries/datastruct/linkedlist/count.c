@@ -1,22 +1,14 @@
 /* --------------------------------------------------------------------------
- *    Name: select.c
+ *    Name: count.c
  * Purpose: Linked list
  * ----------------------------------------------------------------------- */
-
-#include "datastruct/item.h"
 
 #include "datastruct/linkedlist.h"
 
 #include "impl.h"
 
-const item_t *linkedlist_select(linkedlist_t *t, int k)
+int linkedlist_count(linkedlist_t *t)
 {
-  linkedlist__node_t *n;
-
-  for (n = t->anchor; n; n = n->next)
-    if (k-- == 0)
-      break;
-
-  return n ? &n->item : NULL;
+  return t->count;
 }
 

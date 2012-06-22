@@ -33,6 +33,16 @@ struct linkedlist
 
 /* ----------------------------------------------------------------------- */
 
+linkedlist__node_t *linkedlist__node_create(linkedlist_t *t,
+                                            const void   *key,
+                                            size_t        keylen,
+                                            const void   *value);
+
+void linkedlist__node_destroy(linkedlist_t       *t,
+                              linkedlist__node_t *n);
+
+/* ----------------------------------------------------------------------- */
+
 /* internal tree walk functions. callback returns a pointer to a
  * linkedlist__node_t, so internal for that reason. */
 

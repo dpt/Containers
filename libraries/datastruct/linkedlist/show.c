@@ -1,21 +1,18 @@
-/* show.c -- associative array implemented as ordered linked list */
+/* --------------------------------------------------------------------------
+ *    Name: show.c
+ * Purpose: Linked list
+ * ----------------------------------------------------------------------- */
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "base/memento/memento.h"
 
 #include "base/types.h"
-#include "string.h"
-#include "keyval/string.h"
 
 #include "datastruct/linkedlist.h"
 
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 typedef struct linkedlist__show_args
 {
@@ -66,4 +63,3 @@ error linkedlist_show(const linkedlist_t      *t,
                                    &args);
 }
 
-/* ----------------------------------------------------------------------- */
