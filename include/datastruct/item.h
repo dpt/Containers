@@ -3,6 +3,8 @@
 #ifndef ITEM_H
 #define ITEM_H
 
+#include <stdlib.h>
+
 typedef struct item
 {
   /* we declare key and value const and cast it away as necessary */
