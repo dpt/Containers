@@ -21,3 +21,4 @@ const void *linkedlist_lookup(linkedlist_t *t,
 
   return n ? n->item.value : t->default_value;
 }
+

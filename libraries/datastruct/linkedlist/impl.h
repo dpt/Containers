@@ -1,4 +1,7 @@
-/* impl.h -- associative array implemented as ordered linked list */
+/* --------------------------------------------------------------------------
+ *    Name: impl.h
+ * Purpose: Linked list
+ * ----------------------------------------------------------------------- */
 
 #ifndef LINKEDLIST_IMPL_H
 #define LINKEDLIST_IMPL_H
@@ -56,3 +59,4 @@ error linkedlist__walk_internal(linkedlist_t                       *t,
 /* ----------------------------------------------------------------------- */
 
 #endif /* LINKEDLIST_IMPL_H */
+

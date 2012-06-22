@@ -1,21 +1,18 @@
-/* show.c -- associative array implemented as ordered array */
+/* --------------------------------------------------------------------------
+ *    Name: show.c
+ * Purpose: Ordered array
+ * ----------------------------------------------------------------------- */
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "base/memento/memento.h"
 
 #include "base/types.h"
-#include "string.h"
-#include "keyval/string.h"
 
 #include "datastruct/orderedarray.h"
 
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 typedef struct orderedarray__show_args
 {
@@ -66,4 +63,3 @@ error orderedarray_show(const orderedarray_t      *t,
                                      &args);
 }
 
-/* ----------------------------------------------------------------------- */

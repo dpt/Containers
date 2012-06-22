@@ -1,16 +1,19 @@
 /* --------------------------------------------------------------------------
- *    Name: select.c
+ *    Name: remove.c
  * Purpose: Ordered array
  * ----------------------------------------------------------------------- */
-
-#include "datastruct/item.h"
 
 #include "datastruct/orderedarray.h"
 
 #include "impl.h"
 
-const item_t *orderedarray_select(orderedarray_t *t, int k)
+void orderedarray_remove(orderedarray_t *t, const void *key)
 {
-  return (k < t->nelems) ? &t->array[k].item : t->default_value;
+  orderedarray__node_t *n;
+
+  if (!orderedarray__lookup_internal(t, key, &n))
+    return; /* not found */
+
+  orderedarray__node_destroy(t, n);
 }
 

@@ -36,3 +36,4 @@ error hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
 
   return error_OK;
 }
+

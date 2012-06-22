@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- *    Name: walk.c
+ *    Name: walk-internal.c
  * Purpose: Linked list
  * ----------------------------------------------------------------------- */
 
@@ -11,9 +11,9 @@
 
 #include "impl.h"
 
-error orderedarray_walk(const orderedarray_t       *t,
-                        orderedarray_walk_callback *cb,
-                        void                       *opaque)
+error orderedarray__walk_internal(orderedarray_t                       *t,
+                                  orderedarray__walk_internal_callback *cb,
+                                  void                                 *opaque)
 {
   error                 err;
   orderedarray__node_t *n;
@@ -26,7 +26,7 @@ error orderedarray_walk(const orderedarray_t       *t,
 
   for (n = t->array; n < t->array + t->nelems; n++)
   {
-    err = cb(&n->item, opaque);
+    err = cb(n, opaque);
     if (err)
       return err;
   }

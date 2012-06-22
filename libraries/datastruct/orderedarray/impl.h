@@ -1,4 +1,7 @@
-/* impl.h -- associative array implemented as ordered array */
+/* --------------------------------------------------------------------------
+ *    Name: impl.h
+ * Purpose: Ordered array
+ * ----------------------------------------------------------------------- */
 
 #ifndef ORDEREDARRAY_IMPL_H
 #define ORDEREDARRAY_IMPL_H
@@ -32,6 +35,15 @@ struct orderedarray
 
 /* ----------------------------------------------------------------------- */
 
+void orderedarray__node_destroy(orderedarray_t       *t,
+                                orderedarray__node_t *n);
+
+int orderedarray__lookup_internal(orderedarray_t        *t,
+                                  const void            *key,
+                                  orderedarray__node_t **n);
+
+/* ----------------------------------------------------------------------- */
+
 /* internal tree walk functions. callback returns a pointer to a
  * orderedarray__node_t, so internal for that reason. */
 
@@ -45,3 +57,4 @@ error orderedarray__walk_internal(orderedarray_t                       *t,
 /* ----------------------------------------------------------------------- */
 
 #endif /* ORDEREDARRAY_IMPL_H */
+

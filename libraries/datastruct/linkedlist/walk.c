@@ -1,4 +1,7 @@
-/* walk.c -- associative array implemented as ordered linked list */
+/* --------------------------------------------------------------------------
+ *    Name: walk.c
+ * Purpose: Linked list
+ * ----------------------------------------------------------------------- */
 
 #include <stdlib.h>
 
