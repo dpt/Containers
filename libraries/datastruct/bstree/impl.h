@@ -43,7 +43,7 @@ bstree__node_t *bstree__node_create(bstree_t   *t,
 
 void bstree__node_destroy(bstree_t *t, bstree__node_t *n);
 
-void bstree__node_destroy_item(bstree_t *t, bstree__node_t *n);
+void bstree__node_clear(bstree_t *t, bstree__node_t *n);
 
 /* ----------------------------------------------------------------------- */
 

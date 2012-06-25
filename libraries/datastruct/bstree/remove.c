@@ -33,7 +33,7 @@ void bstree_remove(bstree_t *t, const void *key)
   if (n == NULL)
     return; /* not found */
 
-  bstree__node_destroy_item(t, n);
+  bstree__node_clear(t, n);
 
   /* case 1: node has no children */
   if (n->child[0] == NULL && n->child[1] == NULL)
