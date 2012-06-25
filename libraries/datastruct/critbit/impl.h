@@ -1,4 +1,7 @@
-/* impl.h -- associative array implemented as critbit tree */
+/* --------------------------------------------------------------------------
+ *    Name: impl.h
+ * Purpose: Associative array implemented as a critbit tree
+ * ----------------------------------------------------------------------- */
 
 #ifndef CRITBIT_IMPL_H
 #define CRITBIT_IMPL_H
@@ -44,6 +47,27 @@ struct critbit
 
 /* ----------------------------------------------------------------------- */
 
+critbit__node_t *critbit__node_create(critbit_t *t,
+                                      int        byte,
+                                      uint8_t    otherbits);
+
+void critbit__node_destroy(critbit_t *t, critbit__node_t *n);
+
+critbit__extnode_t *critbit__extnode_create(critbit_t  *t,
+                                            const void *key,
+                                            size_t      keylen,
+                                            const void *value);
+
+void critbit__extnode_clear(critbit_t *t, critbit__extnode_t *n);
+
+void critbit__extnode_destroy(critbit_t *t, critbit__extnode_t *n);
+
+const critbit__extnode_t *critbit__lookup(const critbit__node_t *n,
+                                          const void            *key,
+                                          size_t                 keylen);
+
+/* ----------------------------------------------------------------------- */
+
 /* These have a reversed sense compared to the original paper. */
 #define IS_INTERNAL(p) (((intptr_t) (p) & 1) == 0)
 #define IS_EXTERNAL(p) (!IS_INTERNAL(p))
@@ -80,4 +104,15 @@ error critbit__walk_internal(critbit_t                       *t,
 
 /* ----------------------------------------------------------------------- */
 
+/* Gets a byte or returns zero if it's out of range. */
+#define GET_BYTE(KEY, KEYEND, INDEX) \
+  (((KEY) + (INDEX) < (KEYEND)) ? (KEY)[INDEX] : 0)
+
+/* Extract the specified indexed binary direction from the key. */
+#define GET_DIR(KEY, KEYEND, INDEX, OTHERBITS) \
+  ((1 + ((OTHERBITS) | GET_BYTE(KEY, KEYEND, INDEX))) >> 8)
+
+/* ----------------------------------------------------------------------- */
+
 #endif /* CRITBIT_IMPL_H */
+

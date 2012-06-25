@@ -1,21 +1,16 @@
-/* walk.c -- associative array implemented as critbit tree */
+/* --------------------------------------------------------------------------
+ *    Name: walk.c
+ * Purpose: Associative array implemented as a critbit tree
+ * ----------------------------------------------------------------------- */
 
-#include <assert.h>
-#include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 
-#include "base/memento/memento.h"
-
-#include "base/types.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/errors.h"
 
 #include "datastruct/critbit.h"
 
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 static error critbit__walk_in_order(const critbit__node_t *n,
                                     int                    level,
@@ -60,4 +55,3 @@ error critbit_walk(const critbit_t       *t,
   return critbit__walk_in_order(t->root, 0, cb, opaque);
 }
 
-/* ----------------------------------------------------------------------- */

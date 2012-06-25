@@ -1,23 +1,18 @@
-/* select.c */
+/* --------------------------------------------------------------------------
+ *    Name: select.c
+ * Purpose: Associative array implemented as a critbit tree
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include "base/memento/memento.h"
-
-#include "datastruct/queue.h"
 
 #include "base/errors.h"
-#include "utils/utils.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/types.h"
 
 #include "datastruct/critbit.h"
-#include "impl.h"
+#include "datastruct/item.h"
 
-/* ----------------------------------------------------------------------- */
+#include "impl.h"
 
 typedef struct critbit__select_args
 {
@@ -66,6 +61,4 @@ const item_t *critbit_select(critbit_t *t, int k)
 
   return args.item;
 }
-
-/* ----------------------------------------------------------------------- */
 
