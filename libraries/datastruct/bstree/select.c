@@ -1,22 +1,18 @@
-/* select.c */
+/* --------------------------------------------------------------------------
+ *    Name: select.c
+ * Purpose: Associative array implemented as a binary search tree
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include "base/memento/memento.h"
 
 #include "base/errors.h"
 #include "base/types.h"
-#include "string.h"
-#include "keyval/string.h"
 
 #include "datastruct/bstree.h"
+#include "datastruct/item.h"
 
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 typedef struct bstree__select_args
 {
@@ -57,6 +53,4 @@ const item_t *bstree_select(bstree_t *t, int k)
 
   return args.item;
 }
-
-/* ----------------------------------------------------------------------- */
 

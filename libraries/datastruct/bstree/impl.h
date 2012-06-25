@@ -1,4 +1,7 @@
-/* impl.h -- associative array implemented as binary search tree */
+/* --------------------------------------------------------------------------
+ *    Name: impl.h
+ * Purpose: Binary search tree
+ * ----------------------------------------------------------------------- */
 
 #ifndef BSTREE_IMPL_H
 #define BSTREE_IMPL_H
@@ -33,6 +36,17 @@ struct bstree
 
 /* ----------------------------------------------------------------------- */
 
+bstree__node_t *bstree__node_create(bstree_t   *t,
+                                    const void *key,
+                                    size_t      keylen,
+                                    const void *value);
+
+void bstree__node_destroy(bstree_t *t, bstree__node_t *n);
+
+void bstree__node_destroy_item(bstree_t *t, bstree__node_t *n);
+
+/* ----------------------------------------------------------------------- */
+
 /* internal tree walk functions which return a pointer to a bstree__node_t */
 
 typedef error (bstree__walk_internal_callback)(bstree__node_t *n,
@@ -49,3 +63,4 @@ error bstree__walk_internal(bstree_t                       *t,
 /* ----------------------------------------------------------------------- */
 
 #endif /* BSTREE_IMPL_H */
+
