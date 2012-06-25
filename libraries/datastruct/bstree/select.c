@@ -38,6 +38,7 @@ static error bstree__select_node(bstree__node_t *n,
   return error_OK;
 }
 
+/* Walk the tree until the k'th leaf is encountered and return it. */
 const item_t *bstree_select(bstree_t *t, int k)
 {
   error                 err;
