@@ -7,9 +7,6 @@
 #include <string.h>
 
 #include "base/memento/memento.h"
-#include "base/errors.h"
-#include "base/types.h"
-#include "keyval/string.h"
 
 #include "datastruct/bstree.h"
 
@@ -36,4 +33,5 @@ bstree__node_t *bstree__node_create(bstree_t   *t,
 
   return n;
 }
+
 
