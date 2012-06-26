@@ -3,6 +3,7 @@
  * Purpose: Associative array implemented as a binary search tree
  * ----------------------------------------------------------------------- */
 
+#include <stddef.h>
 #include <stdlib.h>
 
 #include "base/errors.h"
@@ -11,6 +12,7 @@
 
 #include "impl.h"
 
+/* post-order (which allows for deletions) */
 static error bstree__node_walk_internal_post(bstree__node_t                 *n,
                                              int                             level,
                                              bstree__walk_internal_callback *cb,
