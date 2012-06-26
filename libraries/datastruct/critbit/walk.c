@@ -4,7 +4,6 @@
  * ----------------------------------------------------------------------- */
 
 #include <stddef.h>
-#include <stdlib.h>
 
 #include "base/errors.h"
 

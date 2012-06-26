@@ -3,6 +3,7 @@
  * Purpose: Associative array implemented as a critbit tree
  * ----------------------------------------------------------------------- */
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 

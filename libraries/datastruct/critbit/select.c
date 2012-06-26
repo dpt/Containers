@@ -9,8 +9,9 @@
 #include "base/errors.h"
 #include "base/types.h"
 
-#include "datastruct/critbit.h"
 #include "datastruct/item.h"
+
+#include "datastruct/critbit.h"
 
 #include "impl.h"
 
