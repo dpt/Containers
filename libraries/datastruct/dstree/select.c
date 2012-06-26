@@ -1,24 +1,19 @@
-/* select.c */
+/* --------------------------------------------------------------------------
+ *    Name: select.c
+ * Purpose: Associative array implemented as a digital search tree
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include "base/memento/memento.h"
-
-#include "datastruct/queue.h"
 
 #include "base/errors.h"
-#include "utils/utils.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/types.h"
+
+#include "datastruct/item.h"
 
 #include "datastruct/dstree.h"
 
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 typedef struct dstree__select_args
 {
@@ -44,6 +39,7 @@ static error dstree__select_node(dstree__node_t *n,
   return error_OK;
 }
 
+/* Walk the tree until the k'th leaf is encountered and return it. */
 const item_t *dstree_select(dstree_t *t, int k)
 {
   error                 err;
@@ -59,6 +55,4 @@ const item_t *dstree_select(dstree_t *t, int k)
 
   return args.item;
 }
-
-/* ----------------------------------------------------------------------- */
 

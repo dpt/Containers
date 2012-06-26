@@ -1,7 +1,12 @@
-/* impl.h -- associative array implemented as digital search tree */
+/* --------------------------------------------------------------------------
+ *    Name: impl.h
+ * Purpose: Associative array implemented as a digital search tree
+ * ----------------------------------------------------------------------- */
 
 #ifndef DSTREE_IMPL_H
 #define DSTREE_IMPL_H
+
+#include <stddef.h>
 
 #include "base/types.h"
 
@@ -38,6 +43,15 @@ struct dstree
 
 /* ----------------------------------------------------------------------- */
 
+dstree__node_t *dstree__node_create(dstree_t   *t,
+                                    const void *key,
+                                    const void *value,
+                                    size_t      keylen);
+
+void dstree__node_destroy(dstree_t *t, dstree__node_t *n);
+
+/* ----------------------------------------------------------------------- */
+
 /* internal tree walk functions which return a pointer to a dstree__node_t */
 
 typedef error (dstree__walk_internal_callback)(dstree__node_t *n,
@@ -61,4 +75,21 @@ error dstree__breadthwalk_internal(dstree_t                       *t,
 
 /* ----------------------------------------------------------------------- */
 
+/* Extract the next binary direction from the key.
+ * Within a byte the MSB is extacted first.
+ */
+#define GET_NEXT_DIR(DIR, KEY, KEYEND) \
+do                                     \
+{                                      \
+  if ((depth++ & 7) == 0)              \
+    c = (KEY == KEYEND) ? 0 : *KEY++;  \
+                                       \
+  DIR = (c & 0x80) != 0;               \
+  c <<= 1;                             \
+}                                      \
+while (0)
+
+/* ----------------------------------------------------------------------- */
+
 #endif /* DSTREE_IMPL_H */
+

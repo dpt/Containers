@@ -1,23 +1,16 @@
-/* walk.c -- associative array implemented as digital search tree */
+/* --------------------------------------------------------------------------
+ *    Name: walk.c
+ * Purpose: Associative array implemented as a digital search tree
+ * ----------------------------------------------------------------------- */
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stddef.h>
 
-#include "base/memento/memento.h"
-
-#include "base/types.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/errors.h"
 
 #include "datastruct/dstree.h"
 
 #include "impl.h"
 
-/* ----------------------------------------------------------------------- */
-
-/* in-order */
 static error dstree__node_walk(const dstree__node_t *n,
                                int                   level,
                                dstree_walk_callback *cb,
@@ -37,6 +30,7 @@ static error dstree__node_walk(const dstree__node_t *n,
   return err;
 }
 
+/* in-order */
 error dstree_walk(const dstree_t       *t,
                   dstree_walk_callback *cb,
                   void                 *opaque)
@@ -47,4 +41,3 @@ error dstree_walk(const dstree_t       *t,
   return dstree__node_walk(t->root, 0, cb, opaque);
 }
 
-/* ----------------------------------------------------------------------- */
