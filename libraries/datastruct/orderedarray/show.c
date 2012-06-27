@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: show.c
- * Purpose: Ordered array
+ * Purpose: Associative array implemented as an ordered array
  * ----------------------------------------------------------------------- */
 
 #include <stdio.h>

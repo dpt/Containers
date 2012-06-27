@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: impl.h
- * Purpose: Ordered array
+ * Purpose: Associative array implemented as an ordered array
  * ----------------------------------------------------------------------- */
 
 #ifndef ORDEREDARRAY_IMPL_H
