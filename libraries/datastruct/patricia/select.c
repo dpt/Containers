@@ -1,23 +1,20 @@
-/* select.c */
+/* --------------------------------------------------------------------------
+ *    Name: select.c
+ * Purpose: Associative array implemented as a PATRICIA tree
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
-#include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include "base/memento/memento.h"
-
-#include "datastruct/queue.h"
 
 #include "base/errors.h"
-#include "utils/utils.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/types.h"
 
-#include "datastruct/patricia.h"
+#include "datastruct/item.h"
+
+#include "datastruct/dstree.h"
+
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 typedef struct patricia__select_args
 {
@@ -62,6 +59,4 @@ const item_t *patricia_select(patricia_t *t, int k)
 
   return args.item;
 }
-
-/* ----------------------------------------------------------------------- */
 

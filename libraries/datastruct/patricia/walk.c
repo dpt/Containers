@@ -1,21 +1,15 @@
-/* walk.c -- associative array implemented as patricia tree */
+/* --------------------------------------------------------------------------
+ *    Name: walk.c
+ * Purpose: Associative array implemented as a PATRICIA tree
+ * ----------------------------------------------------------------------- */
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stddef.h>
 
-#include "base/memento/memento.h"
-
-#include "base/types.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/errors.h"
 
 #include "datastruct/patricia.h"
 
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 static error patricia__walk_in_order(patricia__node_t       *n,
                                      int                     level,
@@ -68,4 +62,3 @@ error patricia_walk(const patricia_t       *t,
   return walker(t->root, 0, cb, opaque);
 }
 
-/* ----------------------------------------------------------------------- */

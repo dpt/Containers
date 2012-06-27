@@ -1,7 +1,12 @@
-/* impl.h -- associative array implemented as patricia trie */
+/* --------------------------------------------------------------------------
+ *    Name: impl.h
+ * Purpose: Associative array implemented as a PATRICIA tree
+ * ----------------------------------------------------------------------- */
 
 #ifndef PATRICIA_IMPL_H
 #define PATRICIA_IMPL_H
+
+#include <stddef.h>
 
 #include "base/types.h"
 
@@ -35,6 +40,21 @@ struct patricia
 
 /* ----------------------------------------------------------------------- */
 
+patricia__node_t *patricia__node_create(patricia_t *t,
+                                        const void *key,
+                                        size_t      keylen,
+                                        const void *value);
+
+void patricia__node_clear(patricia_t *t, patricia__node_t *n);
+
+void patricia__node_destroy(patricia_t *t, patricia__node_t *n);
+
+const patricia__node_t *patricia__lookup(const patricia__node_t *n,
+                                         const void             *key,
+                                         size_t                  keylen);
+
+/* ----------------------------------------------------------------------- */
+
 typedef unsigned int patricia_walk_flags;
 
 #define patricia_WALK_ORDER_MASK (3u << 0)
@@ -60,4 +80,17 @@ error patricia__walk_internal(patricia_t                       *t,
 
 /* ----------------------------------------------------------------------- */
 
+/* Gets a byte or returns zero if it's out of range.
+ * Copes with negative indices. */
+// Have chosen to use size_t for 'unsigned ptrdiff_t'.
+#define GET_BYTE(KEY, KEYEND, INDEX) \
+  (((size_t) (INDEX) < (size_t) ((KEYEND) - (KEY))) ? (KEY)[INDEX] : 0)
+
+/* Extract the specified indexed binary direction from the key. */
+#define GET_DIR(KEY, KEYEND, INDEX) \
+  (KEY ? (GET_BYTE(KEY, KEYEND, INDEX >> 3) & (1 << (7 - ((INDEX) & 7)))) != 0 : 0)
+
+/* ----------------------------------------------------------------------- */
+
 #endif /* PATRICIA_IMPL_H */
+
