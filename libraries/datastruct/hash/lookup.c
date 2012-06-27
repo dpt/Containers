@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: lookup.c
- * Purpose: Hash
+ * Purpose: Associative array implemented as a hash
  * ----------------------------------------------------------------------- */
 
 #include <stdlib.h>

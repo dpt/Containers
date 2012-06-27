@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: show.c
- * Purpose: Hash
+ * Purpose: Associative array implemented as a hash
  * ----------------------------------------------------------------------- */
 
 #include "datastruct/hash.h"

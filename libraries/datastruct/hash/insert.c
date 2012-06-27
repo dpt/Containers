@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: insert.c
- * Purpose: Hash
+ * Purpose: Associative array implemented as a hash
  * ----------------------------------------------------------------------- */
 
 #include <stdlib.h>
@@ -19,7 +19,7 @@ error hash_insert(hash_t     *h,
                   const void *value)
 {
   hash__node_t **n;
-  
+
   n = hash_lookup_node(h, key); /* must cast away const */
   if (*n)
   {

@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: impl.c
- * Purpose: Hash
+ * Purpose: Associative array implemented as a hash
  * ----------------------------------------------------------------------- */
 
 #ifndef HASH_IMPL_H
