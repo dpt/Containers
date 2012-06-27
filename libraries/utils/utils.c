@@ -80,3 +80,16 @@ int keydiffbit(const unsigned char *key1, size_t key1len,
   if (mask &   2) return offset + 6;
   return offset + 7;
 }
+
+int iszero(const void *k, size_t len)
+{
+  const unsigned char *start = k;
+  const unsigned char *end   = start + len;
+
+  while (start < end)
+    if (*start++)
+      return 0;
+
+  return 1;
+}
+

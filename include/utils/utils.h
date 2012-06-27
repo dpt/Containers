@@ -15,4 +15,8 @@
 int keydiffbit(const unsigned char *key1, size_t key1len,
                const unsigned char *key2, size_t key2len);
 
+/* Returns non-zero if the specified key is all zero bits. */
+int iszero(const void *k, size_t len);
+
 #endif /* UTILS_H */
+
