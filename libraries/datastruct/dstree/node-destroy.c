@@ -13,10 +13,7 @@
 
 void dstree__node_destroy(dstree_t *t, dstree__node_t *n)
 {
-  if (t->destroy_key)
-    t->destroy_key((void *) n->item.key); /* must cast away const */
-  if (t->destroy_value)
-    t->destroy_value((void *) n->item.value);
+  dstree__node_clear(t, n);
 
   free(n);
 

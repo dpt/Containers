@@ -48,6 +48,8 @@ dstree__node_t *dstree__node_create(dstree_t   *t,
                                     const void *value,
                                     size_t      keylen);
 
+void dstree__node_clear(dstree_t *t, dstree__node_t *n);
+
 void dstree__node_destroy(dstree_t *t, dstree__node_t *n);
 
 /* ----------------------------------------------------------------------- */
