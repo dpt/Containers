@@ -1,4 +1,7 @@
-/* patricia.c -- glue to make a patricia tree be a container */
+/* --------------------------------------------------------------------------
+ *    Name: patricia.c
+ * Purpose: Glue to make a PATRICIA trie be a container
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
 #include <stdio.h>

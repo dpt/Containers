@@ -1,4 +1,7 @@
-/* trie.c -- glue to make a trie be a container */
+/* --------------------------------------------------------------------------
+ *    Name: trie.c
+ * Purpose: Glue to make a trie be a container
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
 #include <stdio.h>

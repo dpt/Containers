@@ -1,4 +1,7 @@
-/* bstree.c -- glue to make a bstree be a container */
+/* --------------------------------------------------------------------------
+ *    Name: bstree.c
+ * Purpose: Glue to make a binary search tree be a container
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
 #include <stdio.h>

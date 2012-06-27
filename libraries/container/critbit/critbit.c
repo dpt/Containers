@@ -1,4 +1,7 @@
-/* critbit.c -- glue to make a critbit tree be a container */
+/* --------------------------------------------------------------------------
+ *    Name: critbit.c
+ * Purpose: Glue to make a critbit tree be a container
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
 #include <stdio.h>

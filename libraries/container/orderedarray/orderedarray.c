@@ -1,4 +1,7 @@
-/* orderedarray.c -- glue to make an orderedarray be a container */
+/* --------------------------------------------------------------------------
+ *    Name: linkedlist.c
+ * Purpose: Glue to make an ordered array be a container
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
 #include <stdio.h>

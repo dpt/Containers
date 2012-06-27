@@ -1,4 +1,7 @@
-/* hash.c -- glue to make a hash be a container */
+/* --------------------------------------------------------------------------
+ *    Name: hash.c
+ * Purpose: Glue to make a hash be a container
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
 #include <stdio.h>

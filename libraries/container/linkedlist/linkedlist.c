@@ -1,4 +1,7 @@
-/* linkedlist.c -- glue to make a linked list be a container */
+/* --------------------------------------------------------------------------
+ *    Name: linkedlist.c
+ * Purpose: Glue to make a linked list be a container
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
 #include <stdio.h>

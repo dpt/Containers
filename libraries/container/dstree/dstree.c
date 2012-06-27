@@ -1,4 +1,7 @@
-/* dstree.c -- glue to make a dstree be a container */
+/* --------------------------------------------------------------------------
+ *    Name: critbit.c
+ * Purpose: Glue to make a digital search tree be a container
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
 #include <stdio.h>
