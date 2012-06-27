@@ -1,4 +1,7 @@
-/* trie.h -- associative array implemented as trie */
+/* --------------------------------------------------------------------------
+ *    Name: trie.h
+ * Purpose: Associative array implemented as a trie
+ * ----------------------------------------------------------------------- */
 
 /* A trie uses the bits of the key to build a tree structure. It is used for
  * storing associative arrays where there are no identical keys nor keys
@@ -109,3 +112,4 @@ error trie_show_viz(const T           *t,
 #undef T
 
 #endif /* TRIE_H */
+

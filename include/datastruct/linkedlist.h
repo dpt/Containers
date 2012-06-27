@@ -1,4 +1,7 @@
-/* linkedlist.h -- associative array implemented as ordered linked list */
+/* --------------------------------------------------------------------------
+ *    Name: linkedlist.h
+ * Purpose: Associative array implemented as an ordered linked list
+ * ----------------------------------------------------------------------- */
 
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
@@ -97,3 +100,4 @@ error linkedlist_show(const T                 *t,
 #undef T
 
 #endif /* LINKEDLIST_H */
+

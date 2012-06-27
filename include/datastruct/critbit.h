@@ -1,7 +1,15 @@
-/* critbit.h -- associative array implemented as critbit tree */
+/* --------------------------------------------------------------------------
+ *    Name: critbit.h
+ * Purpose: Associative array implemented as a critbit tree
+ * ----------------------------------------------------------------------- */
 
 /* A critbit tree is a form of trie where one-way branching is replaced with
  * a bit index. */
+
+/* This implementation is based on Bertstein crit-bits via the paper at
+ * imperialviolet.org:
+ * http://www.imperialviolet.org/2008/09/29/critbit-trees.html
+ */
 
 #ifndef CRITBIT_H
 #define CRITBIT_H
@@ -110,3 +118,4 @@ error critbit_show_viz(const T              *t,
 #undef T
 
 #endif /* CRITBIT_H */
+

@@ -1,4 +1,7 @@
-/* orderedarray.h -- associative array implemented as ordered array */
+/* --------------------------------------------------------------------------
+ *    Name: orderedarray.h
+ * Purpose: Associative array implemented as an ordered array
+ * ----------------------------------------------------------------------- */
 
 #ifndef ORDEREDARRAY_H
 #define ORDEREDARRAY_H
@@ -101,3 +104,4 @@ error orderedarray_show(const T                   *t,
 #undef T
 
 #endif /* ORDEREDARRAY_H */
+

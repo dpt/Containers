@@ -1,4 +1,7 @@
-/* item.h -- basic (key,value) pair structure */
+/* --------------------------------------------------------------------------
+ *    Name: item.h
+ * Purpose: Basic (key,value) pair structure
+ * ----------------------------------------------------------------------- */
 
 #ifndef ITEM_H
 #define ITEM_H
@@ -15,3 +18,4 @@ typedef struct item
 item_t;
 
 #endif /* ITEM_H */
+

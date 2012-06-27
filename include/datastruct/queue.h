@@ -1,4 +1,7 @@
-/* queue.h -- queue implemented as circular buffer */
+/* --------------------------------------------------------------------------
+ *    Name: queue.h
+ * Purpose: Queue implemented as a circular buffer
+ * ----------------------------------------------------------------------- */
 
 #ifndef QUEUE_H
 #define QUEUE_H
@@ -30,3 +33,4 @@ int queue_empty(const T *queue);
 #undef T
 
 #endif /* QUEUE_H */
+

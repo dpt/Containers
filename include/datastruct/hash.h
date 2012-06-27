@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: hash.h
- * Purpose: Interface of Hash library
+ * Purpose: Associative array implemented as a hash
  * ----------------------------------------------------------------------- */
 
 /**
@@ -188,3 +188,4 @@ error hash_show(const T           *t,
 #undef T
 
 #endif /* HASH_H */
+

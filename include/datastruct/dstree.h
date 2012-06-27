@@ -1,4 +1,7 @@
-/* dstree.h -- associative array implemented as digital search tree */
+/* --------------------------------------------------------------------------
+ *    Name: dstree.h
+ * Purpose: Associative array implemented as digital search tree
+ * ----------------------------------------------------------------------- */
 
 /* A digital search tree (DST) uses the bits of the key to build a tree
  * structure. It is used for storing associative arrays where there are no
@@ -110,3 +113,4 @@ error dstree_show_viz(const T             *t,
 #undef T
 
 #endif /* DSTREE_H */
+

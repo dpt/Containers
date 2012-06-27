@@ -1,4 +1,7 @@
-/* patricia.h -- associative array implemented as patricia trie */
+/* --------------------------------------------------------------------------
+ *    Name: patricia.h
+ * Purpose: Associative array implemented as a PATRICIA trie
+ * ----------------------------------------------------------------------- */
 
 /* A PATRICIA trie is a form of trie where one-way branching is replaced with
  * a bit index and terminal nodes point back to previous nodes. */
@@ -110,3 +113,4 @@ error patricia_show_viz(const T               *t,
 #undef T
 
 #endif /* PATRICIA_H */
+

@@ -1,4 +1,7 @@
-/* bstree.h -- associative array implemented as binary search tree */
+/* --------------------------------------------------------------------------
+ *    Name: bstree.h
+ * Purpose: Associative array implemented as a binary search tree
+ * ----------------------------------------------------------------------- */
 
 #ifndef BSTREE_H
 #define BSTREE_H
@@ -119,3 +122,4 @@ error bstree_show_viz(const T             *t,
 #undef T
 
 #endif /* BSTREE_H */
+
