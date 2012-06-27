@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: select.c
- * Purpose: Linked list
+ * Purpose: Associative array implemented as a linked list
  * ----------------------------------------------------------------------- */
 
 #include "datastruct/item.h"

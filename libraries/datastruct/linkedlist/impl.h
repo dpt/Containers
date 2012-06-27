@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: impl.h
- * Purpose: Linked list
+ * Purpose: Associative array implemented as a linked list
  * ----------------------------------------------------------------------- */
 
 #ifndef LINKEDLIST_IMPL_H

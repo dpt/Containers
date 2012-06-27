@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: insert.c
- * Purpose: Linked list
+ * Purpose: Associative array implemented as a linked list
  * ----------------------------------------------------------------------- */
 
 #include "base/errors.h"

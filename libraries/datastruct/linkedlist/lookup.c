@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: lookup.c
- * Purpose: Linked list
+ * Purpose: Associative array implemented as a linked list
  * ----------------------------------------------------------------------- */
 
 #include <string.h>

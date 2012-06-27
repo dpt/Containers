@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: count.c
- * Purpose: Linked list
+ * Purpose: Associative array implemented as a linked list
  * ----------------------------------------------------------------------- */
 
 #include "datastruct/linkedlist.h"

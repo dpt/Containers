@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: show.c
- * Purpose: Linked list
+ * Purpose: Associative array implemented as a linked list
  * ----------------------------------------------------------------------- */
 
 #include <stdio.h>

@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: create.c
- * Purpose: Linked list
+ * Purpose: Associative array implemented as a linked list
  * ----------------------------------------------------------------------- */
 
 #include <stdlib.h>
