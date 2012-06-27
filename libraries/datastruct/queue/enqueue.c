@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: enqueue.c
- * Purpose: Queue
+ * Purpose: Queue implemented as a circular buffer
  * ----------------------------------------------------------------------- */
 
 #include <string.h>

@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: count.c
- * Purpose: Queue
+ * Purpose: Queue implemented as a circular buffer
  * ----------------------------------------------------------------------- */
 
 #include <stddef.h>

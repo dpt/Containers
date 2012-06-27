@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: empty.c
- * Purpose: Queue
+ * Purpose: Queue implemented as a circular buffer
  * ----------------------------------------------------------------------- */
 
 #include "datastruct/queue.h"

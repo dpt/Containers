@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------
  *    Name: impl.h
- * Purpose: Queue
+ * Purpose: Queue implemented as a circular buffer
  * ----------------------------------------------------------------------- */
 
 /* This implementation keeps one entry spare to allow detection of full
