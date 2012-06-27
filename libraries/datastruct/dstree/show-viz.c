@@ -3,7 +3,7 @@
  * Purpose: Associative array implemented as a digital search tree
  * ----------------------------------------------------------------------- */
 
-#include <assert.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -112,7 +112,6 @@ error dstree_show_viz(const dstree_t      *t,
                               dstree__node_show_viz_link, &args);
   if (err)
     return err;
-
 
   (void) fprintf(f, "}\n");
 
