@@ -1,4 +1,7 @@
-/* types.h -- typedefs and macros */
+/* --------------------------------------------------------------------------
+ *    Name: types.h
+ * Purpose: Various typedefs and utility macros
+ * ----------------------------------------------------------------------- */
 
 #ifndef TYPES_H
 #define TYPES_H
@@ -37,3 +40,4 @@ typedef int intptr_t;
 #endif
 
 #endif /* TYPES_H */
+

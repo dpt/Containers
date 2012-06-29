@@ -1,4 +1,7 @@
-/* errors.h */
+/* --------------------------------------------------------------------------
+ *    Name: errors.h
+ * Purpose: Error type and constants
+ * ----------------------------------------------------------------------- */
 
 #ifndef ERRORS_H
 #define ERRORS_H
@@ -26,3 +29,4 @@ typedef unsigned long int error;
 #define error_HASH_BAD_CONT       501
 
 #endif /* ERRORS_H */
+
