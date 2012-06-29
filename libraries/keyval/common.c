@@ -1,8 +1,12 @@
-/* common.c -- function(s) common to all kv callbacks */
+/* --------------------------------------------------------------------------
+ *    Name: common.c
+ * Purpose: Functions common across key and value types
+ * ----------------------------------------------------------------------- */
 
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
+
 #include "base/types.h"
 
 #include "keyval/common.h"
@@ -21,3 +25,4 @@ void kv_nofmtdestroy(char *doomed)
 {
   NOT_USED(doomed);
 }
+

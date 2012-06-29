@@ -1,4 +1,7 @@
-/* string.c -- functions for items which use strings */
+/* --------------------------------------------------------------------------
+ *    Name: string.c
+ * Purpose: Functions for keys or values which are strings
+ * ----------------------------------------------------------------------- */
 
 #include <string.h>
 

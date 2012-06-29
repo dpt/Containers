@@ -1,4 +1,7 @@
-/* int.c -- functions for items which use ints */
+/* --------------------------------------------------------------------------
+ *    Name: int.c
+ * Purpose: Functions for keys or values which are ints
+ * ----------------------------------------------------------------------- */
 
 #include <limits.h>
 #include <stdio.h>
@@ -39,3 +42,4 @@ const char *intkv_fmt(const void *kv)
 
   return str;
 }
+

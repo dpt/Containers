@@ -1,4 +1,7 @@
-/* char.c -- functions for items which use chars */
+/* --------------------------------------------------------------------------
+ *    Name: char.c
+ * Purpose: Functions for keys or values which are chars
+ * ----------------------------------------------------------------------- */
 
 #include <ctype.h>
 #include <limits.h>
@@ -46,3 +49,4 @@ const char *charkv_fmt(const void *kv)
 
   return str;
 }
+

@@ -1,4 +1,7 @@
-/* int.h -- declare functions for keys or values which are ints */
+/* --------------------------------------------------------------------------
+ *    Name: int.h
+ * Purpose: Functions for keys or values which are ints
+ * ----------------------------------------------------------------------- */
 
 #ifndef INT_KV_H
 #define INT_KV_H
@@ -16,3 +19,4 @@ kv_fmt intkv_fmt;
 #define intkv_fmt_nodestroy kv_nofmtdestroy
 
 #endif /* INT_KV_H */
+

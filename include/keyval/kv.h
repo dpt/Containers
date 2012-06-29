@@ -1,4 +1,7 @@
-/* kv.h -- interfaces of callbacks used by keys or values */
+/* --------------------------------------------------------------------------
+ *    Name: kv.h
+ * Purpose: Types of callbacks used by keys and values
+ * ----------------------------------------------------------------------- */
 
 /* 'kv' here means 'key or value'. These are the interfaces of callback
  * functions which could apply to either. */
@@ -33,3 +36,4 @@ typedef const char *(kv_fmt)(const void *kv);
 typedef void (kv_fmt_destroy)(char *doomed);
 
 #endif /* KV_H */
+

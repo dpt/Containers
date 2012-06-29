@@ -1,4 +1,7 @@
-/* common.h -- function(s) common to all kv callbacks */
+/* --------------------------------------------------------------------------
+ *    Name: common.h
+ * Purpose: Functions common across key and value types
+ * ----------------------------------------------------------------------- */
 
 #ifndef KV_COMMON_H
 #define KV_COMMON_H
@@ -18,3 +21,4 @@ kv_fmt_destroy kv_fmtdestroy;
 kv_fmt_destroy kv_nofmtdestroy;
 
 #endif /* KV_COMMON_H */
+

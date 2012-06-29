@@ -1,4 +1,7 @@
-/* char.h -- declare functions for keys or values which are chars */
+/* --------------------------------------------------------------------------
+ *    Name: char.h
+ * Purpose: Functions for keys or values which are chars
+ * ----------------------------------------------------------------------- */
 
 #ifndef CHAR_KV_H
 #define CHAR_KV_H
@@ -16,3 +19,4 @@ kv_fmt charkv_fmt;
 #define charkv_fmt_nodestroy kv_nofmtdestroy
 
 #endif /* CHAR_KV_H */
+
