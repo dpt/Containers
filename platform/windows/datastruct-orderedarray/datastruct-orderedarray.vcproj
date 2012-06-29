@@ -151,18 +151,50 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\libraries\datastruct\orderedarray\orderedarray.c"
-				>                
-			</File>                  
-			<File                    
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\count.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\insert.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\lookup-prefix.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\lookup.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\node-destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\remove.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\orderedarray\select.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\orderedarray\show.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\orderedarray\walk-internal.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\orderedarray\walk.c"
 				>
 			</File>
@@ -174,9 +206,9 @@
 			>
 			<File
 				RelativePath="..\..\..\libraries\datastruct\orderedarray\impl.h"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\include\datastruct\orderedarray.h"
 				>
 			</File>

@@ -151,7 +151,47 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\libraries\datastruct\critbit\critbit.c"
+				RelativePath="..\..\..\libraries\datastruct\critbit\count.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\extnode-create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\extnode-destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\insert.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\lookup-prefix.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\lookup.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\node-create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\node-destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\remove.c"
 				>
 			</File>
 			<File
@@ -159,7 +199,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\show-viz.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\critbit\show.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\critbit\walk-internal.c"
 				>
 			</File>
 			<File

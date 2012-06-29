@@ -152,17 +152,17 @@
 			>
 			<File
 				RelativePath="..\..\..\libraries\datastruct\trie\select.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\trie\show.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\trie\trie.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\trie\walk.c"
 				>
 			</File>
@@ -174,9 +174,9 @@
 			>
 			<File
 				RelativePath="..\..\..\libraries\datastruct\trie\impl.h"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\include\datastruct\trie.h"
 				>
 			</File>

@@ -152,45 +152,45 @@
 			>
 			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\count.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\create.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\destroy.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\insert.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\lookup-node.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\lookup.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\remove.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\show.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\walk-cont.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\walk-internal.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\walk.c"
 				>
 			</File>
@@ -202,9 +202,9 @@
 			>
 			<File
 				RelativePath="..\..\..\include\datastruct\hash.h"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\hash\impl.h"
 				>
 			</File>

@@ -151,7 +151,39 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\libraries\datastruct\bstree\bstree.c"
+				RelativePath="..\..\..\libraries\datastruct\bstree\count.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\insert.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\lookup-prefix.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\lookup.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\node-create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\node-destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\remove.c"
 				>
 			</File>
 			<File
@@ -159,7 +191,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\show-viz.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\bstree\show.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\bstree\walk-internal.c"
 				>
 			</File>
 			<File

@@ -151,18 +151,62 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\libraries\datastruct\patricia\patricia.c"
-				>                
-			</File>                  
-			<File                    
+				RelativePath="..\..\..\libraries\datastruct\patricia\count.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\insert.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\lookup-prefix.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\lookup.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\node-clear.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\node-create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\node-destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\remove.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\patricia\select.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\show-viz.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\patricia\show.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\patricia\walk-internal.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\patricia\walk.c"
 				>
 			</File>
@@ -174,9 +218,9 @@
 			>
 			<File
 				RelativePath="..\..\..\libraries\datastruct\patricia\impl.h"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\include\datastruct\patricia.h"
 				>
 			</File>

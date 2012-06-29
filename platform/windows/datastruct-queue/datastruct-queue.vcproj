@@ -151,10 +151,34 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\libraries\datastruct\queue\queue.c"
-				>                
-			</File>                  
-			<File                    
+				RelativePath="..\..\..\libraries\datastruct\queue\count.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\queue\create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\queue\dequeue.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\queue\destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\queue\empty.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\queue\enqueue.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\queue\full.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\queue\test\test.c"
 				>
 			</File>

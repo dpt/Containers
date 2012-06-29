@@ -151,18 +151,54 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\libraries\datastruct\linkedlist\linkedlist.c"
-				>                
-			</File>                  
-			<File                    
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\count.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\insert.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\lookup-prefix.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\lookup.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\node-create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\node-destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\remove.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\linkedlist\select.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\linkedlist\show.c"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\linkedlist\walk-internal.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\linkedlist\walk.c"
 				>
 			</File>
@@ -174,9 +210,9 @@
 			>
 			<File
 				RelativePath="..\..\..\libraries\datastruct\linkedlist\impl.h"
-				>                
-			</File>                  
-			<File                    
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\include\datastruct\linkedlist.h"
 				>
 			</File>

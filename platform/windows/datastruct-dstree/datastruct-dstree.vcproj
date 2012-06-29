@@ -151,7 +151,51 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\libraries\datastruct\dstree\dstree.c"
+				RelativePath="..\..\..\libraries\datastruct\dstree\breadthwalk-internal.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\count.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\insert.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\lookup-prefix.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\lookup.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\node-clear.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\node-create.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\node-destroy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\remove.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\remove2.c"
 				>
 			</File>
 			<File
@@ -159,7 +203,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\show-viz.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\libraries\datastruct\dstree\show.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\libraries\datastruct\dstree\walk-internal.c"
 				>
 			</File>
 			<File
