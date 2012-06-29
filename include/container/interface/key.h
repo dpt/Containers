@@ -1,4 +1,7 @@
-/* key.h -- interface of keys */
+/* --------------------------------------------------------------------------
+ *    Name: key.h
+ * Purpose: Interface of keys
+ * ----------------------------------------------------------------------- */
 
 #ifndef ICONTAINER_KEY_H
 #define ICONTAINER_KEY_H
@@ -24,3 +27,4 @@ typedef struct icontainer_key
 icontainer_key_t;
 
 #endif /* ICONTAINER_KEY_H */
+

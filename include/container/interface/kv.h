@@ -1,4 +1,7 @@
-/* kv.h -- factored-out common interface of keys and values */
+/* --------------------------------------------------------------------------
+ *    Name: kv.h
+ * Purpose: Interfaces common to both keys and values
+ * ----------------------------------------------------------------------- */
 
 #ifndef ICONTAINER_KV_H
 #define ICONTAINER_KV_H
@@ -21,3 +24,4 @@ typedef struct icontainer_kv
 icontainer_kv_t;
 
 #endif /* ICONTAINER_KV_H */
+

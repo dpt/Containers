@@ -1,4 +1,7 @@
-/* container.h -- interface to container compliant data structures */
+/* --------------------------------------------------------------------------
+ *    Name: container.h
+ * Purpose: Interface to container compliant data structures
+ * ----------------------------------------------------------------------- */
 
 /* The individual data structure libraries I've implemented don't expose
  * exactly the same interface. 'icontainer' provides an alternative
@@ -9,10 +12,9 @@
  * their code, much like you can do in C++ with STL. (That at least is the
  * idea, but whether it will work in practice remains to be seen).
  *
- * By writing this in C it'll work on RISC OS and possibly be smaller than
- * templated code (also the real point is that it's a learning exercise).
- * But it will be slower as the callback arrangement means nothing will be
- * inlined.
+ * By writing this in C it will possibly be smaller than templated code (also
+ * the real point is that it's a learning exercise). But it will be slower as
+ * the callback arrangement and file separation means little will be inlined.
  */
 
 #ifndef ICONTAINER_H
@@ -89,3 +91,4 @@ struct icontainer
 #undef T
 
 #endif /* ICONTAINER_H */
+

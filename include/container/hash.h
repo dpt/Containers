@@ -1,4 +1,7 @@
-/* hash.h */
+/* --------------------------------------------------------------------------
+ *    Name: hash.h
+ * Purpose: Interface of a hash container
+ * ----------------------------------------------------------------------- */
 
 #ifndef CONTAINER_HASH_H
 #define CONTAINER_HASH_H
@@ -8,3 +11,4 @@
 icontainer_maker container_create_hash;
 
 #endif /* CONTAINER_HASH_H */
+

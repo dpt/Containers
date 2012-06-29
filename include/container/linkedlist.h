@@ -1,4 +1,7 @@
-/* linkedlist.h */
+/* --------------------------------------------------------------------------
+ *    Name: linkedlist.h
+ * Purpose: Interface of a linked list container
+ * ----------------------------------------------------------------------- */
 
 #ifndef CONTAINER_LINKEDLIST_H
 #define CONTAINER_LINKEDLIST_H
@@ -8,3 +11,4 @@
 icontainer_maker container_create_linkedlist;
 
 #endif /* CONTAINER_LINKEDLIST_H */
+

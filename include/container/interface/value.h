@@ -1,4 +1,7 @@
-/* value.h -- interface of values */
+/* --------------------------------------------------------------------------
+ *    Name: value.h
+ * Purpose: Interface of values
+ * ----------------------------------------------------------------------- */
 
 #ifndef ICONTAINER_VALUE_H
 #define ICONTAINER_VALUE_H
@@ -17,3 +20,4 @@ typedef struct icontainer_value
 icontainer_value_t;
 
 #endif /* ICONTAINER_VALUE_H */
+
