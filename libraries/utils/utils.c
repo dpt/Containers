@@ -1,6 +1,10 @@
-/* utils.c -- utilities */
+/* --------------------------------------------------------------------------
+ *    Name: utils.c
+ * Purpose: Utility functions common across data structures
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
+#include <stddef.h>
 
 #include "utils/utils.h"
 

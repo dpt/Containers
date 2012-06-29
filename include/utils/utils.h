@@ -1,4 +1,7 @@
-/* utils.h -- utilities */
+/* --------------------------------------------------------------------------
+ *    Name: utils.h
+ * Purpose: Utility functions common across data structures
+ * ----------------------------------------------------------------------- */
 
 #ifndef UTILS_H
 #define UTILS_H
