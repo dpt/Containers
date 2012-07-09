@@ -1,19 +1,19 @@
-/* select.c */
+/* --------------------------------------------------------------------------
+ *    Name: select.c
+ * Purpose: Associative array implemented as a trie
+ * ----------------------------------------------------------------------- */
 
 #include <assert.h>
-#include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include "base/memento/memento.h"
 
 #include "base/errors.h"
-#include "utils/utils.h"
-#include "datastruct/queue.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/types.h"
+
+#include "datastruct/item.h"
 
 #include "datastruct/trie.h"
+
 #include "impl.h"
 
 /* ----------------------------------------------------------------------- */
@@ -60,6 +60,3 @@ const item_t *trie_select(trie_t *t, int k)
 
   return args.item;
 }
-
-/* ----------------------------------------------------------------------- */
-

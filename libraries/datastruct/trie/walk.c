@@ -1,21 +1,15 @@
-/* walk.c -- associative array implemented as trie */
+/* --------------------------------------------------------------------------
+ *    Name: walk.c
+ * Purpose: Associative array implemented as a trie
+ * ----------------------------------------------------------------------- */
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stddef.h>
 
-#include "base/memento/memento.h"
-
-#include "base/types.h"
-#include "string.h"
-#include "keyval/string.h"
+#include "base/errors.h"
 
 #include "datastruct/trie.h"
 
 #include "impl.h"
-
-/* ----------------------------------------------------------------------- */
 
 static error trie__walk_in_order(const trie__node_t *n,
                                  int                 level,
@@ -48,5 +42,3 @@ error trie_walk(const trie_t       *t,
 
   return trie__walk_in_order(t->root, 0, cb, opaque);
 }
-
-/* ----------------------------------------------------------------------- */

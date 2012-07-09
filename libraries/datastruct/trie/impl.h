@@ -38,6 +38,17 @@ struct trie
 
 /* ----------------------------------------------------------------------- */
 
+trie__node_t *trie__node_create(trie_t     *t,
+                                const void *key,
+                                size_t      keylen,
+                                const void *value);
+
+void trie__node_clear(trie_t *t, trie__node_t *n);
+
+void trie__node_destroy(trie_t *t, trie__node_t *n);
+
+/* ----------------------------------------------------------------------- */
+
 typedef unsigned int trie_walk_flags;
 
 #define trie_WALK_ORDER_MASK (3u << 0)
@@ -66,6 +77,22 @@ error trie__breadthwalk_internal(trie_t                       *t,
                                  trie_walk_flags               flags,
                                  trie__walk_internal_callback *cb,
                                  void                         *opaque);
+
+/* ----------------------------------------------------------------------- */
+
+/* Extract the next binary direction from the key.
+ * Within a byte the MSB is extracted first.
+ */
+#define GET_NEXT_DIR(DIR, KEY, KEYEND) \
+do                                     \
+{                                      \
+  if ((depth++ & 7) == 0)              \
+    c = (KEY == KEYEND) ? 0 : *KEY++;  \
+                                       \
+  DIR = (c & 0x80) != 0;               \
+  c <<= 1;                             \
+}                                      \
+while (0)
 
 /* ----------------------------------------------------------------------- */
 
