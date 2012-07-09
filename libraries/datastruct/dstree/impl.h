@@ -71,6 +71,8 @@ error dstree__walk_internal(dstree_t                       *t,
                             dstree__walk_internal_callback *cb,
                             void                           *opaque);
 
+/* ----------------------------------------------------------------------- */
+
 error dstree__breadthwalk_internal(dstree_t                       *t,
                                    dstree__walk_internal_callback *cb,
                                    void                           *opaque);
@@ -78,7 +80,7 @@ error dstree__breadthwalk_internal(dstree_t                       *t,
 /* ----------------------------------------------------------------------- */
 
 /* Extract the next binary direction from the key.
- * Within a byte the MSB is extacted first.
+ * Within a byte the MSB is extracted first.
  */
 #define GET_NEXT_DIR(DIR, KEY, KEYEND) \
 do                                     \
