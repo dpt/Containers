@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include "base/memento/memento.h"
 #include "base/errors.h"
 
 #include "datastruct/critbit.h"
