@@ -98,7 +98,7 @@ void trie_destroy(trie_t *t)
 /* ----------------------------------------------------------------------- */
 
 /* Extract the next binary direction from the key.
- * Within a byte the MSB is extacted first.
+ * Within a byte the MSB is extracted first.
  */
 #define GET_NEXT_DIR(DIR, KEY, KEYEND) \
 do                                     \
