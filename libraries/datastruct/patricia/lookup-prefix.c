@@ -98,7 +98,7 @@ error patricia_lookup_prefix(const patricia_t        *t,
       memcmp(n->item.key, prefix, prefixlen) != 0)
     return error_NOT_FOUND;
 
-  if (prefixlen * 8 - 1 == i /* not n->bit */)
+  if (prefixlen * 8 - 1 == (size_t) i /* not n->bit */)
   {
     // single exact match?
     return error_OK;
