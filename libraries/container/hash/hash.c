@@ -66,6 +66,11 @@ static error container_hash__lookup_prefix(const icontainer_t        *c_,
                                            icontainer_found_callback  cb,
                                            void                      *opaque)
 {
+  NOT_USED(c_);
+  NOT_USED(prefix);
+  NOT_USED(cb);
+  NOT_USED(opaque);
+  
   return error_NOT_IMPLEMENTED;
 }
 
@@ -88,6 +93,9 @@ static error container_hash__show(const icontainer_t *c_, FILE *f)
 
 static error container_hash__show_viz(const icontainer_t *c_, FILE *f)
 {
+  NOT_USED(c_);
+  NOT_USED(f);
+
   return error_NOT_IMPLEMENTED;
 }
 
