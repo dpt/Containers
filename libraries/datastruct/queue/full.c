@@ -16,6 +16,5 @@ int queue_full(const queue_t *q)
   head = q->head - q->buffer;
   tail = q->tail - q->buffer;
 
-  return ((head + q->width) % (q->nelems * q->width)) == tail;
+  return (ptrdiff_t) ((head + q->width) % (q->nelems * q->width)) == tail;
 }
-
