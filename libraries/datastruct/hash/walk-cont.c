@@ -35,7 +35,7 @@ error hash_walk_continuation(hash_t      *h,
   bin  = ((unsigned int) continuation & 0xffff0000) >> 16;
   item = ((unsigned int) continuation & 0x0000ffff) >> 0;
 
-  if (bin >= h->nbins)
+  if (bin >= (unsigned int) h->nbins)
     return error_HASH_BAD_CONT; /* invalid continuation value */
 
   /* if we're starting off, scan forward to the first occupied bin */
@@ -45,7 +45,7 @@ error hash_walk_continuation(hash_t      *h,
     while (h->bins[bin] == NULL)
       bin++;
 
-    if (bin == h->nbins)
+    if (bin == (unsigned int) h->nbins)
       return error_HASH_END; /* all bins were empty */
   }
 
@@ -55,7 +55,7 @@ error hash_walk_continuation(hash_t      *h,
   {
     next = n->next;
 
-    if (i == item)
+    if ((unsigned int) i == item)
       break;
 
     i++;
@@ -80,7 +80,7 @@ error hash_walk_continuation(hash_t      *h,
 
   /* scan forward to the next occupied bin */
 
-  while (++bin < h->nbins)
+  while (++bin < (unsigned int) h->nbins)
     if (h->bins[bin])
     {
       *nextcontinuation = bin << 16; /* next occupied bin, first node */
