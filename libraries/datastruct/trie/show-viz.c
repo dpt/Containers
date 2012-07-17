@@ -94,8 +94,6 @@ error trie_show_viz(const trie_t      *t,
   error                 err;
   trie__show_viz_args_t args;
 
-  return error_OK;
-
   args.key           = key;
   args.key_destroy   = key_destroy;
   args.value         = value;
