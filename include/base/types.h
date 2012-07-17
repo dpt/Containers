@@ -14,8 +14,12 @@ typedef unsigned char  uint8_t;
 typedef unsigned short uint16_t;
 typedef unsigned int   uint32_t;
 
-#ifdef _WIN32
+#ifdef _MSC_VER
+#ifdef _WIN64
+typedef __int64 intptr_t;
+#else
 typedef int intptr_t;
+#endif
 #endif
 
 #define NELEMS(x) ((int) (sizeof(x) / sizeof(x[0])))
