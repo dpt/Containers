@@ -1,1 +1,10 @@
-- Hoist out test source files to their own repo. Or store them in test sub-dirs and build those in a separate pass?
+TODO
+====
+
+- hash_lookup_prefix
+- patricia_delete
+- Doxygen style documentation for all #includes.
+- Address assumptions about sizeof int.
+- Integrate with a C test framework, e.g. CUnit.
+- More/better use of the likely/unlikely macros.
+
