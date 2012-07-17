@@ -8,25 +8,34 @@
 
 typedef unsigned long int error;
 
-#define error_OK                  0
-#define error_EXISTS              1
-#define error_NOT_FOUND           2
-#define error_OOM                 3
-#define error_STOP_WALK           4
-#define error_CLASHES             5   /* key would clash with existing one */
-#define error_NOT_IMPLEMENTED     6
+/* Generic errors */
 
-#define error_KEYLEN_REQUIRED     200
-#define error_KEYCOMPARE_REQUIRED 201
-#define error_KEYHASH_REQIURED    202
+#define error_OK                    0ul /* No error */
+#define error_OOM                   1ul /* Out of memory */
+#define error_NOT_IMPLEMENTED       2ul /* Function not implemented */
+#define error_NOT_FOUND             3ul /* Item not found */
+#define error_EXISTS                4ul /* Item already exists */
+#define error_STOP_WALK             5ul /* Callback was cancelled */
 
-#define error_QUEUE_FULL          300
-#define error_QUEUE_EMPTY         301
+/* Data structure errors */
 
-#define error_TEST_FAILED         400
+#define error_CLASHES             100ul /* Key would clash with existing one */
 
-#define error_HASH_END            500
-#define error_HASH_BAD_CONT       501
+#define error_QUEUE_FULL          110ul
+#define error_QUEUE_EMPTY         111ul
+
+#define error_HASH_END            120ul
+#define error_HASH_BAD_CONT       121ul
+
+/* Container errors */
+
+#define error_KEYLEN_REQUIRED     200ul
+#define error_KEYCOMPARE_REQUIRED 201ul
+#define error_KEYHASH_REQIURED    202ul
+
+/* Test errors */
+
+#define error_TEST_FAILED         300ul
 
 #endif /* ERRORS_H */
 
