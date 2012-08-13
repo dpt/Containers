@@ -37,7 +37,10 @@ error hash_create(const void         *default_value,
 
   bins = calloc(nbins, sizeof(*h->bins));
   if (bins == NULL)
+  {
+    free(h);
     return error_OOM;
+  }
 
   h->bins          = bins;
   h->nbins         = nbins;
