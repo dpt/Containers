@@ -20,6 +20,8 @@ typedef __int64 intptr_t;
 #else
 typedef int intptr_t;
 #endif
+#else
+#include <stdint.h>
 #endif
 
 #define NELEMS(x) ((int) (sizeof(x) / sizeof(x[0])))
