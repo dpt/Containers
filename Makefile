@@ -8,9 +8,9 @@
 
 # set $(prefix) to point to cross-compiling gcc etc
 
-cc_		= $(prefix)gcc
-ar_		= $(prefix)ar
-link_		= $(prefix)gcc
+cc_		?= $(prefix)clang
+ar_		?= $(prefix)ar
+link_		?= $(prefix)clang
 
 # Tool flags
 
