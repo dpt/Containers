@@ -8,9 +8,9 @@
 
 # set $(prefix) to point to cross-compiling gcc etc
 
-cc_		= $(prefix)clang
+cc_		= $(prefix)gcc
 ar_		= $(prefix)ar
-link_		= $(prefix)clang
+link_		= $(prefix)gcc
 
 # Tool flags
 
@@ -48,8 +48,12 @@ lib		= libcontainer.a
 debuglib	= libcontainerdbg.a
 testlib		= libcontainertest.a
 debugtestlib	= libcontainertestdbg.a
-exe		= container-test
-debugexe	= container-testdbg
+
+ctestexe	= container-test
+debugctestexe	= $(ctestexe)dbg
+
+wtestexe	= word-test
+debugwtestexe	= $(wtestexe)dbg
 
 # Objects
 
@@ -63,10 +67,15 @@ testobjs	= $(testsrc:.c=.o)
 debugtestobjs	= $(testsrc:.c=.odbg)
 testdeps	= $(testsrc:.c=.d)
 
-appsrc		= $(shell find apps -name '*.c')
-appobjs		= $(appsrc:.c=.o)
-debugappobjs	= $(appsrc:.c=.odbg)
-appdeps		= $(appsrc:.c=.d)
+ctestsrc	= $(shell find apps/container-test -name '*.c')
+ctestobjs	= $(ctestsrc:.c=.o)
+debugctestobjs	= $(ctestsrc:.c=.odbg)
+ctestdeps	= $(ctestsrc:.c=.d)
+
+wtestsrc	= $(shell find apps/word-test -name '*.c')
+wtestobjs	= $(wtestsrc:.c=.o)
+debugwtestobjs	= $(wtestsrc:.c=.odbg)
+wtestdeps	= $(wtestsrc:.c=.d)
 
 # Targets
 
@@ -90,29 +99,39 @@ release:	$(lib)
 debug:		$(debuglib)
 		@echo 'debug' built
 
-$(exe):		$(appobjs) $(testlib) $(lib)
+$(ctestexe):	$(ctestobjs) $(testlib) $(lib)
 		$(link) -o $@ $^ $(extlibs)
 
-$(debugexe):	$(debugappobjs) $(debugtestlib) $(debuglib)
+$(debugctestexe):	$(debugctestobjs) $(debugtestlib) $(debuglib)
 		$(link) -g -o $@ $^ $(extlibs)
 
-apps:		$(exe)
+$(wtestexe):	$(wtestobjs) $(testlib) $(lib)
+		$(link) -o $@ $^ $(extlibs)
+
+$(debugwtestexe):	$(debugwtestobjs) $(debugtestlib) $(debuglib)
+		$(link) -g -o $@ $^ $(extlibs)
+
+apps:		$(ctestexe) $(wtestexe)
 		@echo 'apps' built
 
-debugapps:	$(debugexe)
+debugapps:	$(debugctestexe) $(debugwtestexe)
 		@echo 'debugapps' built
 
 all:		release debug apps debugapps
 		@echo 'all' built
 
 clean:
-		-rm $(lib) $(debuglib) $(testlib) $(debugtestlib) $(exe) $(debugexe)
 		-rm $(objs) $(debugobjs) $(deps)
+		-rm $(lib) $(debuglib)
 		-rm $(testobjs) $(debugtestobjs) $(testdeps)
-		-rm $(appobjs) $(debugappobjs) $(appdeps)
+		-rm $(testlib) $(debugtestlib) 
+		-rm $(ctestexe) $(debugctestexe) 
+		-rm $(ctestobjs) $(debugctestobjs) $(ctestdeps)
+		-rm $(wtestexe) $(debugwtestexe)
+		-rm $(wtestobjs) $(debugwtestobjs) $(wtestdeps)
 		@echo Cleaned
 
 # Dependencies
 
--include	$(deps) $(appdeps)
+-include	$(deps) $(ctestdeps)
 
