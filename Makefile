@@ -121,14 +121,14 @@ all:		release debug apps debugapps
 		@echo 'all' built
 
 clean:
-		-rm $(objs) $(debugobjs) $(deps)
-		-rm $(lib) $(debuglib)
-		-rm $(testobjs) $(debugtestobjs) $(testdeps)
-		-rm $(testlib) $(debugtestlib) 
-		-rm $(ctestexe) $(debugctestexe) 
-		-rm $(ctestobjs) $(debugctestobjs) $(ctestdeps)
-		-rm $(wtestexe) $(debugwtestexe)
-		-rm $(wtestobjs) $(debugwtestobjs) $(wtestdeps)
+		-rm -f $(objs) $(debugobjs) $(deps)
+		-rm -f $(lib) $(debuglib)
+		-rm -f $(testobjs) $(debugtestobjs) $(testdeps)
+		-rm -f $(testlib) $(debugtestlib) 
+		-rm -f $(ctestexe) $(debugctestexe) 
+		-rm -f $(ctestobjs) $(debugctestobjs) $(ctestdeps)
+		-rm -f $(wtestexe) $(debugwtestexe)
+		-rm -f $(wtestobjs) $(debugwtestobjs) $(wtestdeps)
 		@echo Cleaned
 
 # Dependencies
