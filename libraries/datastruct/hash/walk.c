@@ -24,7 +24,7 @@ error hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
 
     for (n = h->bins[i]; n != NULL; n = next)
     {
-      int r;
+      error r;
 
       next = n->next;
 
