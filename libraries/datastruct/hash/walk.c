@@ -29,7 +29,7 @@ error hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
       next = n->next;
 
       r = cb(&n->item, cbarg);
-      if (r < 0)
+      if (r)
         return r;
     }
   }
