@@ -6,8 +6,8 @@
 /* A critbit tree is a form of trie where one-way branching is replaced with
  * a bit index. */
 
-/* This implementation is based on Bertstein crit-bits via the paper at
- * imperialviolet.org:
+/* This implementation is based on Bernstein binary crit-bit tree via the
+ * paper at imperialviolet.org:
  * http://www.imperialviolet.org/2008/09/29/critbit-trees.html
  */
 
