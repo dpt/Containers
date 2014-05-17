@@ -52,9 +52,15 @@ ifeq ($(TARGET),ios-arm-clang)
 	LD=$(CLANG) $(SANITIZE)
 else ifeq ($(TARGET),osx-any-clang)
 	#CLANG=~/bin/clang+llvm-3.4/bin/clang
-	#SANITIZE=-fsanitize=integer -fsanitize=address -fsanitize=undefined
 	CLANG=clang
 	CLANGFLAGS=-ferror-limit=2
+	#SANITIZE=-fsanitize=integer -fsanitize=address -fsanitize=undefined
+	CC=$(CLANG) $(CLANGFLAGS) $(SANITIZE)
+	LD=$(CLANG) $(SANITIZE)
+else ifeq ($(TARGET),linux-any-clang)
+	CLANG=clang
+	CLANGFLAGS=-ferror-limit=2
+	SANITIZE=
 	CC=$(CLANG) $(CLANGFLAGS) $(SANITIZE)
 	LD=$(CLANG) $(SANITIZE)
 else ifeq ($(TARGET),linux-arm-any)
