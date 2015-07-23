@@ -13,7 +13,7 @@
 
 void hash_destroy(hash_t *h)
 {
-  int i;
+  unsigned int i;
 
   for (i = 0; i < h->nbins; i++)
     while (h->bins[i])

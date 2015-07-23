@@ -15,7 +15,7 @@
 
 result_t hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
 {
-  int i;
+  unsigned int i;
 
   for (i = 0; i < h->nbins; i++)
   {

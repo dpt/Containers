@@ -24,7 +24,7 @@ hash__node_t;
 struct hash
 {
   hash__node_t      **bins;
-  int                 nbins;
+  unsigned int        nbins;
 
   int                 count;
 

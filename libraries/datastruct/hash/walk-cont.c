@@ -22,7 +22,7 @@ result_t hash_walk_continuation(hash_t      *h,
 {
   unsigned int  bin;
   unsigned int  item;
-  int           i;
+  unsigned int  i;
   hash__node_t *n;
   hash__node_t *next = NULL;
 
@@ -32,7 +32,7 @@ result_t hash_walk_continuation(hash_t      *h,
   /* The continuation value is treated as a pair of 16-bit fields, the top
    * half being the bin and the bottom half being the node within the bin. */
 
-  bin  = ((unsigned int) continuation & 0xffff0000) >> 16;
+  bin  = ((unsigned int) continuation             ) >> 16;
   item = ((unsigned int) continuation & 0x0000ffff) >> 0;
 
   if (bin >= (unsigned int) h->nbins)
@@ -42,10 +42,11 @@ result_t hash_walk_continuation(hash_t      *h,
 
   if (continuation == 0)
   {
-    while (h->bins[bin] == NULL)
-      bin++;
+    for (; bin < h->nbins; bin++)
+      if (h->bins[bin])
+        break;
 
-    if (bin == (unsigned int) h->nbins)
+    if (bin == h->nbins)
       return result_HASH_END; /* all bins were empty */
   }
 
@@ -55,7 +56,7 @@ result_t hash_walk_continuation(hash_t      *h,
   {
     next = n->next;
 
-    if ((unsigned int) i == item)
+    if (i == item)
       break;
 
     i++;
@@ -80,7 +81,7 @@ result_t hash_walk_continuation(hash_t      *h,
 
   /* scan forward to the next occupied bin */
 
-  while (++bin < (unsigned int) h->nbins)
+  while (++bin < h->nbins)
     if (h->bins[bin])
     {
       *nextcontinuation = bin << 16; /* next occupied bin, first node */
