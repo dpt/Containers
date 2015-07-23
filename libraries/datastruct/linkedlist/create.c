@@ -7,17 +7,17 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/linkedlist.h"
 
 #include "impl.h"
 
-error linkedlist_create(const void                *default_value,
-                        linkedlist_compare        *compare,
-                        linkedlist_destroy_key    *destroy_key,
-                        linkedlist_destroy_value  *destroy_value,
-                        linkedlist_t             **pt)
+result_t linkedlist_create(const void                *default_value,
+                           linkedlist_compare        *compare,
+                           linkedlist_destroy_key    *destroy_key,
+                           linkedlist_destroy_value  *destroy_value,
+                           linkedlist_t             **pt)
 {
   linkedlist_t *t;
 
@@ -25,7 +25,7 @@ error linkedlist_create(const void                *default_value,
 
   t = malloc(sizeof(*t));
   if (t == NULL)
-    return error_OOM;
+    return result_OOM;
 
   t->anchor        = NULL;
 
@@ -38,6 +38,6 @@ error linkedlist_create(const void                *default_value,
 
   *pt = t;
 
-  return error_OK;
+  return result_OK;
 }
 

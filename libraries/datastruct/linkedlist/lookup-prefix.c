@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/linkedlist.h"
 
@@ -22,8 +22,8 @@ typedef struct linkedlist_lookup_prefix_args
 }
 linkedlist_lookup_prefix_args_t;
 
-static error linkedlist__lookup_prefix(linkedlist__node_t *n,
-                                       void               *opaque)
+static result_t linkedlist__lookup_prefix(linkedlist__node_t *n,
+                                          void               *opaque)
 {
   linkedlist_lookup_prefix_args_t *args = opaque;
   size_t                           prefixlen;
@@ -37,16 +37,16 @@ static error linkedlist__lookup_prefix(linkedlist__node_t *n,
     return args->cb(&n->item, args->opaque);
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-error linkedlist_lookup_prefix(const linkedlist_t        *t,
-                               const void                *prefix,
-                               size_t                     prefixlen,
-                               linkedlist_found_callback *cb,
-                               void                      *opaque)
+result_t linkedlist_lookup_prefix(const linkedlist_t        *t,
+                                  const void                *prefix,
+                                  size_t                     prefixlen,
+                                  linkedlist_found_callback *cb,
+                                  void                      *opaque)
 {
-  error                           err;
+  result_t                        err;
   linkedlist_lookup_prefix_args_t args;
 
   args.uprefix   = prefix;
@@ -60,6 +60,6 @@ error linkedlist_lookup_prefix(const linkedlist_t        *t,
   if (err)
     return err;
 
-  return args.found ? error_OK : error_NOT_FOUND;
+  return args.found ? result_OK : result_NOT_FOUND;
 }
 

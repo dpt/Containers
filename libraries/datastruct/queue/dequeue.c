@@ -5,16 +5,16 @@
 
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/queue.h"
 
 #include "impl.h"
 
-error queue_dequeue(queue_t *q, void *value)
+result_t queue_dequeue(queue_t *q, void *value)
 {
   if (queue_empty(q))
-    return error_QUEUE_EMPTY;
+    return result_QUEUE_EMPTY;
 
   memcpy(value, q->tail, q->width);
 
@@ -23,6 +23,6 @@ error queue_dequeue(queue_t *q, void *value)
   else
     q->tail += q->width;
 
-  return error_OK;
+  return result_OK;
 }
 

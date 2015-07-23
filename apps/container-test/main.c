@@ -6,12 +6,12 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "test.h"
 
-error queuetest(void);
+result_t queuetest(void);
 
 int main(int argc, char *argv[])
 {

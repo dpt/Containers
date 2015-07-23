@@ -24,7 +24,8 @@ typedef struct orderedarray__show_args
 }
 orderedarray__show_args_t;
 
-static error orderedarray__node_show(orderedarray__node_t *n, void *opaque)
+static result_t orderedarray__node_show(orderedarray__node_t *n,
+                                        void                 *opaque)
 {
   orderedarray__show_args_t *args = opaque;
   const char                *key;
@@ -40,15 +41,15 @@ static error orderedarray__node_show(orderedarray__node_t *n, void *opaque)
   if (args->key_destroy   && key)   args->key_destroy((char *) key);
   if (args->value_destroy && value) args->value_destroy((char *) value);
 
-  return error_OK;
+  return result_OK;
 }
 
-error orderedarray_show(const orderedarray_t      *t,
-                        orderedarray_show_key     *key,
-                        orderedarray_show_destroy *key_destroy,
-                        orderedarray_show_value   *value,
-                        orderedarray_show_destroy *value_destroy,
-                        FILE                      *f)
+result_t orderedarray_show(const orderedarray_t      *t,
+                           orderedarray_show_key     *key,
+                           orderedarray_show_destroy *key_destroy,
+                           orderedarray_show_value   *value,
+                           orderedarray_show_destroy *value_destroy,
+                           FILE                      *f)
 {
   orderedarray__show_args_t args;
 

@@ -49,12 +49,12 @@ void linkedlist__node_destroy(linkedlist_t       *t,
 /* internal tree walk functions. callback returns a pointer to a
  * linkedlist__node_t, so internal for that reason. */
 
-typedef error (linkedlist__walk_internal_callback)(linkedlist__node_t *n,
-                                                   void               *opaque);
+typedef result_t (linkedlist__walk_internal_callback)(linkedlist__node_t *n,
+                                                      void               *opaque);
 
-error linkedlist__walk_internal(linkedlist_t                       *t,
-                                linkedlist__walk_internal_callback *cb,
-                                void                               *opaque);
+result_t linkedlist__walk_internal(linkedlist_t                       *t,
+                                   linkedlist__walk_internal_callback *cb,
+                                   void                               *opaque);
 
 /* ----------------------------------------------------------------------- */
 

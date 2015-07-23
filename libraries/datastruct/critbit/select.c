@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/item.h"
@@ -22,9 +22,9 @@ typedef struct critbit__select_args
 }
 critbit__select_args_t;
 
-static error critbit__select_node(critbit__node_t *n,
-                                  int              level,
-                                  void            *opaque)
+static result_t critbit__select_node(critbit__node_t *n,
+                                     int              level,
+                                     void            *opaque)
 {
   critbit__select_args_t *args = opaque;
 
@@ -37,16 +37,16 @@ static error critbit__select_node(critbit__node_t *n,
     e = FROM_STORE(n);
 
     args->item = &e->item;
-    return error_STOP_WALK;
+    return result_STOP_WALK;
   }
 
-  return error_OK;
+  return result_OK;
 }
 
 /* Walk the tree until the k'th leaf is encountered and return it. */
 const item_t *critbit_select(critbit_t *t, int k)
 {
-  error                  err;
+  result_t               err;
   critbit__select_args_t args;
 
   args.k    = k;
@@ -58,7 +58,7 @@ const item_t *critbit_select(critbit_t *t, int k)
                                &args);
 
   /* no errors save for the expected ones should happen here */
-  assert(err == error_OK || err == error_STOP_WALK);
+  assert(err == result_OK || err == result_STOP_WALK);
 
   return args.item;
 }

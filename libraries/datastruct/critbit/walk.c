@@ -5,22 +5,22 @@
 
 #include <stddef.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/critbit.h"
 
 #include "impl.h"
 
-static error critbit__walk_in_order(const critbit__node_t *n,
-                                    int                    level,
-                                    critbit_walk_callback *cb,
-                                    void                  *opaque)
+static result_t critbit__walk_in_order(const critbit__node_t *n,
+                                       int                    level,
+                                       critbit_walk_callback *cb,
+                                       void                  *opaque)
 {
-  error               err;
+  result_t            err;
   critbit__extnode_t *e;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   if (IS_EXTERNAL(n))
   {
@@ -41,15 +41,15 @@ static error critbit__walk_in_order(const critbit__node_t *n,
       return err;
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-error critbit_walk(const critbit_t       *t,
-                   critbit_walk_callback *cb,
-                   void                  *opaque)
+result_t critbit_walk(const critbit_t       *t,
+                      critbit_walk_callback *cb,
+                      void                  *opaque)
 {
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   return critbit__walk_in_order(t->root, 0, cb, opaque);
 }

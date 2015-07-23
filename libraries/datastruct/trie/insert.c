@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/trie.h"
 
@@ -67,10 +67,10 @@ static trie__node_t *trie__insert_split(trie_t       *t,
   return x;
 }
 
-error trie_insert(trie_t     *t,
-                  const void *key,
-                  size_t      keylen,
-                  const void *value)
+result_t trie_insert(trie_t     *t,
+                     const void *key,
+                     size_t      keylen,
+                     const void *value)
 {
   const unsigned char *ukey    = key;
   const unsigned char *ukeyend = ukey + keylen;
@@ -94,11 +94,11 @@ error trie_insert(trie_t     *t,
   }
 
   if (n && n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
-    return error_EXISTS;
+    return result_EXISTS;
 
   m = trie__node_create(t, key, keylen, value);
   if (m == NULL)
-    return error_OOM;
+    return result_OOM;
 
   if (n)
   {
@@ -112,11 +112,11 @@ error trie_insert(trie_t     *t,
     if (m == NULL)
     {
       trie__node_destroy(t, m2);
-      return error_OOM;
+      return result_OOM;
     }
   }
 
   *pn = m;
 
-  return error_OK;
+  return result_OK;
 }

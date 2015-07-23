@@ -56,26 +56,26 @@ void dstree__node_destroy(dstree_t *t, dstree__node_t *n);
 
 /* internal tree walk functions which return a pointer to a dstree__node_t */
 
-typedef error (dstree__walk_internal_callback)(dstree__node_t *n,
-                                               int             level,
-                                               void           *opaque);
+typedef result_t (dstree__walk_internal_callback)(dstree__node_t *n,
+                                                  int             level,
+                                                  void           *opaque);
 
-error dstree__walk_internal_post(dstree_t                       *t,
-                                 dstree__walk_internal_callback *cb,
-                                 void                           *opaque);
-error dstree__walk_internal_post_node(dstree__node_t                 *root,
-                                      int                             level,
-                                      dstree__walk_internal_callback *cb,
-                                      void                           *opaque);
-error dstree__walk_internal(dstree_t                       *t,
-                            dstree__walk_internal_callback *cb,
-                            void                           *opaque);
+result_t dstree__walk_internal_post(dstree_t                       *t,
+                                    dstree__walk_internal_callback *cb,
+                                    void                           *opaque);
+result_t dstree__walk_internal_post_node(dstree__node_t                 *root,
+                                         int                             level,
+                                         dstree__walk_internal_callback *cb,
+                                         void                           *opaque);
+result_t dstree__walk_internal(dstree_t                       *t,
+                               dstree__walk_internal_callback *cb,
+                               void                           *opaque);
 
 /* ----------------------------------------------------------------------- */
 
-error dstree__breadthwalk_internal(dstree_t                       *t,
-                                   dstree__walk_internal_callback *cb,
-                                   void                           *opaque);
+result_t dstree__breadthwalk_internal(dstree_t                       *t,
+                                      dstree__walk_internal_callback *cb,
+                                      void                           *opaque);
 
 /* ----------------------------------------------------------------------- */
 

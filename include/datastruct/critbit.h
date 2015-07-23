@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "item.h"
 
 /* ----------------------------------------------------------------------- */
@@ -42,20 +42,20 @@ typedef void (critbit_destroy_value)(void *value);
  * NULL can be passed in for destroy_key and destroy_value to use default
  * routines suitable for strings.
  */
-error critbit_create(const void            *default_value,
-                     critbit_destroy_key   *destroy_key,
-                     critbit_destroy_value *destroy_value,
-                     T                     **t);
+result_t critbit_create(const void            *default_value,
+                        critbit_destroy_key   *destroy_key,
+                        critbit_destroy_value *destroy_value,
+                        T                     **t);
 void critbit_destroy(T *t);
 
 /* ----------------------------------------------------------------------- */
 
 const void *critbit_lookup(const T *t, const void *key, size_t keylen);
 
-error critbit_insert(T          *t,
-                     const void *key,
-                     size_t      keylen,
-                     const void *value);
+result_t critbit_insert(T          *t,
+                        const void *key,
+                        size_t      keylen,
+                        const void *value);
 
 void critbit_remove(T *t, const void *key, size_t keylen);
 
@@ -65,25 +65,25 @@ int critbit_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (critbit_found_callback)(const item_t *item,
-                                       void         *opaque);
+typedef result_t (critbit_found_callback)(const item_t *item,
+                                          void         *opaque);
 
-error critbit_lookup_prefix(const T                *t,
-                            const void             *prefix,
-                            size_t                  prefixlen,
-                            critbit_found_callback *cb,
-                            void                   *opaque);
+result_t critbit_lookup_prefix(const T                *t,
+                               const void             *prefix,
+                               size_t                  prefixlen,
+                               critbit_found_callback *cb,
+                               void                   *opaque);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (critbit_walk_callback)(const void *key,
-                                      const void *value,
-                                      int         level,
-                                      void       *opaque);
+typedef result_t (critbit_walk_callback)(const void *key,
+                                         const void *value,
+                                         int         level,
+                                         void       *opaque);
 
-error critbit_walk(const T               *t,
-                   critbit_walk_callback *cb,
-                   void                  *opaque);
+result_t critbit_walk(const T               *t,
+                      critbit_walk_callback *cb,
+                      void                  *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -96,22 +96,22 @@ typedef const char *(critbit_show_key)(const void *key);
 typedef const char *(critbit_show_value)(const void *value);
 typedef void (critbit_show_destroy)(char *doomed);
 
-error critbit_show(const T              *t,
-                   critbit_show_key     *key,
-                   critbit_show_destroy *key_destroy,
-                   critbit_show_value   *value,
-                   critbit_show_destroy *value_destroy,
-                   FILE                 *f);
+result_t critbit_show(const T              *t,
+                      critbit_show_key     *key,
+                      critbit_show_destroy *key_destroy,
+                      critbit_show_value   *value,
+                      critbit_show_destroy *value_destroy,
+                      FILE                 *f);
 
 /* ----------------------------------------------------------------------- */
 
 /* Dump in format which can be fed into Graphviz. */
-error critbit_show_viz(const T              *t,
-                       critbit_show_key     *key,
-                       critbit_show_destroy *key_destroy,
-                       critbit_show_value   *value,
-                       critbit_show_destroy *value_destroy,
-                       FILE                 *f);
+result_t critbit_show_viz(const T              *t,
+                          critbit_show_key     *key,
+                          critbit_show_destroy *key_destroy,
+                          critbit_show_value   *value,
+                          critbit_show_destroy *value_destroy,
+                          FILE                 *f);
 
 /* ----------------------------------------------------------------------- */
 

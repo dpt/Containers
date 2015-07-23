@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/dstree.h"
 
@@ -23,7 +23,7 @@ typedef struct dstree__show_args
 }
 dstree__show_args_t;
 
-static error dstree__node_show(dstree__node_t *n, int level, void *opaque)
+static result_t dstree__node_show(dstree__node_t *n, int level, void *opaque)
 {
   static const char stars[] = "********************************"; // works up to 32 levels deep
 
@@ -42,15 +42,15 @@ static error dstree__node_show(dstree__node_t *n, int level, void *opaque)
   if (args->key_destroy   && key)   args->key_destroy((char *) key);
   if (args->value_destroy && value) args->value_destroy((char *) value);
 
-  return error_OK;
+  return result_OK;
 }
 
-error dstree_show(const dstree_t      *t,
-                  dstree_show_key     *key,
-                  dstree_show_destroy *key_destroy,
-                  dstree_show_value   *value,
-                  dstree_show_destroy *value_destroy,
-                  FILE                *f)
+result_t dstree_show(const dstree_t      *t,
+                     dstree_show_key     *key,
+                     dstree_show_destroy *key_destroy,
+                     dstree_show_value   *value,
+                     dstree_show_destroy *value_destroy,
+                     FILE                *f)
 {
   dstree__show_args_t args;
 

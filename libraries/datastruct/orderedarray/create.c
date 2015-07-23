@@ -7,17 +7,17 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/orderedarray.h"
 
 #include "impl.h"
 
-error orderedarray_create(const void                  *default_value,
-                          orderedarray_compare        *compare,
-                          orderedarray_destroy_key    *destroy_key,
-                          orderedarray_destroy_value  *destroy_value,
-                          orderedarray_t             **pt)
+result_t orderedarray_create(const void                  *default_value,
+                             orderedarray_compare        *compare,
+                             orderedarray_destroy_key    *destroy_key,
+                             orderedarray_destroy_value  *destroy_value,
+                             orderedarray_t             **pt)
 {
   orderedarray_t *t;
 
@@ -25,7 +25,7 @@ error orderedarray_create(const void                  *default_value,
 
   t = malloc(sizeof(*t));
   if (t == NULL)
-    return error_OOM;
+    return result_OOM;
 
   t->array         = NULL;
   t->nelems        = 0;
@@ -38,6 +38,6 @@ error orderedarray_create(const void                  *default_value,
 
   *pt = t;
 
-  return error_OK;
+  return result_OK;
 }
 

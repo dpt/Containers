@@ -6,13 +6,13 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/queue.h"
 
 /* test int values */
-static error queuetest1(void)
+static result_t queuetest1(void)
 {
   static const int values1[] =
   {
@@ -23,16 +23,16 @@ static error queuetest1(void)
     6, 66, 666, 6666, 66666, 666666, 6666666, 66666666
   };
 
-  error    err;
-  queue_t *q;
-  int      i;
-  int      v;
+  result_t  err;
+  queue_t  *q;
+  int       i;
+  int       v;
 
   printf("> queue test 1 - ints\n");
 
   q = queue_create(4, sizeof(int));
   if (q == NULL)
-    return error_OOM;
+    return result_OOM;
 
   /* enqueue five values into the four long queue */
 
@@ -42,8 +42,8 @@ static error queuetest1(void)
     err = queue_enqueue(q, &values1[i]);
     if (err)
     {
-      if (err == error_QUEUE_FULL && i == 4)
-        printf("error: %lx - expected (queue full)\n", err);
+      if (err == result_QUEUE_FULL && i == 4)
+        printf("error: %x - expected (queue full)\n", err);
       else
         return err;
     }
@@ -56,8 +56,8 @@ static error queuetest1(void)
     err = queue_dequeue(q, &v);
     if (err)
     {
-      if (err == error_QUEUE_EMPTY && i == 4)
-        printf("error: %lx - expected (queue empty)\n", err);
+      if (err == result_QUEUE_EMPTY && i == 4)
+        printf("error: %x - expected (queue empty)\n", err);
       else
         return err;
     }
@@ -67,7 +67,7 @@ static error queuetest1(void)
       if (v != values1[i])
       {
         printf("values didn't match!\n");
-        return error_TEST_FAILED;
+        return result_TEST_FAILED;
       }
     }
   }
@@ -98,11 +98,11 @@ static error queuetest1(void)
 
   queue_destroy(q);
 
-  return error_OK;
+  return result_OK;
 }
 
 /* test wider-than-int values */
-static error queuetest2(void)
+static result_t queuetest2(void)
 {
   typedef struct testdata
   {
@@ -129,16 +129,16 @@ static error queuetest2(void)
     { 15, "Dave"  },
   };
 
-  error    err;
-  queue_t *q;
-  int      i;
-  testdata v;
+  result_t  err;
+  queue_t  *q;
+  int       i;
+  testdata  v;
 
   printf("> queue test 2 - structs\n");
 
   q = queue_create(4, sizeof(testdata));
   if (q == NULL)
-    return error_OOM;
+    return result_OOM;
 
   /* first part of testing omitted - same as above */
 
@@ -157,8 +157,8 @@ static error queuetest2(void)
     err = queue_dequeue(q, &v);
     if (err)
     {
-      if (err == error_QUEUE_EMPTY && i == 4)
-        printf("error: %lx - expected\n", err);
+      if (err == result_QUEUE_EMPTY && i == 4)
+        printf("error: %x - expected\n", err);
       else
         return err;
     }
@@ -175,27 +175,27 @@ static error queuetest2(void)
 
   queue_destroy(q);
 
-  return error_OK;
+  return result_OK;
 }
 
-error queuetest(void)
+result_t queuetest(void)
 {
-  error e1, e2;
+  result_t e1, e2;
 
   printf(">> queue test\n");
 
   e1 = queuetest1();
   if (e1)
-    printf("unexpected error: %lx\n", e1);
+    printf("unexpected error: %x\n", e1);
 
   e2 = queuetest2();
   if (e2)
-    printf("unexpected error: %lx\n", e2);
+    printf("unexpected error: %x\n", e2);
 
   if (e1 || e2)
-    return e1 != error_OK ? e1 : e2;
+    return e1 != result_OK ? e1 : e2;
 
   printf("<< queue tests ok\n");
 
-  return error_OK;
+  return result_OK;
 }

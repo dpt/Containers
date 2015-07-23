@@ -69,14 +69,14 @@ typedef unsigned int patricia_walk_flags;
 /* internal tree walk functions. callback returns a pointer to a
  * patricia__node_t, so internal for that reason. */
 
-typedef error (patricia__walk_internal_callback)(patricia__node_t *n,
-                                                 int               level,
-                                                 void             *opaque);
+typedef result_t (patricia__walk_internal_callback)(patricia__node_t *n,
+                                                    int               level,
+                                                    void             *opaque);
 
-error patricia__walk_internal(patricia_t                       *t,
-                              patricia_walk_flags               flags,
-                              patricia__walk_internal_callback *cb,
-                              void                             *opaque);
+result_t patricia__walk_internal(patricia_t                       *t,
+                                 patricia_walk_flags               flags,
+                                 patricia__walk_internal_callback *cb,
+                                 void                             *opaque);
 
 /* ----------------------------------------------------------------------- */
 

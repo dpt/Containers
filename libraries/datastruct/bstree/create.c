@@ -7,17 +7,17 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/bstree.h"
 
 #include "impl.h"
 
-error bstree_create(const void            *default_value,
-                    bstree_compare        *compare,
-                    bstree_destroy_key    *destroy_key,
-                    bstree_destroy_value  *destroy_value,
-                    bstree_t             **pt)
+result_t bstree_create(const void            *default_value,
+                       bstree_compare        *compare,
+                       bstree_destroy_key    *destroy_key,
+                       bstree_destroy_value  *destroy_value,
+                       bstree_t             **pt)
 {
   bstree_t *t;
 
@@ -25,7 +25,7 @@ error bstree_create(const void            *default_value,
 
   t = malloc(sizeof(*t));
   if (t == NULL)
-    return error_OOM;
+    return result_OOM;
 
   t->root          = NULL;
   t->default_value = default_value;
@@ -37,6 +37,6 @@ error bstree_create(const void            *default_value,
 
   *pt = t;
 
-  return error_OK;
+  return result_OK;
 }
 

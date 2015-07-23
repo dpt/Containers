@@ -7,16 +7,16 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/trie.h"
 
 #include "impl.h"
 
-error trie_create(const void          *default_value,
-                  trie_destroy_key    *destroy_key,
-                  trie_destroy_value  *destroy_value,
-                  trie_t             **pt)
+result_t trie_create(const void          *default_value,
+                     trie_destroy_key    *destroy_key,
+                     trie_destroy_value  *destroy_value,
+                     trie_t             **pt)
 {
   trie_t *t;
 
@@ -24,7 +24,7 @@ error trie_create(const void          *default_value,
 
   t = malloc(sizeof(*t));
   if (t == NULL)
-    return error_OOM;
+    return result_OOM;
 
   t->root          = NULL;
   t->default_value = default_value;
@@ -35,5 +35,5 @@ error trie_create(const void          *default_value,
 
   *pt = t;
 
-  return error_OK;
+  return result_OK;
 }

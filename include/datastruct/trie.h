@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "item.h"
 
 /* ----------------------------------------------------------------------- */
@@ -40,17 +40,20 @@ typedef void (trie_destroy_value)(void *value);
  * NULL can be passed in for destroy_key and destroy_value to use default
  * routines suitable for strings.
  */
-error trie_create(const void          *default_value,
-                  trie_destroy_key    *destroy_key,
-                  trie_destroy_value  *destroy_value,
-                  T                  **t);
+result_t trie_create(const void          *default_value,
+                     trie_destroy_key    *destroy_key,
+                     trie_destroy_value  *destroy_value,
+                    T                  **t);
 void trie_destroy(T *t);
 
 /* ----------------------------------------------------------------------- */
 
 const void *trie_lookup(T *t, const void *key, size_t keylen);
 
-error trie_insert(T *t, const void *key, size_t keylen, const void *value);
+result_t trie_insert(T          *t,
+                     const void *key,
+                     size_t      keylen,
+                     const void *value);
 
 void trie_remove(T *t, const void *key, size_t keylen);
 
@@ -60,24 +63,24 @@ int trie_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (trie_found_callback)(const item_t *item,
-                                    void         *opaque);
+typedef result_t (trie_found_callback)(const item_t *item,
+                                       void         *opaque);
 
-error trie_lookup_prefix(const T             *t,
-                         const void          *prefix,
-                         size_t               prefixlen,
-                         trie_found_callback *cb,
-                         void                *opaque);
+result_t trie_lookup_prefix(const T             *t,
+                            const void          *prefix,
+                            size_t               prefixlen,
+                            trie_found_callback *cb,
+                            void                *opaque);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (trie_walk_callback)(const item_t *item,
-                                   int           level,
-                                   void         *opaque);
+typedef result_t (trie_walk_callback)(const item_t *item,
+                                      int           level,
+                                      void         *opaque);
 
-error trie_walk(const T            *t,
-                trie_walk_callback *cb,
-                void               *opaque);
+result_t trie_walk(const T            *t,
+                   trie_walk_callback *cb,
+                   void               *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -90,22 +93,22 @@ typedef const char *(trie_show_key)(const void *key);
 typedef const char *(trie_show_value)(const void *value);
 typedef void (trie_show_destroy)(char *doomed);
 
-error trie_show(const T           *t,
-                trie_show_key     *key,
-                trie_show_destroy *key_destroy,
-                trie_show_value   *value,
-                trie_show_destroy *value_destroy,
-                FILE              *f);
+result_t trie_show(const T           *t,
+                   trie_show_key     *key,
+                   trie_show_destroy *key_destroy,
+                   trie_show_value   *value,
+                   trie_show_destroy *value_destroy,
+                   FILE              *f);
 
 /* ----------------------------------------------------------------------- */
 
 /* Dump in format which can be fed into Graphviz. */
-error trie_show_viz(const T           *t,
-                    trie_show_key     *key,
-                    trie_show_destroy *key_destroy,
-                    trie_show_value   *value,
-                    trie_show_destroy *value_destroy,
-                    FILE              *f);
+result_t trie_show_viz(const T           *t,
+                       trie_show_key     *key,
+                       trie_show_destroy *key_destroy,
+                       trie_show_value   *value,
+                       trie_show_destroy *value_destroy,
+                       FILE              *f);
 
 /* ----------------------------------------------------------------------- */
 

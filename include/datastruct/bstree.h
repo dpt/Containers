@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "item.h"
 
 /* ----------------------------------------------------------------------- */
@@ -37,18 +37,21 @@ typedef void (bstree_destroy_value)(void *value);
  * NULL can be passed in for compare, destroy_key and destroy_value to use
  * default routines suitable for strings.
  */
-error bstree_create(const void            *default_value,
-                    bstree_compare        *compare,
-                    bstree_destroy_key    *destroy_key,
-                    bstree_destroy_value  *destroy_value,
-                    T                    **t);
+result_t bstree_create(const void            *default_value,
+                       bstree_compare        *compare,
+                       bstree_destroy_key    *destroy_key,
+                       bstree_destroy_value  *destroy_value,
+                       T                    **t);
 void bstree_destroy(T *t);
 
 /* ----------------------------------------------------------------------- */
 
 const void *bstree_lookup(T *t, const void *key);
 
-error bstree_insert(T *t, const void *key, size_t keylen, const void *value);
+result_t bstree_insert(T          *t,
+                       const void *key,
+                       size_t      keylen,
+                       const void *value);
 
 void bstree_remove(T *t, const void *key);
 
@@ -58,14 +61,14 @@ int bstree_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (bstree_found_callback)(const item_t *item,
-                                      void         *opaque);
+typedef result_t (bstree_found_callback)(const item_t *item,
+                                         void         *opaque);
 
-error bstree_lookup_prefix(const T               *t,
-                           const void            *prefix,
-                           size_t                 prefixlen,
-                           bstree_found_callback *cb,
-                           void                  *opaque);
+result_t bstree_lookup_prefix(const T               *t,
+                              const void            *prefix,
+                              size_t                 prefixlen,
+                              bstree_found_callback *cb,
+                              void                  *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -80,14 +83,14 @@ typedef unsigned int bstree_walk_flags;
 #define bstree_WALK_BRANCHES   (1u << 3)
 #define bstree_WALK_ALL        (bstree_WALK_LEAVES | bstree_WALK_BRANCHES)
 
-typedef error (bstree_walk_callback)(const item_t *item,
-                                     int           level,
-                                     void         *opaque);
+typedef result_t (bstree_walk_callback)(const item_t *item,
+                                        int           level,
+                                        void         *opaque);
 
-error bstree_walk(const T              *t,
-                  bstree_walk_flags     flags,
-                  bstree_walk_callback *cb,
-                  void                 *opaque);
+result_t bstree_walk(const T              *t,
+                     bstree_walk_flags     flags,
+                     bstree_walk_callback *cb,
+                     void                 *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -100,22 +103,22 @@ typedef const char *(bstree_show_key)(const void *key);
 typedef const char *(bstree_show_value)(const void *value);
 typedef void (bstree_show_destroy)(char *doomed);
 
-error bstree_show(const T             *t,
-                  bstree_show_key     *key,
-                  bstree_show_destroy *key_destroy,
-                  bstree_show_value   *value,
-                  bstree_show_destroy *value_destroy,
-                  FILE                *f);
+result_t bstree_show(const T             *t,
+                     bstree_show_key     *key,
+                     bstree_show_destroy *key_destroy,
+                     bstree_show_value   *value,
+                     bstree_show_destroy *value_destroy,
+                     FILE                *f);
 
 /* ----------------------------------------------------------------------- */
 
 /* Dump in format which can be fed into Graphviz. */
-error bstree_show_viz(const T             *t,
-                      bstree_show_key     *key,
-                      bstree_show_destroy *key_destroy,
-                      bstree_show_value   *value,
-                      bstree_show_destroy *value_destroy,
-                      FILE                *f);
+result_t bstree_show_viz(const T             *t,
+                         bstree_show_key     *key,
+                         bstree_show_destroy *key_destroy,
+                         bstree_show_value   *value,
+                         bstree_show_destroy *value_destroy,
+                         FILE                *f);
 
 /* ----------------------------------------------------------------------- */
 

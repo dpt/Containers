@@ -6,16 +6,16 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/critbit.h"
 
 #include "impl.h"
 
-static error critbit__destroy_node(critbit__node_t *n,
-                                   int              level,
-                                   void            *opaque)
+static result_t critbit__destroy_node(critbit__node_t *n,
+                                      int              level,
+                                      void            *opaque)
 {
   NOT_USED(level);
 
@@ -24,7 +24,7 @@ static error critbit__destroy_node(critbit__node_t *n,
   else
     critbit__node_destroy(opaque, n);
 
-  return error_OK;
+  return result_OK;
 }
 
 void critbit_destroy(critbit_t *t)

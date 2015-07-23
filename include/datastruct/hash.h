@@ -17,12 +17,17 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "item.h"
 
 #define T hash_t
 
 typedef struct hash T;
+
+/* ----------------------------------------------------------------------- */
+
+#define result_HASH_END      (result_BASE_CONTAINER_HASH + 0) /* Indicates final element */
+#define result_HASH_BAD_CONT (result_BASE_CONTAINER_HASH + 1) /* Invalid continuation value */
 
 /* ----------------------------------------------------------------------- */
 
@@ -59,13 +64,13 @@ typedef void (hash_destroy_value)(void *value);
  *
  * \return Error indication.
  */
-error hash_create(const void         *default_value,
-                  int                 nbins,
-                  hash_fn            *fn,
-                  hash_compare       *compare,
-                  hash_destroy_key   *destroy_key,
-                  hash_destroy_value *destroy_value,
-                  T                 **hash);
+result_t hash_create(const void         *default_value,
+                     int                 nbins,
+                     hash_fn            *fn,
+                     hash_compare       *compare,
+                     hash_destroy_key   *destroy_key,
+                     hash_destroy_value *destroy_value,
+                     T                 **hash);
 
 /**
  * Destroy a hash.
@@ -100,10 +105,10 @@ const void *hash_lookup(T *hash, const void *key);
  *
  * \return Error indication.
  */
-error hash_insert(T          *hash,
-                  const void *key,
-                  size_t      keylen,
-                  const void *value);
+result_t hash_insert(T          *hash,
+                     const void *key,
+                     size_t      keylen,
+                     const void *value);
 
 /**
  * Remove the specified key from the hash.
@@ -129,8 +134,8 @@ int hash_count(T *hash);
  *
  * Return an error to halt the walk operation.
  */
-typedef error (hash_walk_callback)(const item_t *item,
-                                   void         *opaque);
+typedef result_t (hash_walk_callback)(const item_t *item,
+                                      void         *opaque);
 
 /**
  * Walk the hash, calling the specified routine for every element.
@@ -140,9 +145,9 @@ typedef error (hash_walk_callback)(const item_t *item,
  * \param opaque Opaque pointer to pass to callback routine.
  *
  * \return Error indication.
- * \retval error_OK If the walk completed successfully.
+ * \retval result_OK If the walk completed successfully.
  */
-error hash_walk(const T *hash, hash_walk_callback *cb, void *opaque);
+result_t hash_walk(const T *hash, hash_walk_callback *cb, void *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -156,14 +161,14 @@ error hash_walk(const T *hash, hash_walk_callback *cb, void *opaque);
  * \param[out] value            Pointer to receive value.
  *
  * \return Error indication.
- * \retval error_OK       If an element was found.
+ * \retval result_OK       If an element was found.
  * \retval error_HASH_END If no elements remain.
  */
-error hash_walk_continuation(T           *hash,
-                             int          continuation,
-                             int         *nextcontinuation,
-                             const void **key,
-                             const void **value);
+result_t hash_walk_continuation(T           *hash,
+                                int          continuation,
+                                int         *nextcontinuation,
+                                const void **key,
+                                const void **value);
 
 /* ----------------------------------------------------------------------- */
 
@@ -176,12 +181,12 @@ typedef const char *(hash_show_key)(const void *key);
 typedef const char *(hash_show_value)(const void *value);
 typedef void (hash_show_destroy)(char *doomed);
 
-error hash_show(const T           *t,
-                hash_show_key     *key,
-                hash_show_destroy *key_destroy,
-                hash_show_value   *value,
-                hash_show_destroy *value_destroy,
-                FILE              *f);
+result_t hash_show(const T           *t,
+                   hash_show_key     *key,
+                   hash_show_destroy *key_destroy,
+                   hash_show_value   *value,
+                   hash_show_destroy *value_destroy,
+                   FILE              *f);
 
 /* ----------------------------------------------------------------------- */
 

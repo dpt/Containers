@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/dstree.h"
 
@@ -20,9 +20,9 @@ typedef struct dstree_lookup_prefix_args
 }
 dstree_lookup_prefix_args_t;
 
-static error dstree__lookup_prefix_node(dstree__node_t *n,
-                                        int             level,
-                                        void           *opaque)
+static result_t dstree__lookup_prefix_node(dstree__node_t *n,
+                                           int             level,
+                                           void           *opaque)
 {
   dstree_lookup_prefix_args_t *args = opaque;
   size_t                       prefixlen;
@@ -38,17 +38,17 @@ static error dstree__lookup_prefix_node(dstree__node_t *n,
   }
   else
   {
-    return error_OK;
+    return result_OK;
   }
 }
 
-error dstree_lookup_prefix(const dstree_t        *t,
-                           const void            *prefix,
-                           size_t                 prefixlen,
-                           dstree_found_callback *cb,
-                           void                  *opaque)
+result_t dstree_lookup_prefix(const dstree_t        *t,
+                              const void            *prefix,
+                              size_t                 prefixlen,
+                              dstree_found_callback *cb,
+                              void                  *opaque)
 {
-  error                       err;
+  result_t                    err;
   const unsigned char        *uprefix    = prefix;
   const unsigned char        *uprefixend = uprefix + prefixlen;
   int                         depth;
@@ -71,7 +71,7 @@ error dstree_lookup_prefix(const dstree_t        *t,
    *    entire subtree, issuing callbacks for all nodes in the subtree.
    */
 
-  err = error_NOT_FOUND; /* assume not found until we call the callback */
+  err = result_NOT_FOUND; /* assume not found until we call the callback */
 
   depth = 0;
 
@@ -112,6 +112,6 @@ error dstree_lookup_prefix(const dstree_t        *t,
       return err;
   }
 
-  return error_OK;
+  return result_OK;
 }
 

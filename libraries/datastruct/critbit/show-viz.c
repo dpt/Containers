@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/bstree.h"
@@ -45,7 +45,7 @@ static int bitdepth(const critbit__node_t *n)
 }
 
 /* rank the nodes */
-static error critbit__node_show_viz_rank(critbit__node_t *n, int level, void *opaque)
+static result_t critbit__node_show_viz_rank(critbit__node_t *n, int level, void *opaque)
 {
   critbit__show_viz_args_t *args = opaque;
 
@@ -54,11 +54,11 @@ static error critbit__node_show_viz_rank(critbit__node_t *n, int level, void *op
   if (bitdepth(n) == args->rank)
     (void) fprintf(args->f, "\t\t\"%p\"\n", (void *) n);
 
-  return error_OK;
+  return result_OK;
 }
 
 /* rank the leaf nodes */
-static error critbit__node_show_viz_rank_leaves(critbit__node_t *n, int level, void *opaque)
+static result_t critbit__node_show_viz_rank_leaves(critbit__node_t *n, int level, void *opaque)
 {
   critbit__show_viz_args_t *args = opaque;
 
@@ -66,11 +66,11 @@ static error critbit__node_show_viz_rank_leaves(critbit__node_t *n, int level, v
 
   (void) fprintf(args->f, "\t\t\"%p\"\n", (void *) n);
 
-  return error_OK;
+  return result_OK;
 }
 
 /* link the nodes */
-static error critbit__node_show_viz_link(critbit__node_t *n, int level, void *opaque)
+static result_t critbit__node_show_viz_link(critbit__node_t *n, int level, void *opaque)
 {
   critbit__show_viz_args_t *args = opaque;
 
@@ -106,7 +106,7 @@ static error critbit__node_show_viz_link(critbit__node_t *n, int level, void *op
       (void) fprintf(args->f, "\t\"%p\":se -> \"%p\":n;\n", n, n->child[1]);
   }
 
-  return error_OK;
+  return result_OK;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -170,14 +170,14 @@ static int critbit__count_for_rank(const critbit_t *t, int rank)
 
 /* ----------------------------------------------------------------------- */
 
-error critbit_show_viz(const critbit_t      *t,
-                       critbit_show_key     *key,
-                       critbit_show_destroy *key_destroy,
-                       critbit_show_value   *value,
-                       critbit_show_destroy *value_destroy,
-                       FILE                 *f)
+result_t critbit_show_viz(const critbit_t      *t,
+                          critbit_show_key     *key,
+                          critbit_show_destroy *key_destroy,
+                          critbit_show_value   *value,
+                          critbit_show_destroy *value_destroy,
+                          FILE                 *f)
 {
-  error                    err;
+  result_t                 err;
   critbit__show_viz_args_t args;
   int                      maxrank;
   int                      i;
@@ -259,6 +259,6 @@ error critbit_show_viz(const critbit_t      *t,
 
   (void) fprintf(f, "}\n");
 
-  return error_OK;
+  return result_OK;
 }
 

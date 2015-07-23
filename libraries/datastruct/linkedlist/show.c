@@ -24,7 +24,7 @@ typedef struct linkedlist__show_args
 }
 linkedlist__show_args_t;
 
-static error linkedlist__node_show(linkedlist__node_t *n, void *opaque)
+static result_t linkedlist__node_show(linkedlist__node_t *n, void *opaque)
 {
   linkedlist__show_args_t *args = opaque;
   const char              *key;
@@ -40,15 +40,15 @@ static error linkedlist__node_show(linkedlist__node_t *n, void *opaque)
   if (args->key_destroy   && key)   args->key_destroy((char *) key);
   if (args->value_destroy && value) args->value_destroy((char *) value);
 
-  return error_OK;
+  return result_OK;
 }
 
-error linkedlist_show(const linkedlist_t      *t,
-                      linkedlist_show_key     *key,
-                      linkedlist_show_destroy *key_destroy,
-                      linkedlist_show_value   *value,
-                      linkedlist_show_destroy *value_destroy,
-                      FILE                    *f)
+result_t linkedlist_show(const linkedlist_t      *t,
+                         linkedlist_show_key     *key,
+                         linkedlist_show_destroy *key_destroy,
+                         linkedlist_show_value   *value,
+                         linkedlist_show_destroy *value_destroy,
+                         FILE                    *f)
 {
   linkedlist__show_args_t args;
 

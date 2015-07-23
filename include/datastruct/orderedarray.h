@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "utils/utils.h"
 #include "item.h"
 
@@ -38,21 +38,21 @@ typedef void (orderedarray_destroy_value)(void *value);
  * NULL can be passed in for compare, destroy_key and destroy_value to
  * use default routines suitable for strings.
  */
-error orderedarray_create(const void                  *default_value,
-                          orderedarray_compare        *compare,
-                          orderedarray_destroy_key    *destroy_key,
-                          orderedarray_destroy_value  *destroy_value,
-                          T                          **t);
+result_t orderedarray_create(const void                  *default_value,
+                             orderedarray_compare        *compare,
+                             orderedarray_destroy_key    *destroy_key,
+                             orderedarray_destroy_value  *destroy_value,
+                             T                          **t);
 void orderedarray_destroy(T *t);
 
 /* ----------------------------------------------------------------------- */
 
 const void *orderedarray_lookup(T *t, const void *key);
 
-error orderedarray_insert(T          *t,
-                          const void *key,
-                          size_t      keylen,
-                          const void *value);
+result_t orderedarray_insert(T          *t,
+                             const void *key,
+                             size_t      keylen,
+                             const void *value);
 
 void orderedarray_remove(T *t, const void *key);
 
@@ -62,23 +62,23 @@ int orderedarray_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (orderedarray_found_callback)(const item_t *item,
-                                            void         *opaque);
+typedef result_t (orderedarray_found_callback)(const item_t *item,
+                                               void         *opaque);
 
-error orderedarray_lookup_prefix(const T                     *t,
-                                 const void                  *prefix,
-                                 size_t                       prefixlen,
-                                 orderedarray_found_callback *cb,
-                                 void                        *opaque);
+result_t orderedarray_lookup_prefix(const T                     *t,
+                                    const void                  *prefix,
+                                    size_t                       prefixlen,
+                                    orderedarray_found_callback *cb,
+                                    void                        *opaque);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (orderedarray_walk_callback)(const item_t *item,
-                                           void         *opaque);
+typedef result_t (orderedarray_walk_callback)(const item_t *item,
+                                              void         *opaque);
 
-error orderedarray_walk(const T                    *t,
-                        orderedarray_walk_callback *cb,
-                        void                       *opaque);
+result_t orderedarray_walk(const T                    *t,
+                           orderedarray_walk_callback *cb,
+                           void                       *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -92,12 +92,12 @@ typedef const char *(orderedarray_show_key)(const void *key);
 typedef const char *(orderedarray_show_value)(const void *value);
 typedef void (orderedarray_show_destroy)(char *doomed);
 
-error orderedarray_show(const T                   *t,
-                        orderedarray_show_key     *key,
-                        orderedarray_show_destroy *key_destroy,
-                        orderedarray_show_value   *value,
-                        orderedarray_show_destroy *value_destroy,
-                        FILE                      *f);
+result_t orderedarray_show(const T                   *t,
+                           orderedarray_show_key     *key,
+                           orderedarray_show_destroy *key_destroy,
+                           orderedarray_show_value   *value,
+                           orderedarray_show_destroy *value_destroy,
+                           FILE                      *f);
 
 /* ----------------------------------------------------------------------- */
 

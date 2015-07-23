@@ -7,13 +7,13 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/hash.h"
 
 #include "impl.h"
 
-error hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
+result_t hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
 {
   int i;
 
@@ -24,7 +24,7 @@ error hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
 
     for (n = h->bins[i]; n != NULL; n = next)
     {
-      error r;
+      result_t r;
 
       next = n->next;
 
@@ -34,6 +34,6 @@ error hash_walk(const hash_t *h, hash_walk_callback *cb, void *cbarg)
     }
   }
 
-  return error_OK;
+  return result_OK;
 }
 

@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/item.h"
 
@@ -32,14 +32,20 @@ typedef struct icontainer T;
 
 /* ----------------------------------------------------------------------- */
 
+#define result_KEYLEN_REQUIRED     (result_BASE_CONTAINER + 0)
+#define result_KEYCOMPARE_REQUIRED (result_BASE_CONTAINER + 1)
+#define result_KEYHASH_REQUIRED    (result_BASE_CONTAINER + 2)
+
+/* ----------------------------------------------------------------------- */
+
 /* Search for keyed element. */
 typedef const void *(*icontainer_lookup)(const T    *c,
                                          const void *key);
 
 /* Insert new element. */
-typedef error (*icontainer_insert)(T          *c,
-                                   const void *key,
-                                   const void *value);
+typedef result_t (*icontainer_insert)(T          *c,
+                                      const void *key,
+                                      const void *value);
 
 /* Remove keyed element. */
 typedef void (*icontainer_remove)(T          *c,
@@ -50,25 +56,25 @@ typedef const item_t *(*icontainer_select)(const T *c,
                                            int      k);
 
 /* A function which is called back with a found item. */
-typedef error (*icontainer_found_callback)(const item_t *item,
-                                           void          *opaque);
+typedef result_t (*icontainer_found_callback)(const item_t *item,
+                                              void          *opaque);
 
 /* Search for elements with the specified key prefix. */
-typedef error (*icontainer_lookup_prefix)(const T                   *c,
-                                          const void                *prefix,
-                                          icontainer_found_callback  cb,
-                                          void                      *opaque);
+typedef result_t (*icontainer_lookup_prefix)(const T                   *c,
+                                             const void                *prefix,
+                                             icontainer_found_callback  cb,
+                                             void                      *opaque);
 
 /* Return number of elements in container. */
 typedef int (*icontainer_count)(const T *c);
 
 /* Display container's contents. */
-typedef error (*icontainer_show)(const T *c,
-                                 FILE    *f);
+typedef result_t (*icontainer_show)(const T *c,
+                                    FILE    *f);
 
 /* Display container's contents in Graphviz 'dot' input format. */
-typedef error (*icontainer_show_viz)(const T *c,
-                                     FILE    *f);
+typedef result_t (*icontainer_show_viz)(const T *c,
+                                        FILE    *f);
 
 /* Destroy specified container. */
 typedef void (*icontainer_destroy)(T *doomed);

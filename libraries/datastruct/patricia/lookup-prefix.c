@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/patricia.h"
 
@@ -15,17 +15,17 @@
 
 /* This is similar to patricia__walk_in_order, but returns items as an item_t
  * pointer. */
-static error patricia__lookup_prefix_walk(const patricia__node_t  *n,
-                                          const void              *prefix,
-                                          size_t                   prefixlen,
-                                          patricia_found_callback *cb,
-                                          void                    *opaque)
+static result_t patricia__lookup_prefix_walk(const patricia__node_t  *n,
+                                             const void              *prefix,
+                                             size_t                   prefixlen,
+                                             patricia_found_callback *cb,
+                                             void                    *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   for (i = 0; i < 2; i++)
   {
@@ -55,14 +55,14 @@ static error patricia__lookup_prefix_walk(const patricia__node_t  *n,
     }
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-error patricia_lookup_prefix(const patricia_t        *t,
-                             const void              *prefix,
-                             size_t                   prefixlen,
-                             patricia_found_callback *cb,
-                             void                    *opaque)
+result_t patricia_lookup_prefix(const patricia_t        *t,
+                                const void              *prefix,
+                                size_t                   prefixlen,
+                                patricia_found_callback *cb,
+                                void                    *opaque)
 {
   const unsigned char *uprefix    = prefix;
   const unsigned char *uprefixend = uprefix + prefixlen;
@@ -74,7 +74,7 @@ error patricia_lookup_prefix(const patricia_t        *t,
   top = NULL;
 
   if (n == NULL)
-    return error_OK; /* empty tree */
+    return result_OK; /* empty tree */
 
   /* The patricia trie tells us how to branch for a given bit but not what
    * the intermediate bits were. This means we can begin to search the trie
@@ -96,12 +96,12 @@ error patricia_lookup_prefix(const patricia_t        *t,
   /* ensure the prefix exists */
   if (n->item.keylen < prefixlen ||
       memcmp(n->item.key, prefix, prefixlen) != 0)
-    return error_NOT_FOUND;
+    return result_NOT_FOUND;
 
   if (prefixlen * 8 - 1 == (size_t) i /* not n->bit */)
   {
     // single exact match?
-    return error_OK;
+    return result_OK;
   }
 
   assert(top != NULL);

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 #include "datastruct/hash.h"
 #include "container/interface/container.h"
@@ -37,9 +37,9 @@ static const void *container_hash__lookup(const icontainer_t *c_,
   return hash_lookup(c->t, key);
 }
 
-static error container_hash__insert(icontainer_t *c_,
-                                    const void   *key,
-                                    const void   *value)
+static result_t container_hash__insert(icontainer_t *c_,
+                                       const void   *key,
+                                       const void   *value)
 {
   container_hash_t *c = (container_hash_t *) c_;
 
@@ -61,17 +61,17 @@ static const item_t *container_hash__select(const icontainer_t *c_, int k)
   return NULL; /* not implemented */
 }
 
-static error container_hash__lookup_prefix(const icontainer_t        *c_,
-                                           const void                *prefix,
-                                           icontainer_found_callback  cb,
-                                           void                      *opaque)
+static result_t container_hash__lookup_prefix(const icontainer_t        *c_,
+                                              const void                *prefix,
+                                              icontainer_found_callback  cb,
+                                              void                      *opaque)
 {
   NOT_USED(c_);
   NOT_USED(prefix);
   NOT_USED(cb);
   NOT_USED(opaque);
   
-  return error_NOT_IMPLEMENTED;
+  return result_NOT_IMPLEMENTED;
 }
 
 static int container_hash__count(const icontainer_t *c_)
@@ -81,7 +81,7 @@ static int container_hash__count(const icontainer_t *c_)
   return hash_count(c->t);
 }
 
-static error container_hash__show(const icontainer_t *c_, FILE *f)
+static result_t container_hash__show(const icontainer_t *c_, FILE *f)
 {
   container_hash_t *c = (container_hash_t *) c_;
 
@@ -91,12 +91,12 @@ static error container_hash__show(const icontainer_t *c_, FILE *f)
                    f);
 }
 
-static error container_hash__show_viz(const icontainer_t *c_, FILE *f)
+static result_t container_hash__show_viz(const icontainer_t *c_, FILE *f)
 {
   NOT_USED(c_);
   NOT_USED(f);
 
-  return error_NOT_IMPLEMENTED;
+  return result_NOT_IMPLEMENTED;
 }
 
 static void container_hash__destroy(icontainer_t *doomed_)
@@ -107,9 +107,9 @@ static void container_hash__destroy(icontainer_t *doomed_)
   free(doomed);
 }
 
-error container_create_hash(icontainer_t            **container,
-                            const icontainer_key_t   *key,
-                            const icontainer_value_t *value)
+result_t container_create_hash(icontainer_t            **container,
+                               const icontainer_key_t   *key,
+                               const icontainer_value_t *value)
 {
   static const icontainer_t methods =
   {
@@ -124,7 +124,7 @@ error container_create_hash(icontainer_t            **container,
     container_hash__destroy,
   };
 
-  error             err;
+  result_t          err;
   container_hash_t *c;
 
   assert(container);
@@ -136,15 +136,15 @@ error container_create_hash(icontainer_t            **container,
   /* ensure required callbacks are specified */
 
   if (key->len == NULL)
-    return error_KEYLEN_REQUIRED;
+    return result_KEYLEN_REQUIRED;
   if (key->compare == NULL)
-    return error_KEYCOMPARE_REQUIRED;
+    return result_KEYCOMPARE_REQUIRED;
   if (key->hash == NULL)
-    return error_KEYHASH_REQIURED;
+    return result_KEYHASH_REQUIRED;
 
   c = malloc(sizeof(*c));
   if (c == NULL)
-    return error_OOM;
+    return result_OOM;
 
   c->c                  = methods;
 
@@ -170,5 +170,5 @@ error container_create_hash(icontainer_t            **container,
 
   *container = &c->c;
 
-  return error_OK;
+  return result_OK;
 }

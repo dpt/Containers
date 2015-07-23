@@ -7,18 +7,18 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/linkedlist.h"
 
 #include "impl.h"
 
-static error linkedlist__destroy_node(linkedlist__node_t *n,
-                                      void               *opaque)
+static result_t linkedlist__destroy_node(linkedlist__node_t *n,
+                                         void               *opaque)
 {
   linkedlist__node_destroy(opaque, n);
 
-  return error_OK;
+  return result_OK;
 }
 
 void linkedlist_destroy(linkedlist_t *t)

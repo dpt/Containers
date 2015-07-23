@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "utils/utils.h"
 
@@ -24,10 +24,10 @@
 // crit-bit, but you can't discover the crit-bit of an all-zero-bits key
 // unless you arbitrarily fix the length of the keys.
 
-error critbit_insert(critbit_t  *t,
-                     const void *key,
-                     size_t      keylen,
-                     const void *value)
+result_t critbit_insert(critbit_t  *t,
+                        const void *key,
+                        size_t      keylen,
+                        const void *value)
 {
   const unsigned char *ukey;
   const unsigned char *ukeyend;
@@ -46,11 +46,11 @@ error critbit_insert(critbit_t  *t,
 
       newextnode = critbit__extnode_create(t, key, keylen, value);
       if (newextnode == NULL)
-        return error_OOM;
+        return result_OOM;
 
       t->root = TO_STORE(newextnode);
 
-      return error_OK;
+      return result_OK;
     }
 
     /* find closest node */
@@ -75,7 +75,7 @@ error critbit_insert(critbit_t  *t,
         q->item.value  = value;
       }
 
-      return error_OK;
+      return result_OK;
     }
 
     /* we've found a node which differs */
@@ -93,7 +93,7 @@ error critbit_insert(critbit_t  *t,
 
       nbit = keydiffbit(qkey, qkeyend - qkey, ukey, ukeyend - ukey);
       if (nbit == -1)
-        return error_CLASHES;
+        return result_CLASHES;
 
       newotherbits = 1 << (7 - (nbit & 0x07));
       newotherbits ^= 255;
@@ -114,7 +114,7 @@ error critbit_insert(critbit_t  *t,
 
     newextnode = critbit__extnode_create(t, key, keylen, value);
     if (newextnode == NULL)
-      return error_OOM;
+      return result_OOM;
 
     /* allocate new internal node */
 
@@ -122,7 +122,7 @@ error critbit_insert(critbit_t  *t,
     if (newnode == NULL)
     {
       critbit__extnode_destroy(t, newextnode);
-      return error_OOM;
+      return result_OOM;
     }
 
     /* insert new node */
@@ -152,6 +152,6 @@ error critbit_insert(critbit_t  *t,
     *pn = newnode;
   }
 
-  return error_OK;
+  return result_OK;
 }
 

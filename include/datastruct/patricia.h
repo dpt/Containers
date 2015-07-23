@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "item.h"
 
 /* ----------------------------------------------------------------------- */
@@ -37,20 +37,20 @@ typedef void (patricia_destroy_value)(void *value);
  * NULL can be passed in for destroy_key and destroy_value to use default
  * routines suitable for strings.
  */
-error patricia_create(const void             *default_value,
-                      patricia_destroy_key   *destroy_key,
-                      patricia_destroy_value *destroy_value,
-                      T                     **t);
+result_t patricia_create(const void             *default_value,
+                         patricia_destroy_key   *destroy_key,
+                         patricia_destroy_value *destroy_value,
+                         T                     **t);
 void patricia_destroy(T *t);
 
 /* ----------------------------------------------------------------------- */
 
 const void *patricia_lookup(const T *t, const void *key, size_t keylen);
 
-error patricia_insert(T          *t,
-                      const void *key,
-                      size_t      keylen,
-                      const void *value);
+result_t patricia_insert(T          *t,
+                         const void *key,
+                         size_t      keylen,
+                         const void *value);
 
 void patricia_remove(T *t, const void *key, size_t keylen);
 
@@ -60,25 +60,25 @@ int patricia_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (patricia_found_callback)(const item_t *item,
-                                        void         *opaque);
+typedef result_t (patricia_found_callback)(const item_t *item,
+                                           void         *opaque);
 
-error patricia_lookup_prefix(const T                 *t,
-                             const void              *prefix,
-                             size_t                   prefixlen,
-                             patricia_found_callback *cb,
-                             void                    *opaque);
+result_t patricia_lookup_prefix(const T                 *t,
+                                const void              *prefix,
+                                size_t                   prefixlen,
+                                patricia_found_callback *cb,
+                                void                    *opaque);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (patricia_walk_callback)(const void *key,
-                                       const void *value,
-                                       int         level,
-                                       void       *opaque);
+typedef result_t (patricia_walk_callback)(const void *key,
+                                          const void *value,
+                                          int         level,
+                                          void       *opaque);
 
-error patricia_walk(const T                *t,
-                    patricia_walk_callback *cb,
-                    void                   *opaque);
+result_t patricia_walk(const T                *t,
+                       patricia_walk_callback *cb,
+                       void                   *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -91,22 +91,22 @@ typedef const char *(patricia_show_key)(const void *key);
 typedef const char *(patricia_show_value)(const void *value);
 typedef void (patricia_show_destroy)(char *doomed);
 
-error patricia_show(const T               *t,
-                    patricia_show_key     *key,
-                    patricia_show_destroy *key_destroy,
-                    patricia_show_value   *value,
-                    patricia_show_destroy *value_destroy,
-                    FILE                  *f);
+result_t patricia_show(const T               *t,
+                       patricia_show_key     *key,
+                       patricia_show_destroy *key_destroy,
+                       patricia_show_value   *value,
+                       patricia_show_destroy *value_destroy,
+                       FILE                  *f);
 
 /* ----------------------------------------------------------------------- */
 
 /* Dump in format which can be fed into Graphviz. */
-error patricia_show_viz(const T               *t,
-                        patricia_show_key     *key,
-                        patricia_show_destroy *key_destroy,
-                        patricia_show_value   *value,
-                        patricia_show_destroy *value_destroy,
-                        FILE                  *f);
+result_t patricia_show_viz(const T               *t,
+                           patricia_show_key     *key,
+                           patricia_show_destroy *key_destroy,
+                           patricia_show_value   *value,
+                           patricia_show_destroy *value_destroy,
+                           FILE                  *f);
 
 /* ----------------------------------------------------------------------- */
 

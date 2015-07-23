@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "utils/utils.h"
@@ -16,10 +16,10 @@
 
 #include "impl.h"
 
-error patricia_insert(patricia_t *t,
-                      const void *key,
-                      size_t      keylen,
-                      const void *value)
+result_t patricia_insert(patricia_t *t,
+                         const void *key,
+                         size_t      keylen,
+                         const void *value)
 {
   const unsigned char *ukey;
   const unsigned char *ukeyend;
@@ -58,7 +58,7 @@ update:
         q->item.value  = value;
       }
 
-      return error_OK;
+      return result_OK;
     }
 
     /* we've found a node which differs */
@@ -89,7 +89,7 @@ update:
 
     newnode = patricia__node_create(t, key, keylen, value);
     if (newnode == NULL)
-      return error_OOM;
+      return result_OOM;
 
     n    = t->root;
     nbit = n->bit;
@@ -118,6 +118,6 @@ update:
     *pn = newnode;
   }
 
-  return error_OK;
+  return result_OK;
 }
 

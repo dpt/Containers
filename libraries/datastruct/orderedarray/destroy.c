@@ -7,18 +7,18 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/orderedarray.h"
 
 #include "impl.h"
 
-static error orderedarray__destroy_node(orderedarray__node_t *n,
-                                        void                 *opaque)
+static result_t orderedarray__destroy_node(orderedarray__node_t *n,
+                                           void                 *opaque)
 {
   orderedarray__node_destroy(opaque, n);
 
-  return error_OK;
+  return result_OK;
 }
 
 void orderedarray_destroy(orderedarray_t *t)

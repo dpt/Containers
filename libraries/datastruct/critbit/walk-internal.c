@@ -6,7 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/critbit.h"
 
@@ -15,17 +15,17 @@
 // unlike the walking methods in other data structures, we cannot callback on
 // the current node as any non-leaf node does not hold an item
 //
-static error critbit__walk_internal_in_order(critbit__node_t                 *n,
-                                             critbit_walk_flags               flags,
-                                             int                              level,
-                                             critbit__walk_internal_callback *cb,
-                                             void                            *opaque)
+static result_t critbit__walk_internal_in_order(critbit__node_t                 *n,
+                                                critbit_walk_flags               flags,
+                                                int                              level,
+                                                critbit__walk_internal_callback *cb,
+                                               void                            *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   if (IS_EXTERNAL(n))
   {
@@ -53,20 +53,20 @@ static error critbit__walk_internal_in_order(critbit__node_t                 *n,
     }
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-static error critbit__walk_internal_pre_order(critbit__node_t                 *n,
-                                              critbit_walk_flags               flags,
-                                              int                              level,
-                                              critbit__walk_internal_callback *cb,
-                                              void                            *opaque)
+static result_t critbit__walk_internal_pre_order(critbit__node_t                 *n,
+                                                 critbit_walk_flags               flags,
+                                                 int                              level,
+                                                 critbit__walk_internal_callback *cb,
+                                                 void                            *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   if (IS_EXTERNAL(n))
   {
@@ -95,20 +95,20 @@ static error critbit__walk_internal_pre_order(critbit__node_t                 *n
     }
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-static error critbit__walk_internal_post_order(critbit__node_t                 *n,
-                                               critbit_walk_flags               flags,
-                                               int                              level,
-                                               critbit__walk_internal_callback *cb,
-                                               void                            *opaque)
+static result_t critbit__walk_internal_post_order(critbit__node_t                 *n,
+                                                  critbit_walk_flags               flags,
+                                                  int                              level,
+                                                  critbit__walk_internal_callback *cb,
+                                                  void                            *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   if (IS_EXTERNAL(n))
   {
@@ -137,22 +137,22 @@ static error critbit__walk_internal_post_order(critbit__node_t                 *
     }
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-error critbit__walk_internal(critbit_t                       *t,
-                             critbit_walk_flags               flags,
-                             critbit__walk_internal_callback *cb,
-                             void                            *opaque)
+result_t critbit__walk_internal(critbit_t                       *t,
+                                critbit_walk_flags               flags,
+                                critbit__walk_internal_callback *cb,
+                                void                            *opaque)
 {
-  error (*walker)(critbit__node_t                 *n,
-                  critbit_walk_flags               flags,
-                  int                              level,
-                  critbit__walk_internal_callback *cb,
-                  void                            *opaque);
+  result_t (*walker)(critbit__node_t                 *n,
+                     critbit_walk_flags               flags,
+                     int                              level,
+                     critbit__walk_internal_callback *cb,
+                     void                            *opaque);
 
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   switch (flags & critbit_WALK_ORDER_MASK)
   {

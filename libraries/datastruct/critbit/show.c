@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/critbit.h"
 
@@ -23,7 +23,9 @@ typedef struct critbit__show_args
 }
 critbit__show_args_t;
 
-static error critbit__node_show(critbit__node_t *n, int level, void *opaque)
+static result_t critbit__node_show(critbit__node_t *n,
+                                   int              level,
+                                   void            *opaque)
 {
   static const char stars[] = "********************************"; // works up to 32 levels deep
 
@@ -55,15 +57,15 @@ static error critbit__node_show(critbit__node_t *n, int level, void *opaque)
     if (args->value_destroy && value) args->value_destroy((char *) value);
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-error critbit_show(const critbit_t      *t,
-                   critbit_show_key     *key,
-                   critbit_show_destroy *key_destroy,
-                   critbit_show_value   *value,
-                   critbit_show_destroy *value_destroy,
-                   FILE                 *f)
+result_t critbit_show(const critbit_t      *t,
+                      critbit_show_key     *key,
+                      critbit_show_destroy *key_destroy,
+                      critbit_show_value   *value,
+                      critbit_show_destroy *value_destroy,
+                      FILE                 *f)
 {
   critbit__show_args_t args;
 

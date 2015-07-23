@@ -17,10 +17,10 @@ typedef struct hash__show_args
 }
 hash__show_args_t;
 
-static error hash__node_show(hash__node_t *n,
-                             int           bin,
-                             int           index,
-                             void         *opaque)
+static result_t hash__node_show(hash__node_t *n,
+                                int           bin,
+                                int           index,
+                                void         *opaque)
 {
   hash__show_args_t *args = opaque;
   const char        *key;
@@ -37,15 +37,15 @@ static error hash__node_show(hash__node_t *n,
   if (args->key_destroy   && key)   args->key_destroy((char *) key);
   if (args->value_destroy && value) args->value_destroy((char *) value);
 
-  return error_OK;
+  return result_OK;
 }
 
-error hash_show(const hash_t      *t,
-                hash_show_key     *key,
-                hash_show_destroy *key_destroy,
-                hash_show_value   *value,
-                hash_show_destroy *value_destroy,
-                FILE              *f)
+result_t hash_show(const hash_t      *t,
+                   hash_show_key     *key,
+                   hash_show_destroy *key_destroy,
+                   hash_show_value   *value,
+                   hash_show_destroy *value_destroy,
+                   FILE              *f)
 {
   hash__show_args_t args;
 

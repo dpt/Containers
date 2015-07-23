@@ -8,7 +8,7 @@
 
 #include <stddef.h>
 
-struct queue_t
+struct queue
 {
   char  *head;
   char  *tail;

@@ -6,16 +6,16 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/patricia.h"
 
 #include "impl.h"
 
-error patricia_create(const void              *default_value,
-                      patricia_destroy_key    *destroy_key,
-                      patricia_destroy_value  *destroy_value,
-                      patricia_t             **pt)
+result_t patricia_create(const void              *default_value,
+                         patricia_destroy_key    *destroy_key,
+                         patricia_destroy_value  *destroy_value,
+                         patricia_t             **pt)
 {
   patricia_t *t;
 
@@ -23,12 +23,12 @@ error patricia_create(const void              *default_value,
 
   t = malloc(sizeof(*t));
   if (t == NULL)
-    return error_OOM;
+    return result_OOM;
 
   /* the root node is only used for an all-zero-bits key */
   t->root = patricia__node_create(t, NULL, 0, NULL);
   if (t->root == NULL)
-    return error_OOM;
+    return result_OOM;
 
   t->root->child[0] = t->root; /* left child points to self (for root node) */
   t->root->bit      = -1;
@@ -41,6 +41,6 @@ error patricia_create(const void              *default_value,
 
   *pt = t;
 
-  return error_OK;
+  return result_OK;
 }
 

@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/orderedarray.h"
 
@@ -22,8 +22,8 @@ typedef struct orderedarray_lookup_prefix_args
 }
 orderedarray_lookup_prefix_args_t;
 
-static error orderedarray__lookup_prefix(orderedarray__node_t *n,
-                                         void                 *opaque)
+static result_t orderedarray__lookup_prefix(orderedarray__node_t *n,
+                                            void                 *opaque)
 {
   orderedarray_lookup_prefix_args_t *args = opaque;
   size_t                             prefixlen;
@@ -38,17 +38,17 @@ static error orderedarray__lookup_prefix(orderedarray__node_t *n,
   }
   else
   {
-    return error_OK;
+    return result_OK;
   }
 }
 
-error orderedarray_lookup_prefix(const orderedarray_t        *t,
-                                 const void                  *prefix,
-                                 size_t                       prefixlen,
-                                 orderedarray_found_callback *cb,
-                                 void                        *opaque)
+result_t orderedarray_lookup_prefix(const orderedarray_t        *t,
+                                    const void                  *prefix,
+                                    size_t                       prefixlen,
+                                    orderedarray_found_callback *cb,
+                                    void                        *opaque)
 {
-  error                             err;
+  result_t                          err;
   orderedarray_lookup_prefix_args_t args;
 
   args.uprefix   = prefix;
@@ -63,6 +63,6 @@ error orderedarray_lookup_prefix(const orderedarray_t        *t,
   if (err)
     return err;
 
-  return args.found ? error_OK : error_NOT_FOUND;
+  return args.found ? result_OK : result_NOT_FOUND;
 }
 

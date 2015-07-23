@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/bstree.h"
@@ -23,9 +23,9 @@ typedef struct bstree_lookup_prefix_args
 }
 bstree_lookup_prefix_args_t;
 
-static error bstree__lookup_prefix(bstree__node_t *n,
-                                   int             level,
-                                   void           *opaque)
+static result_t bstree__lookup_prefix(bstree__node_t *n,
+                                      int             level,
+                                      void           *opaque)
 {
   bstree_lookup_prefix_args_t *args = opaque;
   size_t                       len;
@@ -40,18 +40,18 @@ static error bstree__lookup_prefix(bstree__node_t *n,
     return args->cb(&n->item, args->opaque);
   }
 
-  return error_OK;
+  return result_OK;
 }
 
 /* Walk the entire tree looking for matches.
  * Is there a more cunning way than this? */
-error bstree_lookup_prefix(const bstree_t        *t,
-                           const void            *prefix,
-                           size_t                 prefixlen,
-                           bstree_found_callback *cb,
-                           void                  *opaque)
+result_t bstree_lookup_prefix(const bstree_t        *t,
+                              const void            *prefix,
+                              size_t                 prefixlen,
+                              bstree_found_callback *cb,
+                              void                  *opaque)
 {
-  error                       err;
+  result_t                    err;
   bstree_lookup_prefix_args_t args;
 
   args.uprefix   = prefix;
@@ -66,6 +66,6 @@ error bstree_lookup_prefix(const bstree_t        *t,
   if (err)
     return err;
 
-  return args.found ? error_OK : error_NOT_FOUND;
+  return args.found ? result_OK : result_NOT_FOUND;
 }
 

@@ -236,7 +236,6 @@
 		55CF7194157E40FD006A2F3F /* primes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = primes.c; path = ../../../libraries/utils/primes.c; sourceTree = SOURCE_ROOT; };
 		55CF7197157E40FD006A2F3F /* utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = utils.c; path = ../../../libraries/utils/utils.c; sourceTree = SOURCE_ROOT; };
 		55CF723F157E40FE006A2F3F /* Containers */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Containers; sourceTree = BUILT_PRODUCTS_DIR; };
-		55CF7244157E41E7006A2F3F /* errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = errors.h; path = ../../../include/base/errors.h; sourceTree = SOURCE_ROOT; };
 		55CF7246157E41E7006A2F3F /* memento.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memento.c; path = ../../../include/base/memento/memento.c; sourceTree = SOURCE_ROOT; };
 		55CF724A157E41E7006A2F3F /* memento.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memento.h; path = ../../../include/base/memento/memento.h; sourceTree = SOURCE_ROOT; };
 		55CF724E157E41E7006A2F3F /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = types.h; path = ../../../include/base/types.h; sourceTree = SOURCE_ROOT; };
@@ -783,7 +782,6 @@
 		55CF7243157E41E7006A2F3F /* base */ = {
 			isa = PBXGroup;
 			children = (
-				55CF7244157E41E7006A2F3F /* errors.h */,
 				55CF7245157E41E7006A2F3F /* memento */,
 				55CF724E157E41E7006A2F3F /* types.h */,
 			);
@@ -1233,7 +1231,10 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../../include;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../include\"",
+					"\"$(SRCROOT)/../../../../DPTLib/include\"",
+				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = YES;
@@ -1270,7 +1271,10 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../../include;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../include\"",
+					"\"$(SRCROOT)/../../../../DPTLib/include\"",
+				);
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = NO;
@@ -1445,6 +1449,7 @@
 				55EC22FB1B5DA3A900AD9D28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		55EC23971B5DBF3B00AD9D28 /* Build configuration list for PBXNativeTarget "AssociativesLib" */ = {
 			isa = XCConfigurationList;
@@ -1453,6 +1458,7 @@
 				55EC23991B5DBF3B00AD9D28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

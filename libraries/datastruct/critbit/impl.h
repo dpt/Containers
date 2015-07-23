@@ -93,14 +93,14 @@ typedef unsigned int critbit_walk_flags;
 /* internal tree walk functions. callback returns a pointer to a
  * critbit__node_t, so internal for that reason. */
 
-typedef error (critbit__walk_internal_callback)(critbit__node_t *n,
-                                                int              level,
-                                                void            *opaque);
+typedef result_t (critbit__walk_internal_callback)(critbit__node_t *n,
+                                                   int              level,
+                                                   void            *opaque);
 
-error critbit__walk_internal(critbit_t                       *t,
-                             critbit_walk_flags               flags,
-                             critbit__walk_internal_callback *cb,
-                             void                            *opaque);
+result_t critbit__walk_internal(critbit_t                       *t,
+                                critbit_walk_flags               flags,
+                                critbit__walk_internal_callback *cb,
+                                void                            *opaque);
 
 /* ----------------------------------------------------------------------- */
 

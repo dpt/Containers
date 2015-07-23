@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/item.h"
@@ -25,9 +25,9 @@ typedef struct trie__select_args
 }
 trie__select_args_t;
 
-static error trie__select_node(trie__node_t *n,
-                               int           level,
-                               void         *opaque)
+static result_t trie__select_node(trie__node_t *n,
+                                  int           level,
+                                  void         *opaque)
 {
   trie__select_args_t *args = opaque;
 
@@ -36,15 +36,15 @@ static error trie__select_node(trie__node_t *n,
   if (args->k-- == 0)
   {
     args->item = &n->item;
-    return error_STOP_WALK;
+    return result_STOP_WALK;
   }
 
-  return error_OK;
+  return result_OK;
 }
 
 const item_t *trie_select(trie_t *t, int k)
 {
-  error               err;
+  result_t             err;
   trie__select_args_t args;
 
   args.k    = k;
@@ -56,7 +56,7 @@ const item_t *trie_select(trie_t *t, int k)
                             &args);
 
   /* no errors save for the expected ones should happen here */
-  assert(err == error_OK || err == error_STOP_WALK);
+  assert(err == result_OK || err == result_STOP_WALK);
 
   return args.item;
 }

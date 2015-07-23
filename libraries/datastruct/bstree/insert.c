@@ -5,7 +5,7 @@
 
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/bstree.h"
@@ -32,21 +32,21 @@ static INLINE bstree__node_t **bstree__insert_node(bstree__node_t **pn,
   return pn; /* found insertion point */
 }
 
-error bstree_insert(bstree_t   *t,
-                    const void *key,
-                    size_t      keylen,
-                    const void *value)
+result_t bstree_insert(bstree_t   *t,
+                       const void *key,
+                       size_t      keylen,
+                       const void *value)
 {
   bstree__node_t **pn;
 
   pn = bstree__insert_node(&t->root, key, t->compare);
   if (pn == NULL)
-    return error_EXISTS;
+    return result_EXISTS;
 
   *pn = bstree__node_create(t, key, keylen, value);
   if (*pn == NULL)
-    return error_OOM;
+    return result_OOM;
 
-  return error_OK;
+  return result_OK;
 }
 

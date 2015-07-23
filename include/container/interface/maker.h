@@ -6,15 +6,15 @@
 #ifndef ICONTAINER_MAKER_H
 #define ICONTAINER_MAKER_H
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "container/interface/container.h"
 #include "container/interface/key.h"
 #include "container/interface/value.h"
 
-typedef error (icontainer_maker)(icontainer_t            **container,
-                                 const icontainer_key_t   *key,
-                                 const icontainer_value_t *value);
+typedef result_t (icontainer_maker)(icontainer_t            **container,
+                                    const icontainer_key_t   *key,
+                                    const icontainer_value_t *value);
 
 #endif /* ICONTAINER_MAKER_H */
 

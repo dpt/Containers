@@ -11,16 +11,16 @@
 
 #include "impl.h"
 
-static error walk_in_order(const bstree__node_t *n,
-                           bstree_walk_flags     flags,
-                           int                   level,
-                           bstree_walk_callback *cb,
-                           void                 *opaque)
+static result_t walk_in_order(const bstree__node_t *n,
+                              bstree_walk_flags     flags,
+                              int                   level,
+                              bstree_walk_callback *cb,
+                              void                 *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   err = walk_in_order(n->child[0], flags, level + 1, cb, opaque);
   if (!err)
@@ -31,16 +31,16 @@ static error walk_in_order(const bstree__node_t *n,
   return err;
 }
 
-static error walk_pre_order(const bstree__node_t *n,
-                            bstree_walk_flags     flags,
-                            int                   level,
-                            bstree_walk_callback *cb,
-                            void                 *opaque)
+static result_t walk_pre_order(const bstree__node_t *n,
+                               bstree_walk_flags     flags,
+                               int                   level,
+                               bstree_walk_callback *cb,
+                               void                 *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   err = cb(&n->item, level, opaque);
   if (!err)
@@ -51,16 +51,16 @@ static error walk_pre_order(const bstree__node_t *n,
   return err;
 }
 
-static error walk_post_order(const bstree__node_t *n,
-                             bstree_walk_flags     flags,
-                             int                   level,
-                             bstree_walk_callback *cb,
-                             void                 *opaque)
+static result_t walk_post_order(const bstree__node_t *n,
+                                bstree_walk_flags     flags,
+                                int                   level,
+                                bstree_walk_callback *cb,
+                                void                 *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   err = walk_in_order(n->child[0], flags, level + 1, cb, opaque);
   if (!err)
@@ -71,19 +71,19 @@ static error walk_post_order(const bstree__node_t *n,
   return err;
 }
 
-error bstree_walk(const bstree_t       *t,
-                  bstree_walk_flags     flags,
-                  bstree_walk_callback *cb,
-                  void                 *opaque)
+result_t bstree_walk(const bstree_t       *t,
+                     bstree_walk_flags     flags,
+                     bstree_walk_callback *cb,
+                     void                 *opaque)
 {
-  error (*walker)(const bstree__node_t *n,
-                  bstree_walk_flags     flags,
-                  int                   level,
-                  bstree_walk_callback *cb,
-                  void                 *opaque);
+  result_t (*walker)(const bstree__node_t *n,
+                     bstree_walk_flags     flags,
+                     int                   level,
+                     bstree_walk_callback *cb,
+                     void                 *opaque);
 
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   // does not yet implement bstree_WALK_BRANCHES etc
 

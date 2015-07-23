@@ -62,21 +62,21 @@ typedef unsigned int trie_walk_flags;
 
 /* internal tree walk functions which return a pointer to a trie__node_t */
 
-typedef error (trie__walk_internal_callback)(trie__node_t *n,
-                                             int           level,
-                                             void         *opaque);
+typedef result_t (trie__walk_internal_callback)(trie__node_t *n,
+                                                int           level,
+                                                void         *opaque);
 
-error trie__walk_internal(trie_t                       *t,
-                          trie_walk_flags               flags,
-                          trie__walk_internal_callback *cb,
-                          void                         *opaque);
+result_t trie__walk_internal(trie_t                       *t,
+                             trie_walk_flags               flags,
+                             trie__walk_internal_callback *cb,
+                             void                         *opaque);
 
 /* ----------------------------------------------------------------------- */
 
-error trie__breadthwalk_internal(trie_t                       *t,
-                                 trie_walk_flags               flags,
-                                 trie__walk_internal_callback *cb,
-                                 void                         *opaque);
+result_t trie__breadthwalk_internal(trie_t                       *t,
+                                    trie_walk_flags               flags,
+                                    trie__walk_internal_callback *cb,
+                                    void                         *opaque);
 
 /* ----------------------------------------------------------------------- */
 

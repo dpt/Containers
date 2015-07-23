@@ -5,21 +5,21 @@
 
 #include <stddef.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/trie.h"
 
 #include "impl.h"
 
-static error trie__walk_in_order(const trie__node_t *n,
-                                 int                 level,
-                                 trie_walk_callback *cb,
-                                 void               *opaque)
+static result_t trie__walk_in_order(const trie__node_t *n,
+                                    int                 level,
+                                    trie_walk_callback *cb,
+                                    void               *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   err = trie__walk_in_order(n->child[0], level + 1, cb, opaque);
   if (!err)
@@ -33,12 +33,12 @@ static error trie__walk_in_order(const trie__node_t *n,
   return err;
 }
 
-error trie_walk(const trie_t       *t,
-                trie_walk_callback *cb,
-                void               *opaque)
+result_t trie_walk(const trie_t       *t,
+                   trie_walk_callback *cb,
+                   void               *opaque)
 {
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   return trie__walk_in_order(t->root, 0, cb, opaque);
 }

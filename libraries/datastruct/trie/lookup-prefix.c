@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/trie.h"
 
@@ -13,14 +13,14 @@
 
 /* This is similar to trie__walk_in_order, but returns items as an item_t
  * pointer. */
-static error trie__lookup_prefix_walk(const trie__node_t  *n,
-                                      trie_found_callback *cb,
-                                      void                *opaque)
+static result_t trie__lookup_prefix_walk(const trie__node_t  *n,
+                                         trie_found_callback *cb,
+                                         void                *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   if (IS_LEAF(n))
   {
@@ -35,11 +35,11 @@ static error trie__lookup_prefix_walk(const trie__node_t  *n,
   }
 }
 
-error trie_lookup_prefix(const trie_t        *t,
-                         const void          *prefix,
-                         size_t               prefixlen, // bytes
-                         trie_found_callback *cb,
-                         void                *opaque)
+result_t trie_lookup_prefix(const trie_t        *t,
+                            const void          *prefix,
+                            size_t               prefixlen, // bytes
+                            trie_found_callback *cb,
+                            void                *opaque)
 {
   const unsigned char *uprefix    = prefix;
   const unsigned char *uprefixend = uprefix + prefixlen;
@@ -49,7 +49,7 @@ error trie_lookup_prefix(const trie_t        *t,
   int                  dir;
 
   if (t->root == NULL)
-    return error_OK; /* empty tree */
+    return result_OK; /* empty tree */
 
   depth = 0;
 
@@ -64,7 +64,7 @@ error trie_lookup_prefix(const trie_t        *t,
   /* If we tried to walk in a direction not present in the trie then the
    * prefix can't exist in it. */
   if (n == NULL)
-    return error_NOT_FOUND;
+    return result_NOT_FOUND;
 
   if (IS_LEAF(n))
   {
@@ -74,7 +74,7 @@ error trie_lookup_prefix(const trie_t        *t,
         memcmp(prefix, n->item.key, prefixlen) == 0)
       return cb(&n->item, opaque);
     else
-      return error_NOT_FOUND;
+      return result_NOT_FOUND;
   }
   else
   {

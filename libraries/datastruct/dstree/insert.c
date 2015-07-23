@@ -6,16 +6,16 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/dstree.h"
 
 #include "impl.h"
 
-error dstree_insert(dstree_t   *t,
-                    const void *key,
-                    size_t      keylen,
-                    const void *value)
+result_t dstree_insert(dstree_t   *t,
+                       const void *key,
+                       size_t      keylen,
+                       const void *value)
 {
   const unsigned char *ukey    = key;
   const unsigned char *ukeyend = ukey + keylen;
@@ -30,14 +30,14 @@ error dstree_insert(dstree_t   *t,
   for (pn = &t->root; (n = *pn); pn = &n->child[dir])
   {
     if (n->item.keylen == keylen && memcmp(n->item.key, key, keylen) == 0)
-      return error_EXISTS;
+      return result_EXISTS;
 
     GET_NEXT_DIR(dir, ukey, ukeyend);
   }
 
   *pn = dstree__node_create(t, key, value, keylen);
   if (*pn == NULL)
-    return error_OOM;
+    return result_OOM;
 
-  return error_OK;
+  return result_OK;
 }

@@ -40,14 +40,14 @@ struct hash
 
 /* internal hash walk functions which return a pointer to a hash__node_t */
 
-typedef error (hash__walk_internal_callback)(hash__node_t *node,
-                                             int           bin,
-                                             int           index,
-                                             void         *opaque);
+typedef result_t (hash__walk_internal_callback)(hash__node_t *node,
+                                                int           bin,
+                                                int           index,
+                                                void         *opaque);
 
-error hash__walk_internal(const hash_t                 *hash,
-                          hash__walk_internal_callback *cb,
-                          void                         *opaque);
+result_t hash__walk_internal(const hash_t                 *hash,
+                             hash__walk_internal_callback *cb,
+                             void                         *opaque);
 
 /* ----------------------------------------------------------------------- */
 

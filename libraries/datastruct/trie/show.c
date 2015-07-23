@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/trie.h"
 
@@ -23,7 +23,7 @@ typedef struct trie__show_args
 }
 trie__show_args_t;
 
-static error trie__node_show(trie__node_t *n, int level, void *opaque)
+static result_t trie__node_show(trie__node_t *n, int level, void *opaque)
 {
   static const char stars[] = "********************************"; // works up to 32 levels deep
 
@@ -43,15 +43,15 @@ static error trie__node_show(trie__node_t *n, int level, void *opaque)
   if (args->key_destroy   && key)   args->key_destroy((char *) key);
   if (args->value_destroy && value) args->value_destroy((char *) value);
 
-  return error_OK;
+  return result_OK;
 }
 
-error trie_show(const trie_t      *t,
-                trie_show_key     *key,
-                trie_show_destroy *key_destroy,
-                trie_show_value   *value,
-                trie_show_destroy *value_destroy,
-                FILE              *f)
+result_t trie_show(const trie_t      *t,
+                   trie_show_key     *key,
+                   trie_show_destroy *key_destroy,
+                   trie_show_value   *value,
+                   trie_show_destroy *value_destroy,
+                   FILE              *f)
 {
   trie__show_args_t args;
 

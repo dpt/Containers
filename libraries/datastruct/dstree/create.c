@@ -7,16 +7,16 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/critbit.h"
 
 #include "impl.h"
 
-error dstree_create(const void            *default_value,
-                    dstree_destroy_key    *destroy_key,
-                    dstree_destroy_value  *destroy_value,
-                    dstree_t             **pt)
+result_t dstree_create(const void            *default_value,
+                       dstree_destroy_key    *destroy_key,
+                       dstree_destroy_value  *destroy_value,
+                       dstree_t             **pt)
 {
   dstree_t *t;
 
@@ -24,7 +24,7 @@ error dstree_create(const void            *default_value,
 
   t = malloc(sizeof(*t));
   if (t == NULL)
-    return error_OOM;
+    return result_OOM;
 
   t->root          = NULL;
   t->default_value = default_value;
@@ -35,5 +35,5 @@ error dstree_create(const void            *default_value,
 
   *pt = t;
 
-  return error_OK;
+  return result_OK;
 }

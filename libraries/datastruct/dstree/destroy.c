@@ -13,13 +13,15 @@
 
 #include "impl.h"
 
-static error dstree__destroy_node(dstree__node_t *n, int level, void *opaque)
+static result_t dstree__destroy_node(dstree__node_t *n,
+                                     int             level,
+                                     void           *opaque)
 {
   NOT_USED(level);
 
   dstree__node_destroy(opaque, n);
 
-  return error_OK;
+  return result_OK;
 }
 
 void dstree_destroy(dstree_t *t)

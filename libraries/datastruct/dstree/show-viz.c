@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/dstree.h"
@@ -27,7 +27,9 @@ typedef struct dstree__show_viz_args
 dstree__show_viz_args_t;
 
 /* rank the nodes */
-static error dstree__node_show_viz_rank(dstree__node_t *n, int level, void *opaque)
+static result_t dstree__node_show_viz_rank(dstree__node_t *n,
+                                           int             level,
+                                           void           *opaque)
 {
   dstree__show_viz_args_t *args = opaque;
 
@@ -43,11 +45,13 @@ static error dstree__node_show_viz_rank(dstree__node_t *n, int level, void *opaq
 
   (void) fprintf(args->f, "\t\t\"%p\"\n", n);
 
-  return error_OK;
+  return result_OK;
 }
 
 /* link the nodes */
-static error dstree__node_show_viz_link(dstree__node_t *n, int level, void *opaque)
+static result_t dstree__node_show_viz_link(dstree__node_t *n,
+                                           int             level,
+                                           void           *opaque)
 {
   dstree__show_viz_args_t *args = opaque;
   const char              *key;
@@ -76,17 +80,17 @@ static error dstree__node_show_viz_link(dstree__node_t *n, int level, void *opaq
   if (args->key_destroy   && key)   args->key_destroy((char *) key);
   if (args->value_destroy && value) args->value_destroy((char *) value);
 
-  return error_OK;
+  return result_OK;
 }
 
-error dstree_show_viz(const dstree_t      *t,
-                      dstree_show_key     *key,
-                      dstree_show_destroy *key_destroy,
-                      dstree_show_value   *value,
-                      dstree_show_destroy *value_destroy,
-                      FILE                *f)
+result_t dstree_show_viz(const dstree_t      *t,
+                         dstree_show_key     *key,
+                         dstree_show_destroy *key_destroy,
+                         dstree_show_value   *value,
+                         dstree_show_destroy *value_destroy,
+                         FILE                *f)
 {
-  error                    err;
+  result_t                err;
   dstree__show_viz_args_t args;
 
   args.key           = key;
@@ -115,6 +119,6 @@ error dstree_show_viz(const dstree_t      *t,
 
   (void) fprintf(f, "}\n");
 
-  return error_OK;
+  return result_OK;
 }
 

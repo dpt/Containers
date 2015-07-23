@@ -5,22 +5,22 @@
 
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/linkedlist.h"
 
 #include "impl.h"
 
-error linkedlist_walk(const linkedlist_t       *t,
-                      linkedlist_walk_callback *cb,
-                      void                     *opaque)
+result_t linkedlist_walk(const linkedlist_t       *t,
+                         linkedlist_walk_callback *cb,
+                         void                     *opaque)
 {
-  error               err;
+  result_t            err;
   linkedlist__node_t *n;
   linkedlist__node_t *next;
 
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   for (n = t->anchor; n; n = next)
   {
@@ -31,6 +31,6 @@ error linkedlist_walk(const linkedlist_t       *t,
       return err;
   }
 
-  return error_OK;
+  return result_OK;
 }
 

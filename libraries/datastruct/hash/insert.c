@@ -7,16 +7,16 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/hash.h"
 
 #include "impl.h"
 
-error hash_insert(hash_t     *h,
-                  const void *key,
-                  size_t      keylen,
-                  const void *value)
+result_t hash_insert(hash_t     *h,
+                     const void *key,
+                     size_t      keylen,
+                     const void *value)
 {
   hash__node_t **n;
 
@@ -39,7 +39,7 @@ error hash_insert(hash_t     *h,
 
     m = malloc(sizeof(*m));
     if (m == NULL)
-      return error_OOM;
+      return result_OOM;
 
     m->next        = NULL;
     m->item.key    = key;
@@ -51,5 +51,5 @@ error hash_insert(hash_t     *h,
     *n = m;
   }
 
-  return error_OK;
+  return result_OK;
 }

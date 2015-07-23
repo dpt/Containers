@@ -49,16 +49,16 @@ void bstree__node_clear(bstree_t *t, bstree__node_t *n);
 
 /* internal tree walk functions which return a pointer to a bstree__node_t */
 
-typedef error (bstree__walk_internal_callback)(bstree__node_t *n,
-                                               int             level,
-                                               void           *opaque);
+typedef result_t (bstree__walk_internal_callback)(bstree__node_t *n,
+                                                  int             level,
+                                                  void           *opaque);
 
-error bstree__walk_internal_post(bstree_t                       *t,
-                                 bstree__walk_internal_callback *cb,
-                                 void                           *opaque);
-error bstree__walk_internal(bstree_t                       *t,
-                            bstree__walk_internal_callback *cb,
-                            void                           *opaque);
+result_t bstree__walk_internal_post(bstree_t                       *t,
+                                    bstree__walk_internal_callback *cb,
+                                    void                           *opaque);
+result_t bstree__walk_internal(bstree_t                       *t,
+                               bstree__walk_internal_callback *cb,
+                               void                           *opaque);
 
 /* ----------------------------------------------------------------------- */
 

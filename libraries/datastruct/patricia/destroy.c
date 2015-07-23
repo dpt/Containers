@@ -13,15 +13,15 @@
 
 #include "impl.h"
 
-static error patricia__destroy_node(patricia__node_t *n,
-                                    int               level,
-                                    void             *opaque)
+static result_t patricia__destroy_node(patricia__node_t *n,
+                                       int               level,
+                                       void             *opaque)
 {
   NOT_USED(level);
 
   patricia__node_destroy(opaque, n);
 
-  return error_OK;
+  return result_OK;
 }
 
 void patricia_destroy(patricia_t *t)

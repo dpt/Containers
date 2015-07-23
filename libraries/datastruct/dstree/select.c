@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/item.h"
@@ -23,9 +23,9 @@ typedef struct dstree__select_args
 }
 dstree__select_args_t;
 
-static error dstree__select_node(dstree__node_t *n,
-                                 int             level,
-                                 void           *opaque)
+static result_t dstree__select_node(dstree__node_t *n,
+                                    int             level,
+                                    void           *opaque)
 {
   dstree__select_args_t *args = opaque;
 
@@ -34,16 +34,16 @@ static error dstree__select_node(dstree__node_t *n,
   if (args->k-- == 0)
   {
     args->item = &n->item;
-    return error_STOP_WALK;
+    return result_STOP_WALK;
   }
 
-  return error_OK;
+  return result_OK;
 }
 
 /* Walk the tree until the k'th leaf is encountered and return it. */
 const item_t *dstree_select(dstree_t *t, int k)
 {
-  error                 err;
+  result_t              err;
   dstree__select_args_t args;
 
   args.k    = k;
@@ -52,7 +52,7 @@ const item_t *dstree_select(dstree_t *t, int k)
   err = dstree__walk_internal(t, dstree__select_node, &args);
 
   /* no errors save for the expected ones should happen here */
-  assert(err == error_OK || err == error_STOP_WALK);
+  assert(err == result_OK || err == result_STOP_WALK);
 
   return args.item;
 }

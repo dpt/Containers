@@ -5,21 +5,21 @@
 
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/orderedarray.h"
 
 #include "impl.h"
 
-error orderedarray_walk(const orderedarray_t       *t,
-                        orderedarray_walk_callback *cb,
-                        void                       *opaque)
+result_t orderedarray_walk(const orderedarray_t       *t,
+                           orderedarray_walk_callback *cb,
+                           void                       *opaque)
 {
-  error                 err;
+  result_t              err;
   orderedarray__node_t *n;
 
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   /* don't pre-calculate the end position as it needs to be evaluated on
    * every step: the callback is permitted to delete the current element */
@@ -31,6 +31,6 @@ error orderedarray_walk(const orderedarray_t       *t,
       return err;
   }
 
-  return error_OK;
+  return result_OK;
 }
 

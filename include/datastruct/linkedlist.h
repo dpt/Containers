@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "item.h"
 
 /* ----------------------------------------------------------------------- */
@@ -37,18 +37,21 @@ typedef void (linkedlist_destroy_value)(void *value);
  * NULL can be passed in for compare, destroy_key and destroy_value to
  * use default routines suitable for strings.
  */
-error linkedlist_create(const void                *default_value,
-                        linkedlist_compare        *compare,
-                        linkedlist_destroy_key    *destroy_key,
-                        linkedlist_destroy_value  *destroy_value,
-                        T                        **t);
+result_t linkedlist_create(const void                *default_value,
+                           linkedlist_compare        *compare,
+                           linkedlist_destroy_key    *destroy_key,
+                           linkedlist_destroy_value  *destroy_value,
+                           T                        **t);
 void linkedlist_destroy(T *t);
 
 /* ----------------------------------------------------------------------- */
 
 const void *linkedlist_lookup(T *t, const void *key, size_t keylen);
 
-error linkedlist_insert(T *t, const void *key, size_t keylen, const void *value);
+result_t linkedlist_insert(T          *t,
+                           const void *key,
+                           size_t      keylen,
+                           const void *value);
 
 void linkedlist_remove(T *t, const void *key, size_t keylen);
 
@@ -58,23 +61,23 @@ int linkedlist_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (linkedlist_found_callback)(const item_t *item,
-                                          void         *opaque);
+typedef result_t (linkedlist_found_callback)(const item_t *item,
+                                             void         *opaque);
 
-error linkedlist_lookup_prefix(const T                   *t,
-                               const void                *prefix,
-                               size_t                     prefixlen,
-                               linkedlist_found_callback *cb,
-                               void                      *opaque);
+result_t linkedlist_lookup_prefix(const T                   *t,
+                                  const void                *prefix,
+                                  size_t                     prefixlen,
+                                  linkedlist_found_callback *cb,
+                                  void                      *opaque);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (linkedlist_walk_callback)(const item_t *item,
-                                         void         *opaque);
+typedef result_t (linkedlist_walk_callback)(const item_t *item,
+                                            void         *opaque);
 
-error linkedlist_walk(const T                  *t,
-                      linkedlist_walk_callback *cb,
-                      void                     *opaque);
+result_t linkedlist_walk(const T                  *t,
+                         linkedlist_walk_callback *cb,
+                         void                     *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -88,12 +91,12 @@ typedef const char *(linkedlist_show_key)(const void *key);
 typedef const char *(linkedlist_show_value)(const void *value);
 typedef void (linkedlist_show_destroy)(char *doomed);
 
-error linkedlist_show(const T                 *t,
-                      linkedlist_show_key     *key,
-                      linkedlist_show_destroy *key_destroy,
-                      linkedlist_show_value   *value,
-                      linkedlist_show_destroy *value_destroy,
-                      FILE                    *f);
+result_t linkedlist_show(const T                 *t,
+                         linkedlist_show_key     *key,
+                         linkedlist_show_destroy *key_destroy,
+                         linkedlist_show_value   *value,
+                         linkedlist_show_destroy *value_destroy,
+                         FILE                    *f);
 
 /* ----------------------------------------------------------------------- */
 

@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/queue.h"
 
@@ -14,9 +14,9 @@
 
 #include "impl.h"
 
-error dstree__breadthwalk_internal(dstree_t                       *t,
-                                   dstree__walk_internal_callback *cb,
-                                   void                           *opaque)
+result_t dstree__breadthwalk_internal(dstree_t                       *t,
+                                      dstree__walk_internal_callback *cb,
+                                      void                           *opaque)
 {
   typedef struct nodedepth
   {
@@ -25,16 +25,16 @@ error dstree__breadthwalk_internal(dstree_t                       *t,
   }
   nodedepth;
 
-  error     err;
+  result_t  err;
   queue_t  *queue;
   nodedepth nd;
 
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   queue = queue_create(100, sizeof(nodedepth)); /* FIXME: 100 constant */
   if (queue == NULL)
-    return error_OOM;
+    return result_OOM;
 
   assert(t->root);
 
@@ -77,6 +77,6 @@ error dstree__breadthwalk_internal(dstree_t                       *t,
 
   queue_destroy(queue);
 
-  return error_OK;
+  return result_OK;
 }
 

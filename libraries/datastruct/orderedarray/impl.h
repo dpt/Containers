@@ -47,12 +47,12 @@ int orderedarray__lookup_internal(orderedarray_t        *t,
 /* internal tree walk functions. callback returns a pointer to a
  * orderedarray__node_t, so internal for that reason. */
 
-typedef error (orderedarray__walk_internal_callback)(orderedarray__node_t *n,
-                                                     void                 *opaque);
+typedef result_t (orderedarray__walk_internal_callback)(orderedarray__node_t *n,
+                                                        void                 *opaque);
 
-error orderedarray__walk_internal(orderedarray_t                       *t,
-                                  orderedarray__walk_internal_callback *cb,
-                                  void                                 *opaque);
+result_t orderedarray__walk_internal(orderedarray_t                       *t,
+                                     orderedarray__walk_internal_callback *cb,
+                                     void                                 *opaque);
 
 /* ----------------------------------------------------------------------- */
 

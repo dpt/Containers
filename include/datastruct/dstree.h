@@ -15,7 +15,7 @@
 
 #include <stdio.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "item.h"
 
 /* ----------------------------------------------------------------------- */
@@ -41,17 +41,17 @@ typedef void (dstree_destroy_value)(void *value);
  * NULL can be passed in for bit, compare, destroy_key and destroy_value to
  * use default routines suitable for strings.
  */
-error dstree_create(const void            *default_value,
-                    dstree_destroy_key    *destroy_key,
-                    dstree_destroy_value  *destroy_value,
-                    T                    **t);
+result_t dstree_create(const void            *default_value,
+                       dstree_destroy_key    *destroy_key,
+                       dstree_destroy_value  *destroy_value,
+                       T                    **t);
 void dstree_destroy(T *t);
 
 /* ----------------------------------------------------------------------- */
 
 const void *dstree_lookup(T *t, const void *key, size_t keylen);
 
-error dstree_insert(T *t, const void *key, size_t keylen, const void *value);
+result_t dstree_insert(T *t, const void *key, size_t keylen, const void *value);
 
 void dstree_remove(T *t, const void *key, size_t keylen);
 void dstree_remove2(T *t, const void *key, size_t keylen); /* alternative */
@@ -62,24 +62,24 @@ int dstree_count(T *t);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (dstree_found_callback)(const item_t *item,
-                                      void         *opaque);
+typedef result_t (dstree_found_callback)(const item_t *item,
+                                         void         *opaque);
 
-error dstree_lookup_prefix(const T               *t,
-                           const void            *prefix,
-                           size_t                 prefixlen,
-                           dstree_found_callback *cb,
-                           void                  *opaque);
+result_t dstree_lookup_prefix(const T               *t,
+                              const void            *prefix,
+                              size_t                 prefixlen,
+                              dstree_found_callback *cb,
+                              void                  *opaque);
 
 /* ----------------------------------------------------------------------- */
 
-typedef error (dstree_walk_callback)(const item_t *item,
-                                     int           level,
-                                     void         *opaque);
+typedef result_t (dstree_walk_callback)(const item_t *item,
+                                        int           level,
+                                        void         *opaque);
 
-error dstree_walk(const T              *t,
-                  dstree_walk_callback *cb,
-                  void                 *opaque);
+result_t dstree_walk(const T              *t,
+                     dstree_walk_callback *cb,
+                     void                 *opaque);
 
 /* ----------------------------------------------------------------------- */
 
@@ -92,21 +92,22 @@ typedef const char *(dstree_show_key)(const void *key);
 typedef const char *(dstree_show_value)(const void *value);
 typedef void (dstree_show_destroy)(char *doomed);
 
-error dstree_show(const T             *t,
-                  dstree_show_key     *key,
-                  dstree_show_destroy *key_destroy,
-                  dstree_show_value   *value,
-                  dstree_show_destroy *value_destroy,
-                  FILE                *f);
+result_t dstree_show(const T             *t,
+                     dstree_show_key     *key,
+                     dstree_show_destroy *key_destroy,
+                     dstree_show_value   *value,
+                     dstree_show_destroy *value_destroy,
+                     FILE                *f);
+
 /* ----------------------------------------------------------------------- */
 
 /* Dump in format which can be fed into Graphviz. */
-error dstree_show_viz(const T             *t,
-                      dstree_show_key     *key,
-                      dstree_show_destroy *key_destroy,
-                      dstree_show_value   *value,
-                      dstree_show_destroy *value_destroy,
-                      FILE                *f);
+result_t dstree_show_viz(const T             *t,
+                         dstree_show_key     *key,
+                         dstree_show_destroy *key_destroy,
+                         dstree_show_value   *value,
+                         dstree_show_destroy *value_destroy,
+                         FILE                *f);
 
 /* ----------------------------------------------------------------------- */
 

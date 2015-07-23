@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/bstree.h"
 
@@ -16,11 +16,11 @@
 
 /* This is similar to critbit__walk_in_order, but returns items as an item_t
  * pointer. */
-static error critbit__lookup_prefix_walk(const critbit__node_t  *n,
-                                         critbit_found_callback *cb,
-                                         void                   *opaque)
+static result_t critbit__lookup_prefix_walk(const critbit__node_t  *n,
+                                            critbit_found_callback *cb,
+                                            void                   *opaque)
 {
-  error               err;
+  result_t            err;
   critbit__extnode_t *e;
 
   if (IS_EXTERNAL(n))
@@ -42,14 +42,14 @@ static error critbit__lookup_prefix_walk(const critbit__node_t  *n,
       return err;
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-error critbit_lookup_prefix(const critbit_t        *t,
-                            const void             *prefix,
-                            size_t                  prefixlen,
-                            critbit_found_callback *cb,
-                            void                   *opaque)
+result_t critbit_lookup_prefix(const critbit_t        *t,
+                               const void             *prefix,
+                               size_t                  prefixlen,
+                               critbit_found_callback *cb,
+                               void                   *opaque)
 {
   const unsigned char   *uprefix    = prefix;
   const unsigned char   *uprefixend = uprefix + prefixlen;
@@ -62,7 +62,7 @@ error critbit_lookup_prefix(const critbit_t        *t,
   top = n;
 
   if (n == NULL)
-    return error_OK; /* empty tree */
+    return result_OK; /* empty tree */
 
   while (IS_INTERNAL(n))
   {
@@ -83,7 +83,7 @@ error critbit_lookup_prefix(const critbit_t        *t,
   /* ensure the prefix exists */
   if (e->item.keylen < prefixlen ||
       memcmp(e->item.key, prefix, prefixlen) != 0)
-    return error_NOT_FOUND;
+    return result_NOT_FOUND;
 
   assert(top != NULL);
 

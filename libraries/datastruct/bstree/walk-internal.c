@@ -6,22 +6,22 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/bstree.h"
 
 #include "impl.h"
 
 /* post-order (which allows for deletions) */
-static error bstree__node_walk_internal_post(bstree__node_t                 *n,
-                                             int                             level,
-                                             bstree__walk_internal_callback *cb,
-                                             void                           *opaque)
+static result_t bstree__node_walk_internal_post(bstree__node_t                 *n,
+                                                int                             level,
+                                                bstree__walk_internal_callback *cb,
+                                                void                           *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   err = bstree__node_walk_internal_post(n->child[0], level + 1, cb, opaque);
   if (!err)
@@ -32,25 +32,25 @@ static error bstree__node_walk_internal_post(bstree__node_t                 *n,
   return err;
 }
 
-error bstree__walk_internal_post(bstree_t                       *t,
-                                 bstree__walk_internal_callback *cb,
-                                 void                           *opaque)
+result_t bstree__walk_internal_post(bstree_t                       *t,
+                                    bstree__walk_internal_callback *cb,
+                                    void                           *opaque)
 {
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   return bstree__node_walk_internal_post(t->root, 0, cb, opaque);
 }
 
-static error bstree__node_walk_internal(bstree__node_t                 *n,
-                                        int                             level,
-                                        bstree__walk_internal_callback *cb,
-                                        void                           *opaque)
+static result_t bstree__node_walk_internal(bstree__node_t                 *n,
+                                           int                             level,
+                                           bstree__walk_internal_callback *cb,
+                                           void                           *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   err = bstree__node_walk_internal(n->child[0], level + 1, cb, opaque);
   if (!err)
@@ -62,12 +62,12 @@ static error bstree__node_walk_internal(bstree__node_t                 *n,
 }
 
 /* in-order */
-error bstree__walk_internal(bstree_t                       *t,
-                            bstree__walk_internal_callback *cb,
-                            void                           *opaque)
+result_t bstree__walk_internal(bstree_t                       *t,
+                               bstree__walk_internal_callback *cb,
+                               void                           *opaque)
 {
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   return bstree__node_walk_internal(t->root, 0, cb, opaque);
 }

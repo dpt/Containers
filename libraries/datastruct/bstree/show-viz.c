@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/bstree.h"
@@ -23,9 +23,9 @@ typedef struct bstree__show_viz_args
 }
 bstree__show_viz_args_t;
 
-static error bstree__node_show_viz(bstree__node_t *n,
-                                   int             level,
-                                   void           *opaque)
+static result_t bstree__node_show_viz(bstree__node_t *n,
+                                      int             level,
+                                      void           *opaque)
 {
   bstree__show_viz_args_t *args = opaque;
   const char              *key;
@@ -48,17 +48,17 @@ static error bstree__node_show_viz(bstree__node_t *n,
   if (args->key_destroy   && key)   args->key_destroy((char *) key);
   if (args->value_destroy && value) args->value_destroy((char *) value);
 
-  return error_OK;
+  return result_OK;
 }
 
-error bstree_show_viz(const bstree_t      *t,
-                      bstree_show_key     *key,
-                      bstree_show_destroy *key_destroy,
-                      bstree_show_value   *value,
-                      bstree_show_destroy *value_destroy,
-                      FILE                *f)
+result_t bstree_show_viz(const bstree_t      *t,
+                         bstree_show_key     *key,
+                         bstree_show_destroy *key_destroy,
+                         bstree_show_value   *value,
+                        bstree_show_destroy *value_destroy,
+                        FILE                *f)
 {
-  error                   err;
+  result_t                err;
   bstree__show_viz_args_t args;
 
   args.key           = key;
@@ -77,5 +77,5 @@ error bstree_show_viz(const bstree_t      *t,
 
   (void) fprintf(f, "}\n");
 
-  return error_OK;
+  return result_OK;
 }

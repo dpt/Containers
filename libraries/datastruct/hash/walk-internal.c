@@ -7,21 +7,21 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/hash.h"
 
 #include "impl.h"
 
-error hash__walk_internal(const hash_t                 *hash,
-                          hash__walk_internal_callback *cb,
-                          void                         *opaque)
+result_t hash__walk_internal(const hash_t                 *hash,
+                             hash__walk_internal_callback *cb,
+                             void                         *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (hash == NULL)
-    return error_OK;
+    return result_OK;
 
   for (i = 0; i < hash->nbins; i++)
   {
@@ -42,5 +42,5 @@ error hash__walk_internal(const hash_t                 *hash,
     }
   }
 
-  return error_OK;
+  return result_OK;
 }

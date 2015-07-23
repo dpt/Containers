@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "datastruct/patricia.h"
@@ -27,7 +27,9 @@ typedef struct patricia__show_viz_args
 patricia__show_viz_args_t;
 
 /* rank the nodes */
-static error patricia__node_show_viz_rank(patricia__node_t *n, int level, void *opaque)
+static result_t patricia__node_show_viz_rank(patricia__node_t *n,
+                                             int               level,
+                                             void             *opaque)
 {
   patricia__show_viz_args_t *args = opaque;
 
@@ -36,11 +38,13 @@ static error patricia__node_show_viz_rank(patricia__node_t *n, int level, void *
   if (n->bit == args->rank)
     (void) fprintf(args->f, "\t\t\"%p\"\n", (void *) n);
 
-  return error_OK;
+  return result_OK;
 }
 
 /* link the nodes */
-static error patricia__node_show_viz_link(patricia__node_t *n, int level, void *opaque)
+static result_t patricia__node_show_viz_link(patricia__node_t *n,
+                                             int               level,
+                                             void             *opaque)
 {
   patricia__show_viz_args_t *args = opaque;
 
@@ -93,7 +97,7 @@ static error patricia__node_show_viz_link(patricia__node_t *n, int level, void *
     if (args->value_destroy && value) args->value_destroy((char *) value);
   }
 
-  return error_OK;
+  return result_OK;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -143,14 +147,14 @@ static int patricia__count_for_rank(const patricia_t *t, int rank)
 
 /* ----------------------------------------------------------------------- */
 
-error patricia_show_viz(const patricia_t      *t,
-                        patricia_show_key     *key,
-                        patricia_show_destroy *key_destroy,
-                        patricia_show_value   *value,
-                        patricia_show_destroy *value_destroy,
-                        FILE                  *f)
+result_t patricia_show_viz(const patricia_t      *t,
+                           patricia_show_key     *key,
+                           patricia_show_destroy *key_destroy,
+                           patricia_show_value   *value,
+                           patricia_show_destroy *value_destroy,
+                           FILE                  *f)
 {
-  error                     err;
+  result_t                  err;
   patricia__show_viz_args_t args;
   int                       maxrank;
   int                       i;
@@ -219,6 +223,6 @@ error patricia_show_viz(const patricia_t      *t,
 
   (void) fprintf(f, "}\n");
 
-  return error_OK;
+  return result_OK;
 }
 

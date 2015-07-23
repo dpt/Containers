@@ -7,7 +7,7 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "base/types.h"
 
 #include "keyval/char.h"
@@ -73,9 +73,9 @@ static const icontainer_value_t static_string_value =
 
 static int viz_counter = 0;
 
-static error viz_show(icontainer_t *cont,
-                      const char   *groupname,
-                      const char   *testname)
+static result_t viz_show(icontainer_t *cont,
+                         const char   *groupname,
+                         const char   *testname)
 {
   static char filename[256];
   FILE       *f;
@@ -84,13 +84,13 @@ static error viz_show(icontainer_t *cont,
 
   f = fopen(filename, "w");
   if (f == NULL)
-    return error_NOT_FOUND;
+    return result_NOT_FOUND;
 
   cont->show_viz(cont, f);
 
   fclose(f);
 
-  return error_OK;
+  return result_OK;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -99,7 +99,8 @@ static error viz_show(icontainer_t *cont,
 
 static int prefixes_seen = 0;
 
-static error stringtest_lookup_prefix_callback(const item_t *item, void *opaque)
+static result_t stringtest_lookup_prefix_callback(const item_t *item,
+                                                  void         *opaque)
 {
   int *count = opaque;
 
@@ -110,13 +111,13 @@ static error stringtest_lookup_prefix_callback(const item_t *item, void *opaque)
 
   (*count)++;
 
-  return error_OK;
+  return result_OK;
 }
 
-static error stringtest(icontainer_maker *maker, const char *testname)
+static result_t stringtest(icontainer_maker *maker, const char *testname)
 {
   const int     max = NELEMS(testdata);
-  error         err;
+  result_t      err;
   icontainer_t *cont;
   int           i;
   int           j;
@@ -233,12 +234,12 @@ static error stringtest(icontainer_maker *maker, const char *testname)
 
     count = 0;
     err = cont->lookup_prefix(cont, prefix, stringtest_lookup_prefix_callback, &count);
-    if (err == error_NOT_IMPLEMENTED)
+    if (err == result_NOT_IMPLEMENTED)
     {
       LOG("not implemented - skipping test");
       goto skip;
     }
-    if (err == error_OK || err == error_NOT_FOUND)
+    if (err == result_OK || err == result_NOT_FOUND)
     {
       int expected = prefixcounts[i - 'A'];
       if (count != expected)
@@ -276,12 +277,12 @@ skip:
 
     count = 0;
     err = cont->lookup_prefix(cont, prefix, stringtest_lookup_prefix_callback, &count);
-    if (err == error_NOT_IMPLEMENTED)
+    if (err == result_NOT_IMPLEMENTED)
     {
       LOG("not implemented - skipping test");
       break;
     }
-    if (err == error_OK || err == error_NOT_FOUND)
+    if (err == result_OK || err == result_NOT_FOUND)
     {
       int expected = 0;
       if (count != expected)
@@ -299,7 +300,7 @@ skip:
   LOG("Look up a key which doesn't exist");
 
   err = cont->lookup_prefix(cont, "Gooseberries", stringtest_lookup_prefix_callback, NULL);
-  if (err != error_NOT_FOUND && err != error_NOT_IMPLEMENTED)
+  if (err != result_NOT_FOUND && err != result_NOT_IMPLEMENTED)
   {
     LOG("lookup_prefix did _not_ return 'not found'!");
     goto failure;
@@ -331,12 +332,12 @@ skip:
 
   cont->destroy(cont);
 
-  return error_OK;
+  return result_OK;
 
 
 failure:
 
-  LOG1("error %lu\n", err);
+  LOG1("error %d\n", err);
 
   return err;
 }
@@ -363,10 +364,11 @@ commonprefixstrings[] =
 
 #define NAME "commonprefixtest"
 
-static error commonprefixtest(icontainer_maker *maker, const char *testname)
+static result_t commonprefixtest(icontainer_maker *maker,
+                                 const char       *testname)
 {
   const int     max = NELEMS(commonprefixstrings);
-  error         err;
+  result_t      err;
   icontainer_t *cont;
   int           i;
 
@@ -397,12 +399,12 @@ static error commonprefixtest(icontainer_maker *maker, const char *testname)
 
   cont->destroy(cont);
 
-  return error_OK;
+  return result_OK;
 
 
 failure:
 
-  LOG1("error %lu\n", err);
+  LOG1("error %d\n", err);
 
   return err;
 }
@@ -427,20 +429,21 @@ inttestdata[] =
 
 #define NAME "inttest"
 
-static error inttest_lookup_prefix_callback(const item_t *item, void *opaque)
+static result_t inttest_lookup_prefix_callback(const item_t *item,
+                                               void         *opaque)
 {
   NOT_USED(opaque);
 
   printf(NAME ": -- %x : '%s'\n", (unsigned int) item->key,
          (char *) item->value);
 
-  return error_OK;
+  return result_OK;
 }
 
-static error inttest(icontainer_maker *maker, const char *testname)
+static result_t inttest(icontainer_maker *maker, const char *testname)
 {
   const int     max = NELEMS(inttestdata);
-  error         err;
+  result_t      err;
   icontainer_t *cont;
   int           i;
   int           j;
@@ -522,12 +525,12 @@ static error inttest(icontainer_maker *maker, const char *testname)
     prefix = i;
 
     err = cont->lookup_prefix(cont, &prefix, inttest_lookup_prefix_callback, NULL);
-    if (err == error_NOT_IMPLEMENTED)
+    if (err == result_NOT_IMPLEMENTED)
     {
       LOG("not implemented - skipping test");
       break;
     }
-    if (err == error_NOT_FOUND)
+    if (err == result_NOT_FOUND)
       ;
     else if (err)
       goto failure;
@@ -536,7 +539,7 @@ static error inttest(icontainer_maker *maker, const char *testname)
   LOG("Look up a key which doesn't exist");
 
   err = cont->lookup_prefix(cont, "Gooseberries", inttest_lookup_prefix_callback, NULL);
-  if (err != error_NOT_FOUND && err != error_NOT_IMPLEMENTED)
+  if (err != result_NOT_FOUND && err != result_NOT_IMPLEMENTED)
   {
     LOG("lookup_prefix did _not_ return 'not found'!");
     goto failure;
@@ -568,12 +571,12 @@ static error inttest(icontainer_maker *maker, const char *testname)
 
   cont->destroy(cont);
 
-  return error_OK;
+  return result_OK;
 
 
 failure:
 
-  LOG1("error %lu\n", err);
+  LOG1("error %d\n", err);
 
   return err;
 }
@@ -611,10 +614,10 @@ chartestdata[] =
 
 #define NAME "chartest"
 
-static error chartest(icontainer_maker *maker, const char *testname)
+static result_t chartest(icontainer_maker *maker, const char *testname)
 {
   const int     max = NELEMS(chartestdata);
-  error         err;
+  result_t      err;
   icontainer_t *cont;
   int           i;
   int           j;
@@ -705,12 +708,12 @@ static error chartest(icontainer_maker *maker, const char *testname)
 
   cont->destroy(cont);
 
-  return error_OK;
+  return result_OK;
 
 
 failure:
 
-  LOG1("error %lu\n", err);
+  LOG1("error %d\n", err);
 
   return err;
 }
@@ -719,12 +722,12 @@ failure:
 
 /* ----------------------------------------------------------------------- */
 
-static error test_icontainer_type(icontainer_maker *maker,
-                                  const char       *safemakername)
+static result_t test_icontainer_type(icontainer_maker *maker,
+                                     const char       *safemakername)
 {
   static const struct
   {
-    error     (*test)(icontainer_maker *maker, const char *testname);
+    result_t  (*test)(icontainer_maker *maker, const char *testname);
     const char *name;
     const char *safename;
   }
@@ -736,8 +739,8 @@ static error test_icontainer_type(icontainer_maker *maker,
     { commonprefixtest, "common prefix string test", "commonprefix" },
   };
 
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   for (i = 0; i < NELEMS(tests); i++)
   {
@@ -758,12 +761,12 @@ static error test_icontainer_type(icontainer_maker *maker,
     printf("<\n\n");
   }
 
-  return error_OK;
+  return result_OK;
 
 
 failure:
 
-  printf("test_container: error %lu\n", err);
+  printf("test_container: error %d\n", err);
 
   return err;
 }
@@ -788,8 +791,8 @@ int test_container(int viz) // viz ignored now
     { container_create_patricia,     "patricia",      "patricia"     },
   };
 
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   for (i = 0; i < NELEMS(makers); i++)
   {
@@ -809,7 +812,7 @@ int test_container(int viz) // viz ignored now
 
 failure:
 
-  printf("test_container: error %lu\n", err);
+  printf("test_container: error %d\n", err);
 
   return EXIT_FAILURE;
 }

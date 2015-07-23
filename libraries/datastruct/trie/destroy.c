@@ -13,13 +13,13 @@
 
 #include "impl.h"
 
-static error trie__destroy_node(trie__node_t *n, int level, void *opaque)
+static result_t trie__destroy_node(trie__node_t *n, int level, void *opaque)
 {
   NOT_USED(level);
 
   trie__node_destroy(opaque, n);
 
-  return error_OK;
+  return result_OK;
 }
 
 void trie_destroy(trie_t *t)

@@ -8,7 +8,7 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 #include "utils/utils.h"
 #include "utils/primes.h"
 
@@ -18,20 +18,20 @@
 
 /* ----------------------------------------------------------------------- */
 
-error hash_create(const void         *default_value,
-                  int                 nbins,
-                  hash_fn            *fn,
-                  hash_compare       *compare,
-                  hash_destroy_key   *destroy_key,
-                  hash_destroy_value *destroy_value,
-                  hash_t            **ph)
+result_t hash_create(const void         *default_value,
+                     int                 nbins,
+                     hash_fn            *fn,
+                     hash_compare       *compare,
+                     hash_destroy_key   *destroy_key,
+                     hash_destroy_value *destroy_value,
+                     hash_t            **ph)
 {
   hash_t        *h;
   hash__node_t **bins;
 
   h = malloc(sizeof(*h));
   if (h == NULL)
-    return error_OOM;
+    return result_OOM;
 
   nbins = prime_nearest(nbins);
 
@@ -39,7 +39,7 @@ error hash_create(const void         *default_value,
   if (bins == NULL)
   {
     free(h);
-    return error_OOM;
+    return result_OOM;
   }
 
   h->bins          = bins;
@@ -56,5 +56,5 @@ error hash_create(const void         *default_value,
 
   *ph = h;
 
-  return error_OK;
+  return result_OK;
 }

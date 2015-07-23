@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "base/memento/memento.h"
-#include "base/errors.h"
+#include "base/result.h"
 #include "datastruct/patricia.h"
 #include "container/interface/container.h"
 
@@ -36,9 +36,9 @@ static const void *container_patricia__lookup(const icontainer_t *c_,
   return patricia_lookup(c->t, key, c->len(key));
 }
 
-static error container_patricia__insert(icontainer_t *c_,
-                                        const void   *key,
-                                        const void   *value)
+static result_t container_patricia__insert(icontainer_t *c_,
+                                           const void   *key,
+                                           const void   *value)
 {
   container_patricia_t *c = (container_patricia_t *) c_;
 
@@ -60,10 +60,10 @@ static const item_t *container_patricia__select(const icontainer_t *c_,
   return patricia_select(c->t, k);
 }
 
-static error container_patricia__lookup_prefix(const icontainer_t        *c_,
-                                               const void                *prefix,
-                                               icontainer_found_callback  cb,
-                                               void                      *opaque)
+static result_t container_patricia__lookup_prefix(const icontainer_t        *c_,
+                                                  const void                *prefix,
+                                                  icontainer_found_callback  cb,
+                                                  void                      *opaque)
 {
   const container_patricia_t *c = (container_patricia_t *) c_;
 
@@ -84,7 +84,7 @@ static int container_patricia__count(const icontainer_t *c_)
   return patricia_count(c->t);
 }
 
-static error container_patricia__show(const icontainer_t *c_, FILE *f)
+static result_t container_patricia__show(const icontainer_t *c_, FILE *f)
 {
   container_patricia_t *c = (container_patricia_t *) c_;
 
@@ -94,7 +94,7 @@ static error container_patricia__show(const icontainer_t *c_, FILE *f)
                        f);
 }
 
-static error container_patricia__show_viz(const icontainer_t *c_, FILE *f)
+static result_t container_patricia__show_viz(const icontainer_t *c_, FILE *f)
 {
   container_patricia_t *c = (container_patricia_t *) c_;
 
@@ -112,9 +112,9 @@ static void container_patricia__destroy(icontainer_t *doomed_)
   free(doomed);
 }
 
-error container_create_patricia(icontainer_t            **container,
-                                const icontainer_key_t   *key,
-                                const icontainer_value_t *value)
+result_t container_create_patricia(icontainer_t            **container,
+                                   const icontainer_key_t   *key,
+                                   const icontainer_value_t *value)
 {
   static const icontainer_t methods =
   {
@@ -129,7 +129,7 @@ error container_create_patricia(icontainer_t            **container,
     container_patricia__destroy,
   };
 
-  error                 err;
+  result_t              err;
   container_patricia_t *c;
 
   assert(container);
@@ -141,11 +141,11 @@ error container_create_patricia(icontainer_t            **container,
   /* ensure required callbacks are specified */
 
   if (key->len == NULL)
-    return error_KEYLEN_REQUIRED;
+    return result_KEYLEN_REQUIRED;
 
   c = malloc(sizeof(*c));
   if (c == NULL)
-    return error_OOM;
+    return result_OOM;
 
   c->c                  = methods;
 
@@ -168,5 +168,5 @@ error container_create_patricia(icontainer_t            **container,
 
   *container = &c->c;
 
-  return error_OK;
+  return result_OK;
 }

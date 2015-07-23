@@ -9,14 +9,14 @@
 
 #include "base/memento/memento.h"
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/orderedarray.h"
 
 #include "impl.h"
 
 /* ensure space for 'need' elements */
-static error orderedarray__ensure(orderedarray_t *t, int need)
+static result_t orderedarray__ensure(orderedarray_t *t, int need)
 {
   orderedarray__node_t *array;
   int                   nelems;
@@ -26,7 +26,7 @@ static error orderedarray__ensure(orderedarray_t *t, int need)
   maxelems = t->maxelems;
 
   if (maxelems - nelems >= need)
-    return error_OK; /* we have enough space */
+    return result_OK; /* we have enough space */
 
   if (maxelems < 8)
     maxelems = 8; /* minimum number of elements */
@@ -36,20 +36,20 @@ static error orderedarray__ensure(orderedarray_t *t, int need)
 
   array = realloc(t->array, maxelems * sizeof(*array));
   if (array == NULL)
-    return error_OOM;
+    return result_OOM;
 
   t->array    = array;
   t->maxelems = maxelems;
 
-  return error_OK;
+  return result_OK;
 }
 
-error orderedarray_insert(orderedarray_t *t,
-                          const void     *key,
-                          size_t          keylen,
-                          const void     *value)
+result_t orderedarray_insert(orderedarray_t *t,
+                             const void     *key,
+                             size_t          keylen,
+                             const void     *value)
 {
-  error                 err;
+  result_t              err;
   orderedarray__node_t *n;
   int                   found;
   size_t                m;
@@ -63,7 +63,7 @@ error orderedarray_insert(orderedarray_t *t,
 
   found = orderedarray__lookup_internal(t, key, &n);
   if (found)
-    return error_EXISTS;
+    return result_EXISTS;
 
   assert(n); /* n is always non-NULL after a call to ensure */
 
@@ -80,6 +80,5 @@ error orderedarray_insert(orderedarray_t *t,
 
   t->nelems++;
 
-  return error_OK;
+  return result_OK;
 }
-

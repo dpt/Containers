@@ -5,22 +5,22 @@
 
 #include <stddef.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/patricia.h"
 
 #include "impl.h"
 
-static error patricia__walk_in_order(patricia__node_t       *n,
-                                     int                     level,
-                                     patricia_walk_callback *cb,
-                                     void                   *opaque)
+static result_t patricia__walk_in_order(patricia__node_t       *n,
+                                        int                     level,
+                                        patricia_walk_callback *cb,
+                                        void                   *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   for (i = 0; i < 2; i++)
   {
@@ -42,20 +42,20 @@ static error patricia__walk_in_order(patricia__node_t       *n,
     }
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-error patricia_walk(const patricia_t       *t,
-                    patricia_walk_callback *cb,
-                    void                   *opaque)
+result_t patricia_walk(const patricia_t       *t,
+                       patricia_walk_callback *cb,
+                       void                   *opaque)
 {
-  error (*walker)(patricia__node_t       *n,
-                  int                     level,
-                  patricia_walk_callback *cb,
-                  void                   *opaque);
+  result_t (*walker)(patricia__node_t       *n,
+                     int                     level,
+                     patricia_walk_callback *cb,
+                     void                   *opaque);
 
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   walker = patricia__walk_in_order;
 

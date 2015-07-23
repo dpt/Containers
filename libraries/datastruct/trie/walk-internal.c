@@ -6,22 +6,22 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/trie.h"
 
 #include "impl.h"
 
-static error trie__walk_internal_in_order(trie__node_t                 *n,
-                                          trie_walk_flags               flags,
-                                          int                           level,
-                                          trie__walk_internal_callback *cb,
-                                          void                         *opaque)
+static result_t trie__walk_internal_in_order(trie__node_t                 *n,
+                                             trie_walk_flags               flags,
+                                             int                           level,
+                                             trie__walk_internal_callback *cb,
+                                             void                         *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   err = trie__walk_internal_in_order(n->child[0], flags, level + 1, cb, opaque);
   if (!err)
@@ -40,16 +40,16 @@ static error trie__walk_internal_in_order(trie__node_t                 *n,
   return err;
 }
 
-static error trie__walk_internal_pre_order(trie__node_t                 *n,
-                                           trie_walk_flags               flags,
-                                           int                           level,
-                                           trie__walk_internal_callback *cb,
-                                           void                         *opaque)
+static result_t trie__walk_internal_pre_order(trie__node_t                 *n,
+                                              trie_walk_flags               flags,
+                                              int                           level,
+                                              trie__walk_internal_callback *cb,
+                                              void                         *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   {
     int leaf;
@@ -60,7 +60,7 @@ static error trie__walk_internal_pre_order(trie__node_t                 *n,
         ((flags & trie_WALK_BRANCHES) != 0 && !leaf))
       err = cb(n, level, opaque);
     else
-      err = error_OK;
+      err = result_OK;
   }
   if (!err)
     err = trie__walk_internal_pre_order(n->child[0], flags, level + 1, cb, opaque);
@@ -70,16 +70,16 @@ static error trie__walk_internal_pre_order(trie__node_t                 *n,
   return err;
 }
 
-static error trie__walk_internal_post_order(trie__node_t                 *n,
-                                            trie_walk_flags               flags,
-                                            int                           level,
-                                            trie__walk_internal_callback *cb,
-                                            void                         *opaque)
+static result_t trie__walk_internal_post_order(trie__node_t                 *n,
+                                               trie_walk_flags               flags,
+                                               int                           level,
+                                               trie__walk_internal_callback *cb,
+                                               void                         *opaque)
 {
-  error err;
+  result_t err;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   err = trie__walk_internal_post_order(n->child[0], flags, level + 1, cb, opaque);
   if (!err)
@@ -98,19 +98,19 @@ static error trie__walk_internal_post_order(trie__node_t                 *n,
   return err;
 }
 
-error trie__walk_internal(trie_t                       *t,
-                          trie_walk_flags               flags,
-                          trie__walk_internal_callback *cb,
-                          void                         *opaque)
+result_t trie__walk_internal(trie_t                       *t,
+                             trie_walk_flags               flags,
+                             trie__walk_internal_callback *cb,
+                             void                         *opaque)
 {
-  error (*walker)(trie__node_t                 *n,
-                  trie_walk_flags               flags,
-                  int                           level,
-                  trie__walk_internal_callback *cb,
-                  void                         *opaque);
+  result_t (*walker)(trie__node_t                 *n,
+                     trie_walk_flags               flags,
+                     int                           level,
+                     trie__walk_internal_callback *cb,
+                     void                         *opaque);
 
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   switch (flags & trie_WALK_ORDER_MASK)
   {

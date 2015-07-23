@@ -6,23 +6,23 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "base/errors.h"
+#include "base/result.h"
 
 #include "datastruct/patricia.h"
 
 #include "impl.h"
 
-static error patricia__walk_internal_in_order(patricia__node_t                 *n,
-                                              patricia_walk_flags               flags,
-                                              int                               level,
-                                              patricia__walk_internal_callback *cb,
-                                              void                             *opaque)
+static result_t patricia__walk_internal_in_order(patricia__node_t                 *n,
+                                                 patricia_walk_flags               flags,
+                                                 int                               level,
+                                                 patricia__walk_internal_callback *cb,
+                                                 void                             *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   for (i = 0; i < 2; i++)
   {
@@ -55,20 +55,20 @@ static error patricia__walk_internal_in_order(patricia__node_t                 *
     }
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-static error patricia__walk_internal_pre_order(patricia__node_t                 *n,
-                                               patricia_walk_flags               flags,
-                                               int                               level,
-                                               patricia__walk_internal_callback *cb,
-                                               void                             *opaque)
+static result_t patricia__walk_internal_pre_order(patricia__node_t                 *n,
+                                                  patricia_walk_flags               flags,
+                                                  int                               level,
+                                                  patricia__walk_internal_callback *cb,
+                                                  void                             *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   /* self */
   if ((flags & patricia_WALK_BRANCHES) != 0)
@@ -101,20 +101,20 @@ static error patricia__walk_internal_pre_order(patricia__node_t                 
     }
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-static error patricia__walk_internal_post_order(patricia__node_t                 *n,
-                                                patricia_walk_flags               flags,
-                                                int                               level,
-                                                patricia__walk_internal_callback *cb,
-                                                void                             *opaque)
+static result_t patricia__walk_internal_post_order(patricia__node_t                 *n,
+                                                   patricia_walk_flags               flags,
+                                                   int                               level,
+                                                   patricia__walk_internal_callback *cb,
+                                                   void                             *opaque)
 {
-  error err;
-  int   i;
+  result_t err;
+  int      i;
 
   if (n == NULL)
-    return error_OK;
+    return result_OK;
 
   for (i = 0; i < 2; i++)
   {
@@ -147,22 +147,22 @@ static error patricia__walk_internal_post_order(patricia__node_t                
       return err;
   }
 
-  return error_OK;
+  return result_OK;
 }
 
-error patricia__walk_internal(patricia_t                       *t,
-                              patricia_walk_flags               flags,
-                              patricia__walk_internal_callback *cb,
-                              void                             *opaque)
+result_t patricia__walk_internal(patricia_t                       *t,
+                                 patricia_walk_flags               flags,
+                                 patricia__walk_internal_callback *cb,
+                                 void                             *opaque)
 {
-  error (*walker)(patricia__node_t                 *n,
-                  patricia_walk_flags               flags,
-                  int                               level,
-                  patricia__walk_internal_callback *cb,
-                  void                             *opaque);
+  result_t (*walker)(patricia__node_t                 *n,
+                     patricia_walk_flags               flags,
+                     int                               level,
+                     patricia__walk_internal_callback *cb,
+                     void                             *opaque);
 
   if (t == NULL)
-    return error_OK;
+    return result_OK;
 
   switch (flags & patricia_WALK_ORDER_MASK)
   {
