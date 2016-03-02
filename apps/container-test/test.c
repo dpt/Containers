@@ -9,6 +9,7 @@
 
 #include "base/result.h"
 #include "base/types.h"
+#include "base/utils.h"
 
 #include "keyval/char.h"
 #include "keyval/int.h"
@@ -790,6 +791,8 @@ int test_container(int viz) // viz ignored now
     { container_create_critbit,      "critbit",       "critbit"      },
     { container_create_patricia,     "patricia",      "patricia"     },
   };
+
+  NOT_USED(viz);
 
   result_t err;
   int      i;
