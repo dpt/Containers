@@ -23,3 +23,5 @@ research
 saved.output
 *.gv
 
+platform/macos/Containers/Containers.xcodeproj/project.xcworkspace/xcuserdata
+platform/macos/Containers/Containers.xcodeproj/xcuserdata
