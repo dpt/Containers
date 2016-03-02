@@ -35,7 +35,7 @@ result_t hash_walk_continuation(hash_t      *h,
   bin  = ((unsigned int) continuation             ) >> 16;
   item = ((unsigned int) continuation & 0x0000ffff) >> 0;
 
-  if (bin >= (unsigned int) h->nbins)
+  if (bin >= h->nbins)
     return result_HASH_BAD_CONT; /* invalid continuation value */
 
   /* if we're starting off, scan forward to the first occupied bin */
