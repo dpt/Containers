@@ -20,14 +20,16 @@
 #include "base/result.h"
 #include "item.h"
 
-#define T hash_t
-
-typedef struct hash T;
-
 /* ----------------------------------------------------------------------- */
 
 #define result_HASH_END      (result_BASE_CONTAINER_HASH + 0) /* Indicates final element */
 #define result_HASH_BAD_CONT (result_BASE_CONTAINER_HASH + 1) /* Invalid continuation value */
+
+/* ----------------------------------------------------------------------- */
+
+#define T hash_t
+
+typedef struct hash T;
 
 /* ----------------------------------------------------------------------- */
 
@@ -161,8 +163,8 @@ result_t hash_walk(const T *hash, hash_walk_callback *cb, void *opaque);
  * \param[out] value            Pointer to receive value.
  *
  * \return Error indication.
- * \retval result_OK       If an element was found.
- * \retval error_HASH_END If no elements remain.
+ * \retval result_OK      If an element was found.
+ * \retval result_HASH_END If no elements remain.
  */
 result_t hash_walk_continuation(T           *hash,
                                 int          continuation,

@@ -17,8 +17,8 @@ result_t hash__walk_internal(const hash_t                 *hash,
                              hash__walk_internal_callback *cb,
                              void                         *opaque)
 {
-  result_t err;
-  int      i;
+  result_t     err;
+  unsigned int i;
 
   if (hash == NULL)
     return result_OK;
