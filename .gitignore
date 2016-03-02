@@ -21,3 +21,5 @@ platform/windows/*/*/Debug/*
 platform/windows/*/*/Release/*
 research
 saved.output
+*.gv
+
