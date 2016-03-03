@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "base/result.h"
+#include "base/utils.h"
 
 #include "datastruct/dstree.h"
 

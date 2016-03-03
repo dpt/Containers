@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "base/types.h"
+#include "base/utils.h"
 
 #include "keyval/char.h"
 

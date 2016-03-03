@@ -8,6 +8,7 @@
 #include "base/memento/memento.h"
 
 #include "base/types.h"
+#include "base/utils.h"
 
 #include "datastruct/patricia.h"
 

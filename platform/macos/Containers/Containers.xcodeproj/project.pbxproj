@@ -1231,10 +1231,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/../../../include\"",
-					"\"$(SRCROOT)/../../../../DPTLib/include\"",
-				);
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../include\"";
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = YES;
@@ -1271,10 +1268,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/../../../include\"",
-					"\"$(SRCROOT)/../../../../DPTLib/include\"",
-				);
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../include\"";
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = NO;

@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "base/types.h"
+#include "base/utils.h"
 
 #include "utils/utils.h"
 

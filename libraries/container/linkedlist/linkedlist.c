@@ -10,6 +10,7 @@
 #include "base/memento/memento.h"
 #include "base/result.h"
 #include "base/types.h"
+#include "base/utils.h"
 #include "container/interface/container.h"
 #include "datastruct/linkedlist.h"
 
