@@ -4,7 +4,7 @@
 #
 # Copyright (c) David Thomas, 2020-2021
 #
-# vim: sw=4
+# vim: sw=4 ts=8 et
 
 # TODO
 # - Fortify
@@ -29,11 +29,18 @@ endif()
 
 if(TARGET_RISCOS)
     set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG" CACHE STRING "" FORCE) # overwrite default of '-O3 -NDEBUG'
-    
+
     # I tried to get this to live in riscos.cmake but was defeated.
     set(CMAKE_EXECUTABLE_SUFFIX ,ff8)
-endif()
 
+    # For now, divide assembly targets into ancient or modern ARM (pivot=ARMv5).
+    option(ARMV5 "Utilise ARMv5" OFF)
+    if(ARMV5)
+        string(APPEND CMAKE_C_FLAGS " -march=armv5 -mtune=xscale")
+    else()
+        string(APPEND CMAKE_C_FLAGS " -march=armv2 -mtune=arm2")
+    endif()
+endif()
 
 # If this is enabled then the final binary will need to be linked against
 # Fortify too.
@@ -49,8 +56,8 @@ set(LIBRARY ${PROJECT_NAME})
 add_library(${LIBRARY})
 
 set_target_properties(${LIBRARY} PROPERTIES
-    VERSION 0.2.7
-    DESCRIPTION "Containers library"
+    VERSION 0.1.8
+    DESCRIPTION "DPT's Containers library"
     C_STANDARD 99
     PREFIX ""  # remove 'lib' prefix
     ARCHIVE_OUTPUT_NAME_DEBUG ${LIBRARY}-debug
@@ -58,9 +65,7 @@ set_target_properties(${LIBRARY} PROPERTIES
     ARCHIVE_OUTPUT_NAME_RELWITHDEBINFO ${LIBRARY}-relwithdebinfo
     ARCHIVE_OUTPUT_NAME_MINSIZEREL ${LIBRARY}-minsizerel)
 
-target_include_directories(${LIBRARY}
-    PUBLIC
-    include)
+target_include_directories(${LIBRARY} PUBLIC include)
 
 set(PUBLIC_HEADERS
     include/container/bstree.h
@@ -262,44 +267,64 @@ if(USE_FORTIFY)
 endif()
 
 
-# Self-test executable
-#
-
-set(TEST ${PROJECT_NAME}Test)
-
-set(TEST_SOURCES
-    apps/container-test/main.c
-    apps/container-test/test.c
-    apps/container-test/test.h
-    apps/container-test/testdata.h
-    libraries/datastruct/queue/test/test.c)
-
-# Avoid a warning from CMake
-set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-
-add_executable(${TEST} ${TEST_SOURCES})
-
-set_target_properties(${TEST} PROPERTIES
-    DESCRIPTION "Containers test program"
-    C_STANDARD 99
-    OUTPUT_NAME_DEBUG ${TEST}-debug
-    OUTPUT_NAME_RELEASE ${TEST}
-    OUTPUT_NAME_RELWITHDEBINFO ${TEST}-relwithdebinfo
-    OUTPUT_NAME_MINSIZEREL ${TEST}-minsizerel)
-
-# ContainersTest dependencies
-# Of course, ContainersTest depends on the Containers library.
-target_link_libraries(${TEST} ${LIBRARY})
-
-
 # Installation
 #
 
-# Note: This affects everything built by this file.
-set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR} CACHE PATH "CMake install prefix" FORCE)
+# Set install location
+# - We can't use set(...) with FORCE because that will override any passed-in
+#   configuration values.
+# - We can't use set(...) without FORCE because that won't override the default
+#   value...
+# - So, just check for the default value and override it if set.
+if(${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
+    set(CMAKE_INSTALL_PREFIX "install" CACHE PATH "CMake install prefix" FORCE)
+endif()
 
-# Install library & test program into root of build directory.
-install(TARGETS ${LIBRARY} ${TEST}
-    CONFIGURATIONS Debug Release RelWithDebInfo MinSizeRel
-    ARCHIVE DESTINATION .
-    RUNTIME DESTINATION .)
+# Install headers and library
+# - We have to use EXCLUDE_FROM_ALL to stop the PUBLIC_HEADERs getting
+#   installed by install(TARGETS ...).
+install(TARGETS ${LIBRARY} ARCHIVE
+    PUBLIC_HEADER EXCLUDE_FROM_ALL)
+# - We can't use install(TARGETS ... PUBLIC_HEADER) to install headers, as
+#   expected, since that flattens the include directory's hierarchy. Use
+#   install(DIRECTORY ...) instead.
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
+    FILES_MATCHING PATTERN "*.h")
+
+
+# Self-test executable
+#
+
+option(BUILD_TESTS "Build test program" OFF)
+
+if(BUILD_TESTS)
+    set(TEST ${PROJECT_NAME}Test)
+
+    set(TEST_SOURCES
+        apps/container-test/main.c
+        apps/container-test/test.c
+        apps/container-test/test.h
+        apps/container-test/testdata.h
+        libraries/datastruct/queue/test/test.c)
+
+    # Avoid a warning from CMake
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+
+    add_executable(${TEST} ${TEST_SOURCES})
+
+    set_target_properties(${TEST} PROPERTIES
+        DESCRIPTION "Containers test program"
+        C_STANDARD 99
+        OUTPUT_NAME_DEBUG ${TEST}-debug
+        OUTPUT_NAME_RELEASE ${TEST}
+        OUTPUT_NAME_RELWITHDEBINFO ${TEST}-relwithdebinfo
+        OUTPUT_NAME_MINSIZEREL ${TEST}-minsizerel)
+
+    # ContainersTest dependencies
+    # Of course, ContainersTest depends on Containers.
+    target_link_libraries(${TEST} ${LIBRARY})
+
+    install(TARGETS ${TEST} RUNTIME
+        DESTINATION ${CMAKE_INSTALL_PREFIX})
+endif()
