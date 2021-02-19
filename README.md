@@ -20,6 +20,17 @@ Two additional associative data structures are provided for comparison with the 
 - linkedlist   - a linked list in which elements are kept sorted
 - orderedarray - an ordered array (again, sorted)
 
+Building
+--------
+
+``` bash
+cd <here>
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON  ..
+make -j install
+./ContainersTest-debug -viz  # create *.gv files
+```
+
 Organisation
 ------------
 
