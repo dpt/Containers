@@ -138,7 +138,7 @@ The above command will write out dstree-string.gv.pdf.
 License
 -------
 
-Copyright (c) 2009-2012, David Thomas. All rights reserved.
+Copyright (c) 2009-2021, David Thomas. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

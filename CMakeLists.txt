@@ -19,7 +19,7 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules/)
 
-project(Containers VERSION 0.1.8 DESCRIPTION "Containers library" LANGUAGES C)
+project(Containers VERSION 0.2.0 DESCRIPTION "Containers library" LANGUAGES C)
 
 # The values set in the toolchain file aren't available until this point.
 
@@ -28,18 +28,7 @@ if(TARGET_RISCOS AND NOT DEFINED ENV{GCCSDK_INSTALL_ENV})
 endif()
 
 if(TARGET_RISCOS)
-    set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG" CACHE STRING "" FORCE) # overwrite default of '-O3 -NDEBUG'
-
-    # I tried to get this to live in riscos.cmake but was defeated.
-    set(CMAKE_EXECUTABLE_SUFFIX ,ff8)
-
-    # For now, divide assembly targets into ancient or modern ARM (pivot=ARMv5).
-    option(ARMV5 "Utilise ARMv5" OFF)
-    if(ARMV5)
-        string(APPEND CMAKE_C_FLAGS " -march=armv5 -mtune=xscale")
-    else()
-        string(APPEND CMAKE_C_FLAGS " -march=armv2 -mtune=arm2")
-    endif()
+    riscos_set_flags()
 endif()
 
 # If this is enabled then the final binary will need to be linked against
@@ -51,21 +40,19 @@ if(NOT ${CMAKE_TOOLCHAIN_FILE} STREQUAL "")
     message(STATUS "Containers: Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 endif()
 
-set(LIBRARY ${PROJECT_NAME})
+add_library(Containers)
 
-add_library(${LIBRARY})
-
-set_target_properties(${LIBRARY} PROPERTIES
-    VERSION 0.1.8
+set_target_properties(Containers PROPERTIES
+    VERSION 0.2.0
     DESCRIPTION "DPT's Containers library"
     C_STANDARD 99
     PREFIX ""  # remove 'lib' prefix
-    ARCHIVE_OUTPUT_NAME_DEBUG ${LIBRARY}-debug
-    ARCHIVE_OUTPUT_NAME_RELEASE ${LIBRARY}
-    ARCHIVE_OUTPUT_NAME_RELWITHDEBINFO ${LIBRARY}-relwithdebinfo
-    ARCHIVE_OUTPUT_NAME_MINSIZEREL ${LIBRARY}-minsizerel)
+    ARCHIVE_OUTPUT_NAME_DEBUG Containers-debug
+    ARCHIVE_OUTPUT_NAME_RELEASE Containers
+    ARCHIVE_OUTPUT_NAME_RELWITHDEBINFO Containers-relwithdebinfo
+    ARCHIVE_OUTPUT_NAME_MINSIZEREL Containers-minsizerel)
 
-target_include_directories(${LIBRARY} PUBLIC include)
+target_include_directories(Containers PUBLIC include)
 
 set(PUBLIC_HEADERS
     include/container/bstree.h
@@ -250,20 +237,19 @@ set(ALL_SOURCES
     ${KEYVAL_SOURCES}
     ${UTILS_SOURCES})
 
-target_sources(${LIBRARY} PRIVATE ${ALL_SOURCES})
+target_sources(Containers PRIVATE ${ALL_SOURCES})
 
-target_compile_options(${LIBRARY} PRIVATE -Wall -Wextra -pedantic)
+target_compile_options(Containers PRIVATE -Wall -Wextra -pedantic -Wno-format)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-    target_compile_definitions(${LIBRARY} PRIVATE $<UPPER_CASE:${LIBRARY}>_DEBUG)
+    target_compile_definitions(Containers PRIVATE CONTAINERS_DEBUG)
 endif()
 
 # Library dependencies
 #
 
 if(USE_FORTIFY)
-    target_compile_definitions(${LIBRARY} PUBLIC FORTIFY)
-    target_link_libraries(${LIBRARY} PUBLIC Fortify)
+    target_link_libraries(Containers PUBLIC Fortify)
 endif()
 
 
@@ -277,18 +263,18 @@ endif()
 #   value...
 # - So, just check for the default value and override it if set.
 if(${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
-    set(CMAKE_INSTALL_PREFIX "install" CACHE PATH "CMake install prefix" FORCE)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "CMake install prefix" FORCE)
 endif()
 
 # Install headers and library
 # - We have to use EXCLUDE_FROM_ALL to stop the PUBLIC_HEADERs getting
 #   installed by install(TARGETS ...).
-install(TARGETS ${LIBRARY} ARCHIVE
+install(TARGETS Containers ARCHIVE
     PUBLIC_HEADER EXCLUDE_FROM_ALL)
 # - We can't use install(TARGETS ... PUBLIC_HEADER) to install headers, as
 #   expected, since that flattens the include directory's hierarchy. Use
 #   install(DIRECTORY ...) instead.
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/include
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     FILES_MATCHING PATTERN "*.h")
 
@@ -299,8 +285,6 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include
 option(BUILD_TESTS "Build test program" OFF)
 
 if(BUILD_TESTS)
-    set(TEST ${PROJECT_NAME}Test)
-
     set(TEST_SOURCES
         apps/container-test/main.c
         apps/container-test/test.c
@@ -311,20 +295,20 @@ if(BUILD_TESTS)
     # Avoid a warning from CMake
     set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
-    add_executable(${TEST} ${TEST_SOURCES})
+    add_executable(ContainersTest ${TEST_SOURCES})
 
-    set_target_properties(${TEST} PROPERTIES
+    set_target_properties(ContainersTest PROPERTIES
         DESCRIPTION "Containers test program"
         C_STANDARD 99
-        OUTPUT_NAME_DEBUG ${TEST}-debug
-        OUTPUT_NAME_RELEASE ${TEST}
-        OUTPUT_NAME_RELWITHDEBINFO ${TEST}-relwithdebinfo
-        OUTPUT_NAME_MINSIZEREL ${TEST}-minsizerel)
+        OUTPUT_NAME_DEBUG ContainersTest-debug
+        OUTPUT_NAME_RELEASE ContainersTest
+        OUTPUT_NAME_RELWITHDEBINFO ContainersTest-relwithdebinfo
+        OUTPUT_NAME_MINSIZEREL ContainersTest-minsizerel)
 
     # ContainersTest dependencies
     # Of course, ContainersTest depends on Containers.
-    target_link_libraries(${TEST} ${LIBRARY})
+    target_link_libraries(ContainersTest Containers)
 
-    install(TARGETS ${TEST} RUNTIME
+    install(TARGETS ContainersTest RUNTIME
         DESTINATION ${CMAKE_INSTALL_PREFIX})
 endif()
